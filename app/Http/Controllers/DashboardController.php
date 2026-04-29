@@ -11,14 +11,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalOrders = Order::count();
-        $pendingOrders = Order::where('status', 'PENDING')->count();
-        $inProductionOrders = Order::where('status', 'IN_PRODUCTION')->count();
-        $finishedOrders = Order::where('status', 'FINISHED')->count();
+        $totalOrders = Order::count('*');
+        $pendingOrders = Order::where('status', '=', 'PENDING', 'and')->count('*');
+        $inProductionOrders = Order::where('status', '=', 'IN_PRODUCTION', 'and')->count('*');
+        $finishedOrders = Order::where('status', '=', 'FINISHED', 'and')->count('*');
         
-        $totalProfit = Order::where('status', 'FINISHED')->sum('profit');
+        $totalProfit = Order::where('status', '=', 'FINISHED', 'and')->sum('profit');
         
-        $lowStockMaterials = Material::where('current_qty', '<', 5)->get();
+        $lowStockMaterials = Material::where('current_qty', '<', 5, 'and')->get();
 
         $recentOrders = Order::with('customer')->latest()->take(5)->get();
 
