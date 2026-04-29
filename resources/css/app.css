@@ -2,5 +2,13 @@
 @config "../../tailwind.config.js";
 
 /* Custom Styles */
-body { background-color: #111316; color: #e2e2e6; }
-.glass-panel { background: rgba(30, 32, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(161, 141, 126, 0.2); }
+body {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(203, 213, 225, 0.5);
+}
