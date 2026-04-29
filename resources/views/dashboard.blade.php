@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Overview')
+@section('title', 'Ringkasan Dashboard')
 
 @section('content')
 <div class="space-y-6">
     <!-- Page Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-            <h2 class="font-display-lg text-display-lg text-on-background">Dashboard Overview</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Real-time metrics for timber processing and inventory.</p>
+            <h2 class="font-display-lg text-display-lg text-on-background">Ringkasan Dashboard</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-1">Metrik real-time untuk pemrosesan kayu dan inventaris.</p>
         </div>
         <div class="flex gap-3">
             <a href="{{ route('orders.create') }}" class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-body-sm text-body-sm hover:opacity-90 transition-opacity flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">add</span> New Order
+                <span class="material-symbols-outlined text-[18px]">add</span> Pesanan Baru
             </a>
         </div>
     </div>
@@ -24,10 +24,10 @@
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-primary-container">handyman</span>
             </div>
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Active Projects</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Proyek Aktif</span>
             <div class="flex items-baseline gap-2 mt-2">
                 <span class="font-display-lg text-display-lg text-on-background">{{ $inProductionOrders }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary flex items-center">In Production</span>
+                <span class="font-body-sm text-body-sm text-tertiary flex items-center">Dalam Produksi</span>
             </div>
         </div>
 
@@ -36,15 +36,15 @@
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-error">warning</span>
             </div>
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Low Stock Alerts</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Peringatan Stok Rendah</span>
             <div class="flex items-baseline gap-2 mt-2">
                 <span class="font-display-lg text-display-lg text-on-background">{{ count($lowStockMaterials) }}</span>
-                <span class="font-body-sm text-body-sm text-error flex items-center">Materials</span>
+                <span class="font-body-sm text-body-sm text-error flex items-center">Bahan Baku</span>
             </div>
             @if(count($lowStockMaterials) > 0)
-                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Requires immediate review</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Perlu peninjauan segera</span>
             @else
-                <span class="font-body-sm text-body-sm text-tertiary mt-1">All stock sufficient</span>
+                <span class="font-body-sm text-body-sm text-tertiary mt-1">Semua stok mencukupi</span>
             @endif
         </div>
 
@@ -53,11 +53,11 @@
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-primary-container">payments</span>
             </div>
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Profit</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Keuntungan</span>
             <div class="flex items-baseline gap-1 mt-2">
                 <span class="font-body-md text-body-md text-on-surface-variant">Rp</span>
                 <span class="font-headline-md text-headline-md text-on-background">{{ number_format($totalProfit, 0, ',', '.') }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary ml-1">Accumulated</span>
+                <span class="font-body-sm text-body-sm text-tertiary ml-1">Akumulasi</span>
             </div>
         </div>
 
@@ -66,10 +66,10 @@
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-primary-container">schedule</span>
             </div>
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Pending Orders</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Pesanan Menunggu</span>
             <div class="flex items-baseline gap-2 mt-2">
                 <span class="font-display-lg text-display-lg text-on-background">{{ $pendingOrders }}</span>
-                <span class="font-body-sm text-body-sm text-on-surface-variant">Waiting production</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Menunggu produksi</span>
             </div>
         </div>
     </div>
@@ -79,20 +79,20 @@
         <!-- Recent Orders Queue -->
         <div class="lg:col-span-2 glass-panel rounded-xl flex flex-col overflow-hidden">
             <div class="p-4 border-b border-surface-container-high flex justify-between items-center">
-                <h3 class="font-title-sm text-title-sm text-on-background">Recent Orders Queue</h3>
+                <h3 class="font-title-sm text-title-sm text-on-background">Antrean Pesanan Terbaru</h3>
                 <a href="{{ route('orders.index') }}" class="text-primary hover:opacity-80 font-body-sm text-body-sm flex items-center gap-1">
-                    View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    Lihat Semua <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </a>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-surface-container-high bg-surface-container-low/50">
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Order ID</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Client</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Deadline</th>
+                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">ID Pesanan</th>
+                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Pelanggan</th>
+                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Batas Waktu</th>
                             <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Status</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Action</th>
+                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="font-body-sm text-body-sm">
@@ -104,15 +104,15 @@
                                 <td class="p-3 px-4">
                                     @if($order->status == 'IN_PRODUCTION')
                                         <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-secondary-container text-on-secondary-container text-xs font-medium">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> In Production
+                                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Dalam Produksi
                                         </span>
                                     @elseif($order->status == 'FINISHED')
                                         <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-50 text-green-700 text-xs font-medium border border-green-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Finished
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Selesai
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-xs font-medium">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span> Pending
+                                            <span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span> Menunggu
                                         </span>
                                     @endif
                                 </td>
@@ -122,7 +122,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-6 text-center text-on-surface-variant italic">No recent orders found.</td>
+                                <td colspan="5" class="p-6 text-center text-on-surface-variant italic">Tidak ada pesanan terbaru.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -134,8 +134,8 @@
         <div class="glass-panel rounded-xl p-4 flex flex-col">
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h3 class="font-title-sm text-title-sm text-on-background">Inventory Alert</h3>
-                    <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Materials needing restock.</p>
+                    <h3 class="font-title-sm text-title-sm text-on-background">Peringatan Inventaris</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Bahan yang perlu restock.</p>
                 </div>
                 <span class="material-symbols-outlined text-error">inventory</span>
             </div>
@@ -149,20 +149,20 @@
                         </div>
                         <div class="text-right">
                             <p class="text-error font-bold">{{ $material->current_qty }}</p>
-                            <p class="text-[10px] text-error uppercase font-bold">Low Stock</p>
+                            <p class="text-[10px] text-error uppercase font-bold">Stok Rendah</p>
                         </div>
                     </div>
                 @empty
                     <div class="flex flex-col items-center justify-center h-full text-center p-6">
                         <span class="material-symbols-outlined text-4xl text-tertiary/20 mb-2">check_circle</span>
-                        <p class="text-on-surface-variant text-sm">All materials are above safety stock levels.</p>
+                        <p class="text-on-surface-variant text-sm">Semua bahan berada di atas tingkat stok aman.</p>
                     </div>
                 @endforelse
             </div>
             
             <div class="mt-4 pt-4 border-t border-surface-container-high">
                 <a href="{{ route('materials.index') }}" class="w-full py-2 flex justify-center items-center gap-2 rounded-lg border border-outline-variant text-on-surface font-body-sm hover:bg-surface-container-high transition-colors">
-                    Manage Inventory
+                    Kelola Inventaris
                 </a>
             </div>
         </div>

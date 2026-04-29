@@ -29,7 +29,7 @@
 <nav class="hidden md:flex flex-col py-6 h-screen w-64 bg-white border-r border-slate-200 shadow-sm font-inter text-[13px] font-medium z-50 shrink-0">
     <div class="px-6 mb-8">
         <h1 class="text-primary font-black text-xl tracking-tight">Rakayuku</h1>
-        <p class="text-slate-500 text-[11px] mt-1">Custom Furniture Suite</p>
+        <p class="text-slate-500 text-[11px] mt-1">Sistem Manajemen Furnitur</p>
     </div>
     
     <div class="flex-1 px-4 space-y-1">
@@ -40,22 +40,22 @@
         
         <a href="{{ route('materials.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('materials.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('materials.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">inventory_2</span>
-            Inventory
+            Inventaris
         </a>
         
         <a href="{{ route('purchases.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('purchases.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('purchases.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">shopping_bag</span>
-            Purchases
+            Pembelian
         </a>
 
         <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('orders.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('orders.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">shopping_cart</span>
-            Orders
+            Pesanan
         </a>
         
         <a href="{{ route('customers.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('customers.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('customers.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">group</span>
-            Customers
+            Pelanggan
         </a>
     </div>
 
@@ -66,7 +66,7 @@
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-semibold text-on-background truncate">Admin Rakayuku</p>
-                <p class="text-[11px] text-slate-500 truncate">Owner</p>
+                <p class="text-[11px] text-slate-500 truncate">Pemilik</p>
             </div>
         </div>
     </div>
