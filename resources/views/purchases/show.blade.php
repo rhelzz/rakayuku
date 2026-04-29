@@ -7,26 +7,26 @@
     <!-- Breadcrumbs & Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
-            <a href="{{ route('purchases.index') }}" class="hover:text-primary-container transition-colors">Purchases</a>
+            <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Purchases</a>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
             <span class="text-on-surface">Receipt Detail</span>
         </nav>
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container border border-surface-variant">
+                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary border border-surface-variant">
                     <span class="material-symbols-outlined text-3xl">receipt_long</span>
                 </div>
                 <div>
                     <h2 class="font-headline-md text-headline-md text-on-surface">{{ $purchase->invoice_number ?? 'Manual Receipt' }}</h2>
-                    <p class="font-body-sm text-body-sm text-slate-400">Supplier: {{ $purchase->supplier_name ?? 'Manual Entry' }} | Date: {{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</p>
+                    <p class="font-body-sm text-body-sm text-slate-500">Supplier: {{ $purchase->supplier_name ?? 'Manual Entry' }} | Date: {{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-6 px-6 py-3 bg-surface-container-low border border-surface-variant rounded-xl">
                 <div class="text-center">
                     <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Total Transaction</p>
-                    <p class="text-xl font-bold text-primary-container">Rp {{ number_format($purchase->total_price, 0, ',', '.') }}</p>
+                    <p class="text-xl font-bold text-primary">Rp {{ number_format($purchase->total_price, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>
@@ -70,8 +70,8 @@
                 </tbody>
                 <tfoot class="bg-surface-container-lowest/30">
                     <tr>
-                        <td colspan="3" class="p-4 text-right font-label-caps text-slate-400 uppercase">Grand Total</td>
-                        <td class="p-4 text-right text-lg font-black text-primary-container font-data-mono">
+                        <td colspan="3" class="p-4 text-right font-label-caps text-slate-500 uppercase">Grand Total</td>
+                        <td class="p-4 text-right text-lg font-black text-primary font-data-mono">
                             Rp {{ number_format($purchase->total_price, 0, ',', '.') }}
                         </td>
                     </tr>
