@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class PurchaseService
 {
-    protected $inventoryService;
+    protected InventoryService $inventoryService;
 
     public function __construct(InventoryService $inventoryService)
     {
