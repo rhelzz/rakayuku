@@ -34,16 +34,16 @@
                 </div>
             </div>
             <div class="bg-surface-container-low border border-surface-variant rounded-xl p-4 flex items-center space-x-4">
-                <div class="h-10 w-10 rounded-lg bg-[#332514] flex items-center justify-center text-[#ffb77d]">
+                <div class="h-10 w-10 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
                     <span class="material-symbols-outlined">warning</span>
                 </div>
                 <div>
                     <p class="font-label-caps text-label-caps text-slate-400 uppercase tracking-wider">Low Stock</p>
-                    <p class="font-title-sm text-title-sm text-[#ffb77d] mt-0.5">{{ $materials->where('current_qty', '<', 5)->count() }} Items</p>
+                    <p class="font-title-sm text-title-sm text-orange-600 mt-0.5">{{ $materials->where('current_qty', '<', 5)->count() }} Items</p>
                 </div>
             </div>
             <div class="bg-surface-container-low border border-surface-variant rounded-xl p-4 flex items-center space-x-4">
-                <div class="h-10 w-10 rounded-lg bg-surface-container-high flex items-center justify-center text-slate-300">
+                <div class="h-10 w-10 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                     <span class="material-symbols-outlined">payments</span>
                 </div>
                 <div>
@@ -79,11 +79,11 @@
                                     </div>
                                     <div>
                                         <div class="font-medium text-on-surface">{{ $material->name }}</div>
-                                        <div class="text-slate-400 font-data-mono text-[11px]">ID: {{ $material->id }}</div>
+                                        <div class="text-slate-500 font-data-mono text-[11px]">ID: {{ $material->id }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">
+                            <td class="px-4 py-3 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-red-600 font-bold @endif">
                                 {{ number_format($material->current_qty) }} <span class="text-slate-500 text-[11px] font-normal">{{ $material->unit }}</span>
                             </td>
                             <td class="px-4 py-3 text-right font-data-mono text-data-mono">
@@ -91,19 +91,19 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if($material->current_qty >= 5)
-                                <div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-[#112a1f] text-[#4ade80] border border-[#1e4a33]">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-[#4ade80]"></span>
+                                <div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                                     <span class="text-[11px] font-medium">Optimal</span>
                                 </div>
                                 @else
-                                <div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-[#332514] text-[#ffb77d] border border-[#4a361c]">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-[#ffb77d] animate-pulse"></span>
+                                <div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                     <span class="text-[11px] font-medium">Low Stock</span>
                                 </div>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <a href="{{ route('materials.edit', $material) }}" class="text-slate-500 hover:text-primary-container">
+                                <a href="{{ route('materials.edit', $material) }}" class="text-slate-500 hover:text-primary">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
                             </td>
@@ -136,8 +136,8 @@
                 
                 <!-- Select Material -->
                 <div class="space-y-1.5">
-                    <label class="block font-medium text-slate-300">Material <span class="text-error">*</span></label>
-                    <select name="items[0][material_id]" class="w-full bg-surface-container-highest border border-slate-700 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none" required>
+                    <label class="block font-medium text-slate-700">Material <span class="text-error">*</span></label>
+                    <select name="items[0][material_id]" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none" required>
                         <option disabled selected value="">Select Material</option>
                         @foreach($materials as $m)
                             <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
@@ -147,29 +147,29 @@
 
                 <!-- Supplier Name (Manual Input) -->
                 <div class="space-y-1.5">
-                    <label class="block font-medium text-slate-300">Supplier Name</label>
-                    <input name="supplier_name" class="w-full bg-surface-container-highest border border-slate-700 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="e.g. Toko Kayu Sejahtera" type="text">
+                    <label class="block font-medium text-slate-700">Supplier Name</label>
+                    <input name="supplier_name" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="e.g. Toko Kayu Sejahtera" type="text">
                 </div>
 
                 <!-- Qty & Unit Price Row -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="block font-medium text-slate-300">Quantity <span class="text-error">*</span></label>
-                        <input name="items[0][qty]" class="w-full bg-surface-container-highest border border-slate-700 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-right font-data-mono" placeholder="0" type="number" required step="0.01">
+                        <label class="block font-medium text-slate-700">Quantity <span class="text-error">*</span></label>
+                        <input name="items[0][qty]" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-right font-data-mono" placeholder="0" type="number" required step="0.01">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="block font-medium text-slate-300">Unit Price <span class="text-error">*</span></label>
+                        <label class="block font-medium text-slate-700">Unit Price <span class="text-error">*</span></label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">Rp</div>
-                            <input name="items[0][price]" class="w-full bg-surface-container-highest border border-slate-700 text-on-surface rounded-lg pl-9 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-right font-data-mono" placeholder="0" type="number" required>
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">Rp</div>
+                            <input name="items[0][price]" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-9 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-right font-data-mono" placeholder="0" type="number" required>
                         </div>
                     </div>
                 </div>
 
                 <!-- Invoice Number -->
                 <div class="space-y-1.5">
-                    <label class="block font-medium text-slate-300">Invoice Number</label>
-                    <input name="invoice_number" class="w-full bg-surface-container-highest border border-slate-700 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="INV/2026/..." type="text">
+                    <label class="block font-medium text-slate-700">Invoice Number</label>
+                    <input name="invoice_number" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="INV/2026/..." type="text">
                 </div>
 
                 <!-- Actions -->
