@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
 {
-    protected $purchaseService;
+    protected PurchaseService $purchaseService;
 
     public function __construct(PurchaseService $purchaseService)
     {
@@ -18,7 +18,7 @@ class PurchaseController extends Controller
 
     public function index()
     {
-        $purchases = Purchase::latest()->get();
+        $purchases = Purchase::latest('created_at')->get(['*']);
         return view('purchases.index', compact('purchases'));
     }
 
