@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    protected $orderService;
-    protected $productionService;
+    protected OrderService $orderService;
+    protected ProductionService $productionService;
 
     public function __construct(OrderService $orderService, ProductionService $productionService)
     {
@@ -22,7 +22,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::with('customer')->latest()->get();
+        $orders = Order::with('customer')->latest('created_at')->get(['*']);
         
         $pendingOrders = $orders->where('status', 'PENDING');
         $inProductionOrders = $orders->where('status', 'IN_PRODUCTION');
@@ -59,7 +59,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->load(['customer', 'materials.material', 'productionCosts', 'payments']);
-        $materials = Material::where('current_qty', '>', 0)->get(); 
+        $materials = Material::where('current_qty', '>', 0, 'and')->get(); 
         return view('orders.show', compact('order', 'materials'));
     }
 
