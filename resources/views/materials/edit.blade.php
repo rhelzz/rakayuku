@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Material - ' . $material->name)
+@section('title', 'Edit Bahan - ' . $material->name)
 
 @section('content')
 <div class="max-w-2xl mx-auto">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
-        <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Materials</a>
+        <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Bahan Baku</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span class="text-on-surface">Edit Material</span>
+        <span class="text-on-surface">Edit Bahan</span>
     </nav>
 
     <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-xl">
@@ -16,9 +16,9 @@
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 blur-2xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
             <div class="flex items-center space-x-3 mb-1 relative z-10">
                 <span class="material-symbols-outlined text-primary text-3xl">edit</span>
-                <h3 class="font-headline-md text-headline-md text-on-surface">Edit Material</h3>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Edit Bahan</h3>
             </div>
-            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Update material specifications.</p>
+            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Perbarui spesifikasi bahan baku.</p>
         </div>
 
         <form action="{{ route('materials.update', $material) }}" method="POST" class="p-6 space-y-6">
@@ -27,34 +27,34 @@
             
             <div class="space-y-4">
                 <div class="space-y-1.5">
-                    <label for="name" class="block font-medium text-slate-700 text-sm">Material Name <span class="text-error">*</span></label>
-                    <input type="text" name="name" id="name" value="{{ $material->name }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="e.g. Teak Wood A-Grade">
+                    <label for="name" class="block font-medium text-slate-700 text-sm">Nama Bahan <span class="text-error">*</span></label>
+                    <input type="text" name="name" id="name" value="{{ $material->name }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="misal: Kayu Jati Grade A">
                 </div>
                 
                 <div class="space-y-1.5">
-                    <label for="unit" class="block font-medium text-slate-700 text-sm">Unit of Measure <span class="text-error">*</span></label>
+                    <label for="unit" class="block font-medium text-slate-700 text-sm">Satuan Ukuran <span class="text-error">*</span></label>
                     <select name="unit" id="unit" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none">
-                        <option value="pcs" {{ $material->unit == 'pcs' ? 'selected' : '' }}>Pieces (pcs)</option>
+                        <option value="pcs" {{ $material->unit == 'pcs' ? 'selected' : '' }}>Buah (pcs)</option>
                         <option value="bd ft" {{ $material->unit == 'bd ft' ? 'selected' : '' }}>Board Foot (bd ft)</option>
-                        <option value="m3" {{ $material->unit == 'm3' ? 'selected' : '' }}>Cubic Meter (m3)</option>
+                        <option value="m3" {{ $material->unit == 'm3' ? 'selected' : '' }}>Meter Kubik (m3)</option>
                         <option value="meter" {{ $material->unit == 'meter' ? 'selected' : '' }}>Meter (m)</option>
-                        <option value="gal" {{ $material->unit == 'gal' ? 'selected' : '' }}>Gallon (gal)</option>
+                        <option value="gal" {{ $material->unit == 'gal' ? 'selected' : '' }}>Galon (gal)</option>
                         <option value="set" {{ $material->unit == 'set' ? 'selected' : '' }}>Set</option>
                     </select>
                 </div>
             </div>
 
             <div class="pt-6 border-t border-surface-variant flex justify-between gap-3">
-                <button type="button" onclick="if(confirm('Are you sure you want to delete this material?')) document.getElementById('delete-form').submit();" class="px-5 py-2 rounded-lg border border-error/30 text-error hover:bg-error/10 transition-colors font-medium text-sm">
-                    Delete Material
+                <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menghapus bahan ini?')) document.getElementById('delete-form').submit();" class="px-5 py-2 rounded-lg border border-error/30 text-error hover:bg-error/10 transition-colors font-medium text-sm">
+                    Hapus Bahan
                 </button>
                 <div class="flex gap-3">
                     <a href="{{ route('materials.index') }}" class="px-5 py-2 rounded-lg border border-surface-variant text-slate-600 hover:bg-surface-container-high transition-colors font-medium text-sm">
-                        Cancel
+                        Batal
                     </a>
                     <button type="submit" class="px-6 py-2 bg-primary-container text-on-primary-container rounded-lg font-semibold hover:bg-primary transition-colors shadow-lg flex items-center gap-2 text-sm">
                         <span class="material-symbols-outlined text-[18px]">save</span>
-                        Update Material
+                        Perbarui Bahan
                     </button>
                 </div>
             </div>
