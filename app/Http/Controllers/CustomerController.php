@@ -9,7 +9,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::latest()->paginate(15);
+        $customers = Customer::latest('created_at')->paginate(15, ['*']);
         return view('customers.index', compact('customers'));
     }
 
@@ -49,7 +49,7 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
-        $customer->delete();
+        Customer::destroy($customer->id);
         return redirect()->route('customers.index')->with('success', 'Pelanggan berhasil dihapus.');
     }
 }
