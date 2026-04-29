@@ -41,7 +41,7 @@
                         <td class="px-4 py-3 text-slate-400 truncate max-w-xs">{{ $c->address ?? '-' }}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-2">
-                                <a href="{{ route('customers.edit', $c) }}" class="text-slate-400 hover:text-primary-container transition-colors">
+                                <a href="{{ route('customers.edit', $c) }}" class="text-slate-400 hover:text-primary transition-colors">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
                                 <form action="{{ route('customers.destroy', $c) }}" method="POST" onsubmit="return confirm('Delete this customer?')">
