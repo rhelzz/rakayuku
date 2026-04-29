@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Purchase Detail - ' . ($purchase->invoice_number ?? $purchase->id))
+@section('title', 'Detail Pembelian - ' . ($purchase->invoice_number ?? $purchase->id))
 
 @section('content')
 <div class="space-y-6">
     <!-- Breadcrumbs & Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
-            <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Purchases</a>
+            <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span class="text-on-surface">Receipt Detail</span>
+            <span class="text-on-surface">Detail Penerimaan</span>
         </nav>
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -18,14 +18,14 @@
                     <span class="material-symbols-outlined text-3xl">receipt_long</span>
                 </div>
                 <div>
-                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $purchase->invoice_number ?? 'Manual Receipt' }}</h2>
-                    <p class="font-body-sm text-body-sm text-slate-500">Supplier: {{ $purchase->supplier_name ?? 'Manual Entry' }} | Date: {{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</p>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $purchase->invoice_number ?? 'Penerimaan Manual' }}</h2>
+                    <p class="font-body-sm text-body-sm text-slate-500">Pemasok: {{ $purchase->supplier_name ?? 'Input Manual' }} | Tanggal: {{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-6 px-6 py-3 bg-surface-container-low border border-surface-variant rounded-xl">
                 <div class="text-center">
-                    <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Total Transaction</p>
+                    <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Total Transaksi</p>
                     <p class="text-xl font-bold text-primary">Rp {{ number_format($purchase->total_price, 0, ',', '.') }}</p>
                 </div>
             </div>
@@ -35,15 +35,15 @@
     <!-- Items Table -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden">
         <div class="p-4 border-b border-surface-variant bg-surface-container-lowest/50">
-            <h3 class="font-title-sm text-title-sm text-on-surface">Purchased Items</h3>
+            <h3 class="font-title-sm text-title-sm text-on-surface">Item yang Dibeli</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-surface-container-high bg-surface-container-low/50">
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Material</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Quantity</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Unit Price</th>
+                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Bahan</th>
+                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Jumlah</th>
+                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Harga Satuan</th>
                         <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Subtotal</th>
                     </tr>
                 </thead>
@@ -70,7 +70,7 @@
                 </tbody>
                 <tfoot class="bg-surface-container-lowest/30">
                     <tr>
-                        <td colspan="3" class="p-4 text-right font-label-caps text-slate-500 uppercase">Grand Total</td>
+                        <td colspan="3" class="p-4 text-right font-label-caps text-slate-500 uppercase">Total Keseluruhan</td>
                         <td class="p-4 text-right text-lg font-black text-primary font-data-mono">
                             Rp {{ number_format($purchase->total_price, 0, ',', '.') }}
                         </td>

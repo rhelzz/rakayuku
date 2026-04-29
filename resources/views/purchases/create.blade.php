@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Record New Purchase')
+@section('title', 'Catat Pembelian Baru')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
-        <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Purchases</a>
+        <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span class="text-on-surface">New Purchase</span>
+        <span class="text-on-surface">Pembelian Baru</span>
     </nav>
 
     <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-xl" x-data="{ 
@@ -20,9 +20,9 @@
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 blur-2xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
             <div class="flex items-center space-x-3 mb-1 relative z-10">
                 <span class="material-symbols-outlined text-primary text-3xl">shopping_cart_checkout</span>
-                <h3 class="font-headline-md text-headline-md text-on-surface">Record New Purchase</h3>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Catat Pembelian Baru</h3>
             </div>
-            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Record raw material inward receipts and update inventory stock.</p>
+            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Catat penerimaan bahan baku baru dan perbarui stok inventaris.</p>
         </div>
 
         <form action="{{ route('purchases.store') }}" method="POST" class="p-6 space-y-8">
@@ -31,19 +31,19 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Supplier Name -->
                 <div class="space-y-1.5">
-                    <label for="supplier_name" class="block font-medium text-slate-700 text-sm">Supplier Name</label>
-                    <input type="text" name="supplier_name" id="supplier_name" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="e.g. Toko Kayu Sejahtera">
+                    <label for="supplier_name" class="block font-medium text-slate-700 text-sm">Nama Pemasok</label>
+                    <input type="text" name="supplier_name" id="supplier_name" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="misal: Toko Kayu Sejahtera">
                 </div>
 
                 <!-- Invoice Number -->
                 <div class="space-y-1.5">
-                    <label for="invoice_number" class="block font-medium text-slate-700 text-sm">Invoice / Receipt Number</label>
+                    <label for="invoice_number" class="block font-medium text-slate-700 text-sm">Nomor Faktur / Kwitansi</label>
                     <input type="text" name="invoice_number" id="invoice_number" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="INV/2026/...">
                 </div>
 
                 <!-- Purchase Date -->
                 <div class="space-y-1.5">
-                    <label for="purchase_date" class="block font-medium text-slate-700 text-sm">Purchase Date <span class="text-error">*</span></label>
+                    <label for="purchase_date" class="block font-medium text-slate-700 text-sm">Tanggal Pembelian <span class="text-error">*</span></label>
                     <input type="date" name="purchase_date" id="purchase_date" value="{{ date('Y-m-d') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
                 </div>
             </div>
@@ -51,10 +51,10 @@
             <!-- Items Table -->
             <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                    <h4 class="font-title-sm text-title-sm text-on-surface">Purchased Items</h4>
+                    <h4 class="font-title-sm text-title-sm text-on-surface">Item yang Dibeli</h4>
                     <button type="button" @click="add()" class="text-primary hover:opacity-80 flex items-center gap-1 text-sm font-semibold">
                         <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                        Add Item
+                        Tambah Item
                     </button>
                 </div>
 
@@ -62,9 +62,9 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b border-surface-variant">
-                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px]">Material</th>
-                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px] w-24">Qty</th>
-                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px] w-48">Unit Price</th>
+                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px]">Bahan</th>
+                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px] w-24">Jumlah</th>
+                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px] w-48">Harga Satuan</th>
                                 <th class="py-2 px-1 w-10"></th>
                             </tr>
                         </thead>
@@ -73,7 +73,7 @@
                                 <tr class="group">
                                     <td class="py-3 px-1">
                                         <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-1.5 text-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
-                                            <option disabled selected value="">Select Material</option>
+                                            <option disabled selected value="">Pilih Bahan</option>
                                             @foreach($materials as $m)
                                                 <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
                                             @endforeach
@@ -102,11 +102,11 @@
 
             <div class="pt-6 border-t border-surface-variant flex justify-end gap-3">
                 <a href="{{ route('purchases.index') }}" class="px-5 py-2 rounded-lg border border-surface-variant text-slate-600 hover:bg-surface-container-high transition-colors font-medium text-sm">
-                    Cancel
+                    Batal
                 </a>
                 <button type="submit" class="px-6 py-2 bg-primary-container text-on-primary-container rounded-lg font-semibold hover:bg-primary transition-colors shadow-lg flex items-center gap-2 text-sm">
                     <span class="material-symbols-outlined text-[18px]">save</span>
-                    Record Purchase
+                    Simpan Pembelian
                 </button>
             </div>
         </form>
