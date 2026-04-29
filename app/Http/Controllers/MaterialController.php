@@ -9,7 +9,7 @@ class MaterialController extends Controller
 {
     public function index()
     {
-        $materials = Material::latest()->get();
+        $materials = Material::latest('created_at')->get(['*']);
         return view('materials.index', compact('materials'));
     }
 
@@ -58,7 +58,7 @@ class MaterialController extends Controller
             return back()->with('error', 'Tidak bisa menghapus material yang masih memiliki stok.');
         }
 
-        $material->delete();
+        Material::destroy($material->id);
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil dihapus.');
     }
