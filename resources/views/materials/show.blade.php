@@ -7,31 +7,31 @@
     <!-- Breadcrumbs & Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
-            <a href="{{ route('materials.index') }}" class="hover:text-primary-container transition-colors">Inventory</a>
+            <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Inventory</a>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
             <span class="text-on-surface">Material History</span>
         </nav>
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container border border-surface-variant">
+                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary border border-surface-variant">
                     <span class="material-symbols-outlined text-3xl">inventory_2</span>
                 </div>
                 <div>
                     <h2 class="font-headline-md text-headline-md text-on-surface">{{ $material->name }}</h2>
-                    <p class="font-body-sm text-body-sm text-slate-400">SKU: {{ $material->id }} | Unit: {{ $material->unit }}</p>
+                    <p class="font-body-sm text-body-sm text-slate-500">SKU: {{ $material->id }} | Unit: {{ $material->unit }}</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-6 px-6 py-3 bg-surface-container-low border border-surface-variant rounded-xl">
                 <div class="text-center">
                     <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Current Stock</p>
-                    <p class="text-xl font-bold text-on-surface">{{ number_format($material->qty) }} <span class="text-xs font-normal text-slate-500">{{ $material->unit }}</span></p>
+                    <p class="text-xl font-bold text-on-surface">{{ number_format($material->current_qty) }} <span class="text-xs font-normal text-slate-500">{{ $material->unit }}</span></p>
                 </div>
                 <div class="w-px h-8 bg-surface-variant"></div>
                 <div class="text-center">
                     <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Average HPP</p>
-                    <p class="text-xl font-bold text-primary-container">Rp {{ number_format($material->avg_price, 0, ',', '.') }}</p>
+                    <p class="text-xl font-bold text-primary">Rp {{ number_format($material->avg_price, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>
@@ -61,11 +61,11 @@
                             </td>
                             <td class="p-3 px-4">
                                 @if($movement->type == 'IN')
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#112a1f] text-[#4ade80] border border-[#1e4a33] text-xs font-medium">
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200 text-xs font-medium">
                                         <span class="material-symbols-outlined text-[14px]">arrow_downward</span> STOCK IN
                                     </span>
                                 @elseif($movement->type == 'OUT')
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-error-container/20 text-error border border-error/30 text-xs font-medium">
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-red-50 text-error border border-red-200 text-xs font-medium">
                                         <span class="material-symbols-outlined text-[14px]">arrow_upward</span> STOCK OUT
                                     </span>
                                 @else
@@ -74,12 +74,12 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="p-3 px-4 text-right font-data-mono font-bold {{ $movement->type == 'IN' ? 'text-[#4ade80]' : 'text-error' }}">
+                            <td class="p-3 px-4 text-right font-data-mono font-bold {{ $movement->type == 'IN' ? 'text-green-600' : 'text-error' }}">
                                 {{ $movement->type == 'IN' ? '+' : '-' }}{{ number_format($movement->qty) }}
                             </td>
                             <td class="p-3 px-4 text-on-surface-variant">
                                 @if($movement->reference_type)
-                                    <span class="px-2 py-0.5 bg-surface-container-high rounded text-[10px] text-slate-300 uppercase font-bold border border-surface-variant">
+                                    <span class="px-2 py-0.5 bg-surface-container-high rounded text-[10px] text-slate-600 uppercase font-bold border border-surface-variant">
                                         {{ class_basename($movement->reference_type) }} #{{ $movement->reference_id }}
                                     </span>
                                 @else
