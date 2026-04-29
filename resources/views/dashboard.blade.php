@@ -54,9 +54,10 @@
                 <span class="material-symbols-outlined text-6xl text-primary-container">payments</span>
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Profit</span>
-            <div class="flex items-baseline gap-2 mt-2">
-                <span class="font-display-lg text-display-lg text-on-background">Rp {{ number_format($totalProfit, 0, ',', '.') }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary">Accumulated</span>
+            <div class="flex items-baseline gap-1 mt-2">
+                <span class="font-body-md text-body-md text-on-surface-variant">Rp</span>
+                <span class="font-headline-md text-headline-md text-on-background">{{ number_format($totalProfit, 0, ',', '.') }}</span>
+                <span class="font-body-sm text-body-sm text-tertiary ml-1">Accumulated</span>
             </div>
         </div>
 
@@ -79,7 +80,7 @@
         <div class="lg:col-span-2 glass-panel rounded-xl flex flex-col overflow-hidden">
             <div class="p-4 border-b border-surface-container-high flex justify-between items-center">
                 <h3 class="font-title-sm text-title-sm text-on-background">Recent Orders Queue</h3>
-                <a href="{{ route('orders.index') }}" class="text-primary-container hover:text-primary font-body-sm text-body-sm flex items-center gap-1">
+                <a href="{{ route('orders.index') }}" class="text-primary hover:opacity-80 font-body-sm text-body-sm flex items-center gap-1">
                     View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </a>
             </div>
@@ -97,7 +98,7 @@
                     <tbody class="font-body-sm text-body-sm">
                         @forelse($recentOrders as $order)
                             <tr class="border-b border-surface-container-high hover:bg-surface-container/50 transition-colors">
-                                <td class="p-3 px-4 font-data-mono text-data-mono text-primary-container">{{ $order->order_number }}</td>
+                                <td class="p-3 px-4 font-data-mono text-data-mono text-primary font-bold">{{ $order->order_number }}</td>
                                 <td class="p-3 px-4 text-on-background font-medium">{{ $order->customer->name }}</td>
                                 <td class="p-3 px-4 text-on-surface-variant">{{ $order->deadline ? \Carbon\Carbon::parse($order->deadline)->format('d M Y') : '-' }}</td>
                                 <td class="p-3 px-4">
@@ -106,8 +107,8 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> In Production
                                         </span>
                                     @elseif($order->status == 'FINISHED')
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-primary-container/20 text-primary-container text-xs font-medium">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span> Finished
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-50 text-green-700 text-xs font-medium border border-green-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Finished
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-xs font-medium">
@@ -116,7 +117,7 @@
                                     @endif
                                 </td>
                                 <td class="p-3 px-4 text-right">
-                                    <a href="{{ route('orders.show', $order) }}" class="text-primary-container hover:underline">Detail</a>
+                                    <a href="{{ route('orders.show', $order) }}" class="text-primary hover:underline">Detail</a>
                                 </td>
                             </tr>
                         @empty
