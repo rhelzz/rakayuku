@@ -11,7 +11,7 @@ use Exception;
 
 class ProductionService
 {
-    protected $inventoryService;
+    protected InventoryService $inventoryService;
 
     public function __construct(InventoryService $inventoryService)
     {
