@@ -41,14 +41,14 @@
                         <td class="px-4 py-3 text-on-surface-variant font-data-mono">{{ \Carbon\Carbon::parse($p->purchase_date)->format('d M Y') }}</td>
                         <td class="px-4 py-3 font-medium text-on-surface">{{ $p->invoice_number ?? '-' }}</td>
                         <td class="px-4 py-3 text-slate-400">{{ $p->supplier_name ?? 'Manual Inward' }}</td>
-                        <td class="px-4 py-3 text-right font-bold text-primary-container">Rp {{ number_format($p->total_price, 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 text-right font-bold text-on-primary-container">Rp {{ number_format($p->total_price, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-center">
                             <span class="px-2 py-0.5 bg-surface-container-high rounded text-[10px] font-bold border border-surface-variant">
                                 {{ $p->items->count() }} Items
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ route('purchases.show', $p) }}" class="text-slate-400 hover:text-primary-container transition-colors">
+                            <a href="{{ route('purchases.show', $p) }}" class="text-slate-400 hover:text-primary transition-colors">
                                 <span class="material-symbols-outlined text-[20px]">visibility</span>
                             </a>
                         </td>
