@@ -5,16 +5,26 @@
 @section('content')
 <div class="max-w-6xl mx-auto">
     <!-- Page Header -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Log Transaksi Stok</h2>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">Pantau seluruh aliran masuk dan keluar bahan baku.</p>
-        </div>
-        <div class="flex space-x-3">
-            <a href="{{ route('materials.index') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center space-x-2">
-                <span class="material-symbols-outlined text-[18px]">inventory</span>
-                <span>Daftar Bahan</span>
-            </a>
+    <div class="flex flex-col gap-4">
+        <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Inventaris</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span class="text-on-surface">Log Pergerakan</span>
+        </nav>
+
+        <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Log Transaksi Stok</h2>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Pantau seluruh aliran masuk dan keluar bahan baku.</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('materials.index') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-[18px]">inventory</span>
+                    <span>Daftar Bahan</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -74,7 +84,6 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="font-medium text-on-surface">{{ $m->material->name }}</div>
-                            <div class="text-[10px] text-slate-400 font-data-mono uppercase">{{ $m->material->unit }}</div>
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($m->type === 'IN')
