@@ -11,6 +11,8 @@ class Order extends Model
     // Status Constants
     const STATUS_PENDING = 'PENDING';
     const STATUS_IN_PRODUCTION = 'IN_PRODUCTION';
+    const STATUS_DELIVERING = 'DELIVERING';
+    const STATUS_UNPAID_DELIVERED = 'UNPAID_DELIVERED';
     const STATUS_FINISHED = 'FINISHED';
 
     // Payment Status Constants
