@@ -7,9 +7,11 @@
     <!-- Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
             <a href="{{ route('orders.index') }}" class="hover:text-primary transition-colors">Pesanan</a>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span class="text-on-surface">{{ $order->order_number }}</span>
+            <span class="text-on-surface">Detail Proyek</span>
         </nav>
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -149,7 +151,7 @@
                                 <select name="material_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
                                     <option disabled selected value="">Pilih...</option>
                                     @foreach($materials as $m)
-                                        <option value="{{ $m->id }}">{{ $m->name }} (Stok: {{ $m->current_qty }} {{ $m->unit }})</option>
+                                        <option value="{{ $m->id }}">{{ $m->name }} (Stok: {{ $m->current_qty }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -173,11 +175,22 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($order->materials as $om)
-                                <tr class="border-b border-slate-800/50">
+                                <tr class="border-b border-slate-800/50 group">
                                     <td class="py-3 text-on-surface">{{ $om->material->name }}</td>
-                                    <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 0, ',', '.') }} {{ $om->material->unit }}</td>
+                                    <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
                                     <td class="py-3 text-right text-on-surface-variant">Rp {{ number_format($om->price_snapshot, 0, ',', '.') }}</td>
                                     <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($om->subtotal, 0, ',', '.') }}</td>
+                                    <td class="py-3 text-right">
+                                        @if($order->status == 'IN_PRODUCTION')
+                                        <form action="{{ route('orders.remove-material', $om) }}" method="POST" onsubmit="return confirm('Hapus penggunaan bahan ini dan kembalikan stok?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-slate-400 hover:text-error transition-colors">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </form>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>

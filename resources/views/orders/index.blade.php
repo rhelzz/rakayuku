@@ -1,19 +1,26 @@
 @extends('layouts.app')
 
 @section('title', 'Pesanan & Proyek')
-
 @section('content')
-<div x-data="{ openNewProjectModal: false }">
+<div class="space-y-6" x-data="{ openNewProjectModal: false }">
     <!-- Page Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="font-headline-md text-headline-md text-on-background">Pesanan & Proyek</h1>
-            <p class="font-body-sm text-body-sm text-slate-400 mt-1">Kelola alur kerja manufaktur aktif.</p>
+    <div class="flex flex-col gap-4">
+        <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span class="text-on-surface">Pesanan</span>
+        </nav>
+
+        <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-6">
+            <div>
+                <h1 class="font-headline-md text-headline-md text-on-background">Pesanan & Proyek</h1>
+                <p class="font-body-sm text-body-sm text-slate-400 mt-1">Kelola alur kerja manufaktur aktif.</p>
+            </div>
+            <a href="{{ route('orders.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                Proyek Baru
+            </a>
         </div>
-        <a href="{{ route('orders.create') }}" class="bg-primary-container text-on-primary-container hover:bg-primary transition-colors px-4 py-2 rounded-lg font-body-sm text-body-sm font-semibold flex items-center gap-2 shadow-sm">
-            <span class="material-symbols-outlined text-[18px]">add</span>
-            Proyek Baru
-        </a>
     </div>
 
     <!-- Kanban Board -->
