@@ -3,18 +3,26 @@
 @section('title', 'Manajemen Pelanggan')
 
 @section('content')
-<div>
+<div class="space-y-6">
     <!-- Page Header -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Pelanggan</h2>
-            <p class="font-body-sm text-body-sm text-slate-400">Kelola informasi klien dan riwayat proyek.</p>
-        </div>
-        <div class="flex space-x-3">
-            <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors flex items-center space-x-2">
-                <span class="material-symbols-outlined text-[18px]">add</span>
-                <span>Tambah Pelanggan</span>
-            </a>
+    <div class="flex flex-col gap-4">
+        <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span class="text-on-surface">Pelanggan</span>
+        </nav>
+
+        <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Daftar Pelanggan</h2>
+                <p class="font-body-sm text-body-sm text-slate-400">Kelola informasi klien dan riwayat proyek.</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary-hover transition-colors flex items-center space-x-2 shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <span>Tambah Pelanggan</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -31,16 +39,29 @@
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Email</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Telepon</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Alamat</th>
+                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant text-center whitespace-nowrap">Total Proyek</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-surface-variant font-body-sm text-body-sm text-on-surface">
                     @forelse($customers as $c)
                     <tr class="hover:bg-surface-container-high/50 transition-colors group">
-                        <td class="px-4 py-3 font-medium text-on-surface">{{ $c->name }}</td>
+                        <td class="px-4 py-3">
+                            <div class="font-medium text-on-surface">{{ $c->name }}</div>
+                            <div class="text-[10px] text-slate-400 font-data-mono uppercase">ID: {{ $c->id }}</div>
+                        </td>
                         <td class="px-4 py-3 text-slate-400">{{ $c->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-slate-400">{{ $c->phone }}</td>
                         <td class="px-4 py-3 text-slate-400 truncate max-w-xs">{{ $c->address }}</td>
+                        <td class="px-4 py-3 text-center">
+                            @if($c->orders_count > 0)
+                                <span class="px-3 py-1 rounded-full bg-amber-50 text-primary border border-amber-100 font-data-mono font-bold text-xs shadow-sm">
+                                    {{ $c->orders_count }}
+                                </span>
+                            @else
+                                <span class="text-[10px] font-label-caps text-slate-400 italic">Belum Ada</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-2">
                                 <a href="{{ route('customers.edit', $c) }}" class="text-slate-400 hover:text-primary transition-colors">

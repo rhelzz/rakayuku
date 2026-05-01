@@ -6,6 +6,8 @@
 <div class="max-w-2xl mx-auto">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
+        <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <a href="{{ route('customers.index') }}" class="hover:text-primary transition-colors">Pelanggan</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <span class="text-on-surface">Edit Pelanggan</span>
