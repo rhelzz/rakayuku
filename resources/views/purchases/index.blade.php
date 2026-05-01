@@ -1,21 +1,26 @@
 @extends('layouts.app')
 
 @section('title', 'Riwayat Pembelian & Invoice')
-
 @section('content')
-<div>
+<div class="space-y-6">
     <!-- Page Header -->
-    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h1 class="font-headline-md text-headline-md text-on-background">Riwayat Pembelian</h1>
-            <p class="font-body-sm text-body-sm text-slate-400 mt-1">Daftar invoice belanja bahan baku dan operasional.</p>
-        </div>
-        <a href="{{ route('purchases.create') }}" class="bg-primary text-white hover:bg-primary-hover transition-all px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20">
-            <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-            Catat Invoice Baru
-        </a>
-    </div>
+    <div class="flex flex-col gap-4">
+        <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span class="text-on-surface">Pembelian</span>
+        </nav>
 
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+            <div>
+                <h1 class="font-headline-md text-headline-md text-on-background">Riwayat Pembelian</h1>
+                <p class="font-body-sm text-body-sm text-slate-400 mt-1">Daftar invoice belanja bahan baku dan operasional.</p>
+            </div>
+            <a href="{{ route('purchases.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                Catat Invoice Baru
+            </a>
+        </div>
     <!-- Purchases Table -->
     <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">

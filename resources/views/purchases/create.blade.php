@@ -6,6 +6,8 @@
 <div class="max-w-5xl mx-auto" x-data="purchaseForm()">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
+        <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <span class="text-on-surface">Invoice Baru</span>
@@ -76,7 +78,7 @@
                                             <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none transition-all">
                                                 <option disabled selected value="">-- Pilih Material --</option>
                                                 @foreach($materials as $m)
-                                                    <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                    <option value="{{ $m->id }}">{{ $m->name }}</option>
                                                 @endforeach
                                             </select>
                                         </td>

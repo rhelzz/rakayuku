@@ -6,6 +6,8 @@
 <div class="max-w-5xl mx-auto">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
+        <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <span class="text-on-surface">Detail Invoice</span>
@@ -45,7 +47,7 @@
                             @foreach($purchase->items as $item)
                             <tr class="hover:bg-slate-50/30 transition-colors">
                                 <td class="py-4 px-6 text-sm font-medium text-on-surface">{{ $item->material->name }}</td>
-                                <td class="py-4 px-4 text-sm text-right font-data-mono">{{ number_format($item->qty, 2) }} {{ $item->material->unit }}</td>
+                                <td class="py-4 px-4 text-sm text-right font-data-mono">{{ number_format($item->qty, 0, ',', '.') }}</td>
                                 <td class="py-4 px-6 text-sm text-right font-data-mono text-slate-500">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                                 <td class="py-4 px-6 text-sm text-right font-bold text-on-surface">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                             </tr>
