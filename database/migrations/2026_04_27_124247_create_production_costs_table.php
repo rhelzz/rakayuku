@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('production_costs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->enum('category', ['LABOR_OVERTIME', 'TRANSPORT', 'TOOLS', 'OTHER']);
+            $table->string('type');
             $table->text('description')->nullable();
             $table->decimal('amount', 15, 2)->default(0);
             $table->timestamps();

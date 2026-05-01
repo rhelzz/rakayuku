@@ -15,13 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->restrictOnDelete();
             $table->string('order_number')->unique();
-            $table->text('description')->nullable();
+            $table->string('project_name');
+            $table->text('project_description')->nullable();
             $table->date('deadline')->nullable();
-            $table->decimal('deal_price', 15, 2)->default(0);
+            $table->decimal('selling_price', 15, 2)->default(0);
             $table->decimal('dp_amount', 15, 2)->default(0);
             $table->decimal('total_cost', 15, 2)->default(0);
             $table->decimal('profit', 15, 2)->default(0);
-            $table->enum('production_status', ['PENDING', 'IN_PRODUCTION', 'FINISHED'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'IN_PRODUCTION', 'FINISHED'])->default('PENDING');
             $table->enum('payment_status', ['UNPAID', 'PARTIAL', 'PAID'])->default('UNPAID');
             $table->timestamps();
         });

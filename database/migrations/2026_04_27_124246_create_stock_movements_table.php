@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('material_id')->constrained()->cascadeOnDelete();
             $table->enum('type', ['IN', 'OUT', 'ADJUSTMENT']);
-            $table->integer('qty');
+            $table->decimal('qty', 15, 2);
+            $table->decimal('price_snapshot', 15, 2)->nullable();
             $table->string('reference_type')->nullable();
             $table->unsignedBigInteger('reference_id')->nullable();
             $table->timestamps();
