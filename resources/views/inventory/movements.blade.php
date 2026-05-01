@@ -68,6 +68,7 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface-container-high/50 border-b border-surface-variant">
                     <tr>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
                         <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Waktu Transaksi</th>
                         <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Bahan Baku</th>
                         <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Tipe</th>
@@ -79,6 +80,7 @@
                 <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                     @forelse($movements as $m)
                     <tr class="hover:bg-surface-container-low transition-colors">
+                        <td class="px-6 py-4 text-center font-data-mono text-slate-400">{{ $movements->firstItem() + $loop->index }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                             {{ $m->created_at->format('d/m/Y H:i') }}
                         </td>
@@ -122,7 +124,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400 italic">Belum ada riwayat transaksi stok.</td>
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 italic">Belum ada riwayat transaksi stok.</td>
                     </tr>
                     @endforelse
                 </tbody>

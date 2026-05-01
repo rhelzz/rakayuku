@@ -3,7 +3,7 @@
 @section('title', 'Detail Proyek - ' . $order->order_number)
 
 @section('content')
-<div class="space-y-6" x-data="{ activeTab: 'overview' }">
+<div class="space-y-6" x-data="{ activeTab: '{{ session('active_tab', 'overview') }}' }">
     <!-- Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
@@ -33,25 +33,46 @@
             
             <div class="flex items-center gap-3">
                 @if($order->status == 'PENDING')
-                    <form action="{{ route('orders.start-production', $order) }}" method="POST">
+                    <form id="startProductionForm" action="{{ route('orders.start-production', $order) }}" method="POST">
                         @csrf
-                        <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-colors flex items-center gap-2">
+                        <button type="button" onclick="confirmAction('startProductionForm', 'Mulai produksi sekarang?', 'Stok bahan baku akan mulai dialokasikan ke proyek ini.', 'warning', 'Mulai Produksi')" class="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-colors flex items-center gap-2">
                             <span class="material-symbols-outlined text-[20px]">play_arrow</span>
                             Mulai Produksi
                         </button>
                     </form>
                 @elseif($order->status == 'IN_PRODUCTION')
-                    <form action="{{ route('orders.finish-production', $order) }}" method="POST" onsubmit="return confirm('Selesaikan produksi dan hitung total HPP/Keuntungan?')">
+                    <form id="finishProductionForm" action="{{ route('orders.finish-production', $order) }}" method="POST">
                         @csrf
-                        <button type="submit" class="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">task_alt</span>
-                            Selesaikan Proyek
+                        <button type="button" onclick="confirmAction('finishProductionForm', 'Selesaikan tahap produksi?', 'Anda tidak akan bisa menambah/menghapus bahan baku lagi setelah ini.', 'info', 'Ya, Selesaikan')" class="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                            Selesaikan Produksi
                         </button>
                     </form>
+                @elseif($order->status == 'DELIVERING')
+                    <form id="markDeliveredForm" action="{{ route('orders.mark-delivered', $order) }}" method="POST">
+                        @csrf
+                        <button type="button" onclick="confirmAction('markDeliveredForm', 'Konfirmasi pengiriman selesai?', 'Status proyek akan diperbarui berdasarkan sisa tagihan.', 'question', 'Ya, Terkirim')" class="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">task_alt</span>
+                            Konfirmasi Terkirim
+                        </button>
+                    </form>
+                @elseif($order->status == 'UNPAID_DELIVERED')
+                    <a href="{{ route('orders.print', $order) }}" target="_blank" class="px-6 py-2 bg-white text-on-surface border border-surface-variant rounded-lg font-semibold hover:bg-surface-container transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">print</span>
+                        Cetak Resi
+                    </a>
+                    <span class="px-6 py-2 bg-error-container text-error rounded-lg font-semibold border border-error/30 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">warning</span>
+                        Menunggu Pelunasan (Hutang)
+                    </span>
                 @else
+                    <a href="{{ route('orders.print', $order) }}" target="_blank" class="px-6 py-2 bg-white text-on-surface border border-surface-variant rounded-lg font-semibold hover:bg-surface-container transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">print</span>
+                        Cetak Invoice
+                    </a>
                     <span class="px-6 py-2 bg-slate-100 text-slate-600 rounded-lg font-semibold border border-slate-200 flex items-center gap-2">
                         <span class="material-symbols-outlined text-[20px]">done_all</span>
-                        Selesai
+                        Selesai & Lunas
                     </span>
                 @endif
             </div>
@@ -164,7 +185,7 @@
                         @endif
 
                         <table class="w-full text-left">
-                            <thead class="border-b border-slate-200">
+                            <thead class="border-b border-orange-700/30">
                                 <tr>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Bahan Baku</th>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Jumlah Digunakan</th>
@@ -175,17 +196,17 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($order->materials as $om)
-                                <tr class="border-b border-slate-800/50 group">
+                                <tr class="border-b border-orange-700/20 group">
                                     <td class="py-3 text-on-surface">{{ $om->material->name }}</td>
                                     <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
                                     <td class="py-3 text-right text-on-surface-variant">Rp {{ number_format($om->price_snapshot, 0, ',', '.') }}</td>
                                     <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($om->subtotal, 0, ',', '.') }}</td>
                                     <td class="py-3 text-right">
                                         @if($order->status == 'IN_PRODUCTION')
-                                        <form action="{{ route('orders.remove-material', $om) }}" method="POST" onsubmit="return confirm('Hapus penggunaan bahan ini dan kembalikan stok?')">
+                                        <form id="removeMaterial-{{ $om->id }}" action="{{ route('orders.remove-material', $om) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-slate-400 hover:text-error transition-colors">
+                                            <button type="button" onclick="confirmAction('removeMaterial-{{ $om->id }}', 'Hapus penggunaan bahan?', 'Stok akan dikembalikan ke inventaris.', 'warning', 'Ya, Hapus')" class="text-slate-400 hover:text-error transition-colors">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
                                         </form>
@@ -203,21 +224,27 @@
 
                     <!-- Costs Tab -->
                     <div x-show="activeTab === 'costs'" class="space-y-6">
-                        @if($order->status == 'IN_PRODUCTION')
+                        @if(in_array($order->status, ['IN_PRODUCTION', 'DELIVERING']))
                         <form action="{{ route('orders.add-cost', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                             @csrf
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe</label>
                                 <select name="type" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
-                                    <option value="LABOR_OVERTIME">Lembur Tenaga Kerja</option>
-                                    <option value="TRANSPORT">Transportasi</option>
-                                    <option value="TOOLS">Peralatan</option>
+                                    @if($order->status == 'IN_PRODUCTION')
+                                        <option value="LABOR">Tenaga Kerja / Lembur</option>
+                                        <option value="RETAIL_MATERIAL">Bahan Eceran / Tambahan (Paku, Lem, dll)</option>
+                                    @endif
+                                    
+                                    @if($order->status == 'DELIVERING')
+                                        <option value="DELIVERY">Biaya Pengantaran / Transport</option>
+                                    @endif
+                                    
                                     <option value="OTHER">Lainnya</option>
                                 </select>
                             </div>
                             <div class="space-y-1.5 md:col-span-1">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Deskripsi</label>
-                                <input type="text" name="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="misal: Biaya Pengiriman">
+                                <input type="text" name="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="{{ $order->status == 'DELIVERING' ? 'misal: Sewa Mobil Pick-up' : 'misal: Paku 2 inch 10 biji' }}">
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp)</label>
@@ -228,7 +255,7 @@
                         @endif
 
                         <table class="w-full text-left">
-                            <thead class="border-b border-slate-200">
+                            <thead class="border-b border-orange-700/30">
                                 <tr>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Tipe</th>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Deskripsi</th>
@@ -237,8 +264,13 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($order->productionCosts as $cost)
-                                <tr class="border-b border-slate-800/50">
-                                    <td class="py-3 text-on-surface">{{ $cost->type == 'LABOR_OVERTIME' ? 'Lembur Tenaga Kerja' : ($cost->type == 'TRANSPORT' ? 'Transportasi' : ($cost->type == 'TOOLS' ? 'Peralatan' : 'Lainnya')) }}</td>
+                                <tr class="border-b border-orange-700/20">
+                                    <td class="py-3 text-on-surface">
+                                        @if($cost->type == 'LABOR') Tenaga Kerja
+                                        @elseif($cost->type == 'RETAIL_MATERIAL') Bahan Eceran
+                                        @elseif($cost->type == 'DELIVERY') Biaya Pengantaran
+                                        @else Lainnya @endif
+                                    </td>
                                     <td class="py-3 text-on-surface">{{ $cost->description }}</td>
                                     <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($cost->amount, 0, ',', '.') }}</td>
                                 </tr>
@@ -274,7 +306,7 @@
                         @endif
 
                         <table class="w-full text-left">
-                            <thead class="border-b border-slate-200">
+                            <thead class="border-b border-orange-700/30">
                                 <tr>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Tanggal</th>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Tipe</th>
@@ -283,7 +315,7 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($order->payments as $payment)
-                                <tr class="border-b border-slate-800/50">
+                                <tr class="border-b border-orange-700/20">
                                     <td class="py-3 text-on-surface">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
                                     <td class="py-3 text-on-surface">{{ $payment->type == 'DP' ? 'Uang Muka (DP)' : 'Pelunasan' }}</td>
                                     <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
@@ -309,10 +341,9 @@
                 </h4>
                 <div class="space-y-6 relative">
                     <!-- Vertical Line -->
-                    <!-- Vertical Line -->
                     <div class="absolute left-[13.5px] top-2 bottom-2 w-0.5 bg-slate-100"></div>
                     
-                    <!-- Pending -->
+                    <!-- Step 1: Pending -->
                     <div class="relative flex items-start gap-4">
                         <div class="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center z-10 shrink-0 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600"><path d="M20 6L9 17l-5-5"/></svg>
@@ -323,20 +354,20 @@
                         </div>
                     </div>
 
-                    <!-- In Production -->
+                    <!-- Step 2: Production -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-7 h-7 rounded-full {{ $order->status != 'PENDING' ? 'bg-primary-fixed border border-primary/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
-                            @if($order->status != 'PENDING')
+                        <div class="w-7 h-7 rounded-full {{ in_array($order->status, ['IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']) ? 'bg-primary-fixed border border-primary/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
+                            @if(in_array($order->status, ['IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']))
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M2 20V9l4-2 4 2 4-2 4 2 4-2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>
                             @else
                                 <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
                             @endif
                         </div>
                         <div>
-                            <p class="text-sm font-semibold {{ $order->status != 'PENDING' ? 'text-on-surface' : 'text-slate-500' }}">Produksi</p>
+                            <p class="text-sm font-semibold {{ in_array($order->status, ['IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']) ? 'text-on-surface' : 'text-slate-500' }}">Produksi</p>
                             @if($order->status == 'IN_PRODUCTION')
                                 <p class="text-[11px] text-primary animate-pulse font-bold">Sedang Berjalan...</p>
-                            @elseif($order->status == 'FINISHED')
+                            @elseif(in_array($order->status, ['DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']))
                                 <p class="text-[11px] text-emerald-600 font-bold">Selesai</p>
                             @else
                                 <p class="text-[11px] text-slate-500 font-medium">Menunggu...</p>
@@ -344,18 +375,62 @@
                         </div>
                     </div>
 
-                    <!-- Finished -->
+                    <!-- Step 3: Delivering -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-7 h-7 rounded-full {{ $order->status == 'FINISHED' ? 'bg-emerald-50 border border-emerald-600/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
-                            @if($order->status == 'FINISHED')
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600"><path d="M20 6L9 17l-5-5"/></svg>
+                        <div class="w-7 h-7 rounded-full {{ in_array($order->status, ['DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']) ? 'bg-amber-50 border border-amber-200' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
+                            @if(in_array($order->status, ['DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']))
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-600"><path d="M10 17h4V5H2v12h3m1 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m-3 0h1m2 0h3l1-4h-7z"/></svg>
                             @else
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="M10 17h4V5H2v12h3m1 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m-3 0h1m2 0h3l1-4h-7z"/></svg>
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
                             @endif
                         </div>
                         <div>
-                            <p class="text-sm font-semibold {{ $order->status == 'FINISHED' ? 'text-on-surface' : 'text-slate-500' }}">Pengiriman & Selesai</p>
-                            <p class="text-[11px] text-slate-500">{{ $order->status == 'FINISHED' ? 'Proyek Ditutup' : 'Dijadwalkan' }}</p>
+                            <p class="text-sm font-semibold {{ in_array($order->status, ['DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']) ? 'text-on-surface' : 'text-slate-500' }}">Pengantaran</p>
+                            @if($order->status == 'DELIVERING')
+                                <p class="text-[11px] text-amber-600 animate-pulse font-bold">Dalam Perjalanan...</p>
+                            @elseif(in_array($order->status, ['UNPAID_DELIVERED', 'FINISHED']))
+                                <p class="text-[11px] text-emerald-600 font-bold">Sampai Tujuan</p>
+                            @else
+                                <p class="text-[11px] text-slate-500 font-medium">Dijadwalkan</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Payment/Debt (Only shows if relevant or finished) -->
+                    <div class="relative flex items-start gap-4">
+                        <div class="w-7 h-7 rounded-full {{ $order->status == 'UNPAID_DELIVERED' ? 'bg-error-container border border-error/30' : ($order->status == 'FINISHED' ? 'bg-emerald-50 border border-emerald-200' : 'bg-slate-50 border border-slate-200') }} flex items-center justify-center z-10 shrink-0 shadow-sm">
+                            @if($order->status == 'UNPAID_DELIVERED')
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-error"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            @elseif($order->status == 'FINISHED')
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600"><path d="M20 6L9 17l-5-5"/></svg>
+                            @else
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold {{ in_array($order->status, ['UNPAID_DELIVERED', 'FINISHED']) ? 'text-on-surface' : 'text-slate-500' }}">Status Pelunasan</p>
+                            @if($order->status == 'UNPAID_DELIVERED')
+                                <p class="text-[11px] text-error font-bold">Hutang: Rp {{ number_format($order->remaining_payment, 0, ',', '.') }}</p>
+                            @elseif($order->status == 'FINISHED')
+                                <p class="text-[11px] text-emerald-600 font-bold">Lunas</p>
+                            @else
+                                <p class="text-[11px] text-slate-500 font-medium">Menunggu Pelunasan</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Finished -->
+                    <div class="relative flex items-start gap-4">
+                        <div class="w-7 h-7 rounded-full {{ $order->status == 'FINISHED' ? 'bg-primary border border-primary/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
+                            @if($order->status == 'FINISHED')
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M20 6L9 17l-5-5"/></svg>
+                            @else
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold {{ $order->status == 'FINISHED' ? 'text-on-surface' : 'text-slate-500' }}">Proyek Ditutup</p>
+                            <p class="text-[11px] text-slate-500">{{ $order->status == 'FINISHED' ? 'Semua Tahapan Selesai' : 'Tahap Akhir' }}</p>
                         </div>
                     </div>
                 </div>
@@ -385,3 +460,35 @@
     </div>
 </div>
 @endsection
+
+<script>
+    function confirmAction(formId, title, text, icon, confirmButtonText) {
+        // Determine colors based on icon/action type
+        let confirmButtonColor = '#3085d6'; // Default Blue
+        if (icon === 'warning') confirmButtonColor = '#f59e0b'; // Amber/Orange for Start/Warning
+        if (confirmButtonText.toLowerCase().includes('hapus')) confirmButtonColor = '#ef4444'; // Red for Delete
+        if (icon === 'success' || icon === 'question') confirmButtonColor = '#10b981'; // Green for Success/Confirm
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonColor: confirmButtonColor,
+            cancelButtonColor: '#64748b', // Slate for Cancel
+            confirmButtonText: confirmButtonText,
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#0f172a',
+            customClass: {
+                popup: 'rounded-xl',
+                confirmButton: 'rounded-lg px-6 py-2 font-semibold',
+                cancelButton: 'rounded-lg px-6 py-2 font-semibold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
+</script>

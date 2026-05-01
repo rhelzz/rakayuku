@@ -2,7 +2,7 @@
 
 @section('title', 'Pesanan & Proyek')
 @section('content')
-<div class="space-y-6" x-data="{ openNewProjectModal: false }">
+<div class="space-y-6" x-data="{ viewMode: 'kanban' }">
     <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
@@ -11,20 +11,35 @@
             <span class="text-on-surface">Pesanan</span>
         </nav>
 
-        <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 pb-6">
             <div>
                 <h1 class="font-headline-md text-headline-md text-on-background">Pesanan & Proyek</h1>
                 <p class="font-body-sm text-body-sm text-slate-400 mt-1">Kelola alur kerja manufaktur aktif.</p>
             </div>
-            <a href="{{ route('orders.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">add</span>
-                Proyek Baru
-            </a>
+            
+            <div class="flex items-center gap-3">
+                <!-- View Mode Switcher -->
+                <div class="flex bg-surface-container-high p-1 rounded-xl border border-surface-variant">
+                    <button @click="viewMode = 'kanban'" :class="viewMode === 'kanban' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
+                        <span class="material-symbols-outlined text-[18px]">view_kanban</span>
+                        Kanban
+                    </button>
+                    <button @click="viewMode = 'table'" :class="viewMode === 'table' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
+                        <span class="material-symbols-outlined text-[18px]">table_rows</span>
+                        Tabel
+                    </button>
+                </div>
+
+                <a href="{{ route('orders.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2 text-sm">
+                    <span class="material-symbols-outlined text-[20px]">add</span>
+                    Proyek Baru
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- Kanban Board -->
-    <div class="flex gap-6 overflow-x-auto pb-4 h-[calc(100vh-200px)]">
+    <!-- Kanban View -->
+    <div x-show="viewMode === 'kanban'" class="flex gap-6 overflow-x-auto pb-4 h-[calc(100vh-250px)]">
         <!-- Pending Column -->
         <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
@@ -120,6 +135,53 @@
             </div>
         </div>
 
+        <!-- Delivery & Debt Column -->
+        <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                    <h2 class="font-title-sm text-title-sm text-on-surface">Pengantaran & Hutang</h2>
+                </div>
+                <span class="font-data-mono text-data-mono text-slate-500">{{ count($deliveryOrders) }}</span>
+            </div>
+            <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                @forelse($deliveryOrders as $order)
+                    <div class="bg-white rounded-lg border border-amber-200 p-4 shadow-sm hover:border-amber-500/50 transition-colors cursor-pointer group" onclick="window.location='{{ route('orders.show', $order) }}'">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-caps text-label-caps text-amber-700 font-bold uppercase">{{ $order->order_number }}</span>
+                            <span class="px-2 py-0.5 rounded-sm {{ $order->status == 'UNPAID_DELIVERED' ? 'bg-error-container/20 text-error' : 'bg-amber-50 text-amber-700' }} font-label-caps text-[10px] border {{ $order->status == 'UNPAID_DELIVERED' ? 'border-error/20' : 'border-amber-200' }}">
+                                {{ $order->status == 'UNPAID_DELIVERED' ? 'HUTANG' : 'PENGANTARAN' }}
+                            </span>
+                        </div>
+                        <h3 class="font-body-md text-body-md font-semibold text-on-surface mb-1 truncate">{{ $order->project_name }}</h3>
+                        <p class="font-body-sm text-body-sm text-slate-500 mb-4">{{ $order->customer->name }}</p>
+                        
+                        @if($order->status == 'UNPAID_DELIVERED')
+                            <div class="mb-3 p-2 bg-error-container/10 rounded border border-error/10">
+                                <p class="text-[10px] text-error font-bold uppercase tracking-wider mb-1">Sisa Tagihan</p>
+                                <p class="text-sm font-bold text-error">Rp {{ number_format($order->remaining_payment, 0, ',', '.') }}</p>
+                            </div>
+                        @endif
+
+                        <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px] {{ $order->payment_status == 'PAID' ? 'text-emerald-600' : 'text-amber-600' }}">payments</span>
+                                <span class="font-data-mono text-data-mono text-[11px] {{ $order->payment_status == 'PAID' ? 'text-emerald-600' : 'text-amber-600' }}">
+                                    {{ $order->payment_status == 'PAID' ? 'LUNAS' : 'SEBAGIAN' }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-slate-500">
+                                <span class="material-symbols-outlined text-[14px]">local_shipping</span>
+                                <span class="font-data-mono text-data-mono text-[11px]">{{ $order->updated_at->format('d M') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-4 text-center text-slate-500 italic text-sm">Tidak ada pengantaran aktif</div>
+                @endforelse
+            </div>
+        </div>
+
         <!-- Finished Column -->
         <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
@@ -161,6 +223,60 @@
                     <div class="p-4 text-center text-slate-500 italic text-sm">Tidak ada proyek selesai</div>
                 @endforelse
             </div>
+        </div>
+    </div>
+
+    <!-- Table View -->
+    <div x-show="viewMode === 'table'" class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                    <tr>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">ID Pesanan</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Proyek</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Pelanggan</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Status</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Total Harga</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
+                    @forelse($orders as $order)
+                    <tr class="hover:bg-surface-container-low transition-colors group">
+                        <td class="px-6 py-4 text-center font-data-mono text-slate-400">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-4 font-bold text-primary">{{ $order->order_number }}</td>
+                        <td class="px-6 py-4 font-medium">{{ $order->project_name }}</td>
+                        <td class="px-6 py-4 text-slate-600">{{ $order->customer->name }}</td>
+                        <td class="px-6 py-4">
+                            @if($order->status === 'PENDING')
+                                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase">Menunggu</span>
+                            @elseif($order->status === 'IN_PRODUCTION')
+                                <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 uppercase">Produksi</span>
+                            @elseif($order->status === 'DELIVERING')
+                                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 uppercase">Pengantaran</span>
+                            @elseif($order->status === 'UNPAID_DELIVERED')
+                                <span class="px-2.5 py-1 rounded-full bg-error-container/20 text-error text-[10px] font-bold border border-error/20 uppercase">Hutang</span>
+                            @else
+                                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 uppercase">Selesai</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-right font-data-mono font-bold">
+                            Rp {{ number_format($order->selling_price, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="{{ route('orders.show', $order) }}" class="inline-flex items-center gap-1.5 text-primary hover:underline font-bold">
+                                Lihat <span class="material-symbols-outlined text-[16px]">visibility</span>
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 italic">Belum ada pesanan masuk.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

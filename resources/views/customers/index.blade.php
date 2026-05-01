@@ -35,6 +35,7 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface-container sticky top-0 z-10">
                     <tr>
+                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant w-10">No</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Nama Klien</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Email</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Telepon</th>
@@ -46,9 +47,9 @@
                 <tbody class="divide-y divide-surface-variant font-body-sm text-body-sm text-on-surface">
                     @forelse($customers as $c)
                     <tr class="hover:bg-surface-container-high/50 transition-colors group">
+                        <td class="px-4 py-3 font-data-mono text-slate-400">{{ $customers->firstItem() + $loop->index }}</td>
                         <td class="px-4 py-3">
                             <div class="font-medium text-on-surface">{{ $c->name }}</div>
-                            <div class="text-[10px] text-slate-400 font-data-mono uppercase">ID: {{ $c->id }}</div>
                         </td>
                         <td class="px-4 py-3 text-slate-400">{{ $c->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-slate-400">{{ $c->phone }}</td>
@@ -78,12 +79,17 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-4 py-8 text-center text-slate-500 italic">Tidak ada pelanggan ditemukan.</td>
+                        <td colspan="7" class="px-4 py-8 text-center text-slate-500 italic">Tidak ada pelanggan ditemukan.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        @if($customers->hasPages())
+            <div class="p-4 border-t border-surface-variant bg-surface-container-lowest/50">
+                {{ $customers->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

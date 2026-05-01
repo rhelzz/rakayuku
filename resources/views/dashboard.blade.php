@@ -24,10 +24,10 @@
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-primary-container">handyman</span>
             </div>
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Proyek Aktif</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Proyek Berjalan</span>
             <div class="flex items-baseline gap-2 mt-2">
-                <span class="font-display-lg text-display-lg text-on-background">{{ $inProductionOrders }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary flex items-center">Dalam Produksi</span>
+                <span class="font-display-lg text-display-lg text-on-background">{{ $activeOrders }}</span>
+                <span class="font-body-sm text-body-sm text-tertiary flex items-center">Dalam Proses</span>
             </div>
         </div>
 
@@ -104,16 +104,24 @@
                                 <td class="p-3 px-4 text-on-surface-variant">{{ $order->deadline ? \Carbon\Carbon::parse($order->deadline)->format('d M Y') : '-' }}</td>
                                 <td class="p-3 px-4">
                                     @if($order->status == 'IN_PRODUCTION')
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-secondary-container text-on-secondary-container text-xs font-medium">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Dalam Produksi
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Produksi
+                                        </span>
+                                    @elseif($order->status == 'DELIVERING')
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pengantaran
+                                        </span>
+                                    @elseif($order->status == 'UNPAID_DELIVERED')
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-error-container/20 text-error text-xs font-medium border border-error/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-error"></span> Hutang
                                         </span>
                                     @elseif($order->status == 'FINISHED')
                                         <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-50 text-green-700 text-xs font-medium border border-green-100">
                                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Selesai
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-xs font-medium">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span> Menunggu
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Menunggu
                                         </span>
                                     @endif
                                 </td>

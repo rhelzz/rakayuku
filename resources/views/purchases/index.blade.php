@@ -27,6 +27,7 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface-container-lowest border-b border-surface-variant">
                     <tr>
+                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
                         <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest">Tanggal</th>
                         <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest">Nomor Invoice</th>
                         <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest">Pemasok</th>
@@ -38,6 +39,7 @@
                 <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface">
                     @forelse($purchases as $p)
                     <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-6 py-4 text-center font-data-mono text-slate-400">{{ $purchases->firstItem() + $loop->index }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                             {{ \Carbon\Carbon::parse($p->purchase_date)->format('d/m/Y') }}
                         </td>
@@ -65,7 +67,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400 italic">
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 italic">
                             <div class="flex flex-col items-center gap-2">
                                 <span class="material-symbols-outlined text-4xl opacity-20">receipt_long</span>
                                 Belum ada riwayat pembelian tercatat.
@@ -76,6 +78,11 @@
                 </tbody>
             </table>
         </div>
+        @if($purchases->hasPages())
+            <div class="p-4 border-t border-surface-variant bg-surface-container-lowest/50">
+                {{ $purchases->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

@@ -121,7 +121,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-12 text-center text-slate-500 italic">
+                            <td colspan="6" class="px-4 py-12 text-center text-slate-500 italic">
                                 <div class="flex flex-col items-center gap-2">
                                     <span class="material-symbols-outlined text-4xl opacity-20">inventory_2</span>
                                     Belum ada bahan baku yang terdaftar.
@@ -132,6 +132,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($materials->hasPages())
+                <div class="p-4 border-t border-surface-variant bg-surface-container-lowest/50">
+                    {{ $materials->links() }}
+                </div>
+            @endif
         </div>
     </div>
 </div>
