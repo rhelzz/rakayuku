@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('current_qty', 15, 2)->default(0);
-            $table->string('unit')->default('pcs');
             $table->decimal('avg_price', 15, 2)->default(0);
             $table->timestamps();
         });

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone');
             $table->text('address');
+            $table->integer('orders_count')->default(0);
             $table->timestamps();
         });
     }
