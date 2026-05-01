@@ -15,15 +15,24 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; color: #0f172a; }
-        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(203, 213, 225, 0.5); }
-        .font-body-md { font-family: 'Poppins', sans-serif; font-size: 14px; line-height: 20px; }
-        .font-display-lg { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700; line-height: 40px; }
-        .font-label-caps { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 700; line-height: 16px; letter-spacing: 0.05em; }
-        .font-title-sm { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; line-height: 24px; }
-        .font-data-mono { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; line-height: 16px; }
-    </style>
+    <script>
+        function formatRupiahJS(value) {
+            if (!value) return '';
+            let number_string = value.toString().replace(/[^,\d]/g, ''),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return rupiah;
+        }
+    </script>
 </head>
 <body class="flex h-screen overflow-hidden bg-background font-body-md text-on-background">
 

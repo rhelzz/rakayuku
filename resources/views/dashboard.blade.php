@@ -55,8 +55,7 @@
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Keuntungan</span>
             <div class="flex items-baseline gap-1 mt-2">
-                <span class="font-body-md text-body-md text-on-surface-variant">Rp</span>
-                <span class="font-headline-md text-headline-md text-on-background">{{ number_format($totalProfit, 0, ',', '.') }}</span>
+                <span class="font-headline-md text-headline-md text-on-background">{{ formatRupiah($totalProfit) }}</span>
                 <span class="font-body-sm text-body-sm text-tertiary ml-1">Selesai</span>
             </div>
         </div>
@@ -68,8 +67,7 @@
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Piutang</span>
             <div class="flex items-baseline gap-1 mt-2">
-                <span class="font-body-md text-body-md text-on-surface-variant">Rp</span>
-                <span class="font-headline-md text-headline-md text-on-background">{{ number_format($totalReceivable, 0, ',', '.') }}</span>
+                <span class="font-headline-md text-headline-md text-on-background">{{ formatRupiah($totalReceivable) }}</span>
             </div>
             <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Sisa tagihan pelanggan</span>
         </div>

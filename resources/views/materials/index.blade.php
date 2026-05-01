@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     <p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Nilai Inventaris</p>
-                    <p class="font-title-sm text-title-sm text-on-surface mt-0.5">Rp {{ number_format($materials->sum(fn($m) => $m->current_qty * $m->avg_price), 0, ',', '.') }}</p>
+                    <p class="font-title-sm text-title-sm text-on-surface mt-0.5">{{ formatRupiah($materials->sum(fn($m) => $m->current_qty * $m->avg_price)) }}</p>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                                 {{ number_format($material->current_qty, 0, ',', '.') }}
                             </td>
                             <td class="px-4 py-3 text-right font-data-mono text-data-mono">
-                                Rp {{ number_format($material->avg_price, 0, ',', '.') }}
+                                {{ formatRupiah($material->avg_price) }}
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if($material->current_qty >= 5)

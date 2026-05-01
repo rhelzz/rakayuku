@@ -61,22 +61,42 @@
                 </div>
 
                 <!-- Pricing -->
-                <div class="space-y-1.5">
-                    <label for="selling_price" class="block font-medium text-slate-700 text-sm">Harga Jual (Kesepakatan) <span class="text-error">*</span></label>
+                <div class="space-y-1.5" x-data="{ 
+                    displayPrice: '{{ old('selling_price') ? number_format(old('selling_price'), 0, ',', '.') : '' }}',
+                    rawPrice: '{{ old('selling_price', 0) }}'
+                }">
+                    <label for="display_selling_price" class="block font-medium text-slate-700 text-sm">Harga Jual (Kesepakatan) <span class="text-error">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">Rp</div>
-                        <input type="number" name="selling_price" id="selling_price" value="{{ old('selling_price') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono @error('selling_price') border-error @enderror" placeholder="0">
+                        <input type="text" 
+                               id="display_selling_price" 
+                               x-model="displayPrice"
+                               x-on:input="displayPrice = formatRupiahJS($event.target.value); rawPrice = displayPrice.replace(/\./g, '')"
+                               required 
+                               class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono @error('selling_price') border-error @enderror" 
+                               placeholder="0">
+                        <input type="hidden" name="selling_price" x-model="rawPrice">
                     </div>
                     @error('selling_price')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="space-y-1.5">
-                    <label for="dp_amount" class="block font-medium text-slate-700 text-sm">Uang Muka (DP) <span class="text-error">*</span></label>
+                <div class="space-y-1.5" x-data="{ 
+                    displayDp: '{{ old('dp_amount') ? number_format(old('dp_amount'), 0, ',', '.') : '' }}',
+                    rawDp: '{{ old('dp_amount', 0) }}'
+                }">
+                    <label for="display_dp_amount" class="block font-medium text-slate-700 text-sm">Uang Muka (DP) <span class="text-error">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">Rp</div>
-                        <input type="number" name="dp_amount" id="dp_amount" value="{{ old('dp_amount', 0) }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono @error('dp_amount') border-error @enderror" placeholder="0">
+                        <input type="text" 
+                               id="display_dp_amount" 
+                               x-model="displayDp"
+                               x-on:input="displayDp = formatRupiahJS($event.target.value); rawDp = displayDp.replace(/\./g, '')"
+                               required 
+                               class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono @error('dp_amount') border-error @enderror" 
+                               placeholder="0">
+                        <input type="hidden" name="dp_amount" x-model="rawDp">
                     </div>
                     @error('dp_amount')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>

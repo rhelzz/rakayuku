@@ -86,9 +86,20 @@
                                             <input type="number" :name="'items['+index+'][qty]'" required step="1" min="1" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
                                         </td>
                                         <td class="py-4 px-4">
-                                            <div class="relative">
+                                            <div class="relative" x-data="{ 
+                                                updateMask(val) {
+                                                    item.displayPrice = formatRupiahJS(val);
+                                                    item.price = item.displayPrice.replace(/\./g, '');
+                                                }
+                                            }">
                                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs font-data-mono">Rp</div>
-                                                <input type="number" :name="'items['+index+'][price]'" required x-model="item.price" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl pl-8 pr-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
+                                                <input type="text" 
+                                                       x-model="item.displayPrice"
+                                                       x-on:input="updateMask($event.target.value)"
+                                                       required 
+                                                       class="w-full bg-white border border-slate-200 text-on-surface rounded-xl pl-8 pr-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" 
+                                                       placeholder="0">
+                                                <input type="hidden" :name="'items['+index+'][price]'" x-model="item.price">
                                             </div>
                                         </td>
                                         <td class="py-4 px-6 text-right">

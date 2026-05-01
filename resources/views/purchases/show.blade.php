@@ -48,8 +48,8 @@
                             <tr class="hover:bg-slate-50/30 transition-colors">
                                 <td class="py-4 px-6 text-sm font-medium text-on-surface">{{ $item->material->name }}</td>
                                 <td class="py-4 px-4 text-sm text-right font-data-mono">{{ number_format($item->qty, 0, ',', '.') }}</td>
-                                <td class="py-4 px-6 text-sm text-right font-data-mono text-slate-500">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
-                                <td class="py-4 px-6 text-sm text-right font-bold text-on-surface">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                <td class="py-4 px-6 text-sm text-right font-data-mono text-slate-500">{{ formatRupiah($item->price) }}</td>
+                                <td class="py-4 px-6 text-sm text-right font-bold text-on-surface">{{ formatRupiah($item->subtotal) }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -57,7 +57,7 @@
                             <tr>
                                 <td colspan="3" class="py-4 px-6 text-sm text-slate-600 text-right">Total Pembayaran</td>
                                 <td class="py-4 px-6 text-right text-primary font-data-mono text-lg">
-                                    Rp {{ number_format($purchase->total_price, 0, ',', '.') }}
+                                    {{ formatRupiah($purchase->total_price) }}
                                 </td>
                             </tr>
                         </tfoot>

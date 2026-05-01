@@ -86,16 +86,16 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
                     <p class="font-label-caps text-label-caps text-slate-500 uppercase">Harga Jual</p>
-                    <p class="text-xl font-bold text-on-surface mt-1">Rp {{ number_format($order->selling_price, 0, ',', '.') }}</p>
+                    <p class="text-xl font-bold text-on-surface mt-1">{{ formatRupiah($order->selling_price) }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
                     <p class="font-label-caps text-label-caps text-slate-500 uppercase">Estimasi Biaya</p>
-                    <p class="text-xl font-bold text-on-surface mt-1">Rp {{ number_format($order->live_total_cost, 0, ',', '.') }}</p>
+                    <p class="text-xl font-bold text-on-surface mt-1">{{ formatRupiah($order->live_total_cost) }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
                     <p class="font-label-caps text-label-caps text-slate-500 uppercase">Estimasi Profit</p>
                     <p class="text-xl font-bold {{ $order->estimated_profit >= 0 ? 'text-emerald-600' : 'text-error' }} mt-1">
-                        Rp {{ number_format($order->estimated_profit, 0, ',', '.') }}
+                        {{ formatRupiah($order->estimated_profit) }}
                     </p>
                 </div>
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
@@ -199,8 +199,8 @@
                                 <tr class="border-b border-orange-700/20 group">
                                     <td class="py-3 text-on-surface">{{ $om->material->name }}</td>
                                     <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
-                                    <td class="py-3 text-right text-on-surface-variant">Rp {{ number_format($om->price_snapshot, 0, ',', '.') }}</td>
-                                    <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($om->subtotal, 0, ',', '.') }}</td>
+                                    <td class="py-3 text-right text-on-surface-variant">{{ formatRupiah($om->price_snapshot) }}</td>
+                                    <td class="py-3 text-right font-semibold text-on-surface">{{ formatRupiah($om->subtotal) }}</td>
                                     <td class="py-3 text-right">
                                         @if($order->status == 'IN_PRODUCTION')
                                         <form id="removeMaterial-{{ $om->id }}" action="{{ route('orders.remove-material', $om) }}" method="POST">
@@ -225,7 +225,8 @@
                     <!-- Costs Tab -->
                     <div x-show="activeTab === 'costs'" class="space-y-6">
                         @if(in_array($order->status, ['IN_PRODUCTION', 'DELIVERING']))
-                        <form action="{{ route('orders.add-cost', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <form action="{{ route('orders.add-cost', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
+                              x-data="{ displayAmount: '', rawAmount: '' }">
                             @csrf
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe</label>
@@ -248,7 +249,13 @@
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp)</label>
-                                <input type="number" name="amount" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="0">
+                                <input type="text" 
+                                       x-model="displayAmount"
+                                       x-on:input="displayAmount = formatRupiahJS($event.target.value); rawAmount = displayAmount.replace(/\./g, '')"
+                                       required 
+                                       class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" 
+                                       placeholder="0">
+                                <input type="hidden" name="amount" x-model="rawAmount">
                             </div>
                             <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah Biaya</button>
                         </form>
@@ -272,7 +279,7 @@
                                         @else Lainnya @endif
                                     </td>
                                     <td class="py-3 text-on-surface">{{ $cost->description }}</td>
-                                    <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($cost->amount, 0, ',', '.') }}</td>
+                                    <td class="py-3 text-right font-semibold text-on-surface">{{ formatRupiah($cost->amount) }}</td>
                                 </tr>
                                 @empty
                                 <tr>
@@ -286,7 +293,8 @@
                     <!-- Payments Tab -->
                     <div x-show="activeTab === 'payments'" class="space-y-6">
                         @if($order->payment_status !== 'PAID')
-                        <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
+                              x-data="{ displayPay: '', rawPay: '' }">
                             @csrf
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe <span class="text-error">*</span></label>
@@ -298,7 +306,13 @@
                             </div>
                             <div class="md:col-span-2 space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp) <span class="text-error">*</span></label>
-                                <input type="number" name="amount" value="{{ old('amount') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('amount') border-error @enderror" placeholder="0">
+                                <input type="text" 
+                                       x-model="displayPay"
+                                       x-on:input="displayPay = formatRupiahJS($event.target.value); rawPay = displayPay.replace(/\./g, '')"
+                                       required 
+                                       class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('amount') border-error @enderror" 
+                                       placeholder="0">
+                                <input type="hidden" name="amount" x-model="rawPay">
                                 @error('amount') <p class="text-[10px] text-error mt-0.5">{{ $message }}</p> @enderror
                             </div>
                             <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah Pembayaran</button>
@@ -318,7 +332,7 @@
                                 <tr class="border-b border-orange-700/20">
                                     <td class="py-3 text-on-surface">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
                                     <td class="py-3 text-on-surface">{{ $payment->type == 'DP' ? 'Uang Muka (DP)' : 'Pelunasan' }}</td>
-                                    <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
+                                    <td class="py-3 text-right font-semibold text-on-surface">{{ formatRupiah($payment->amount) }}</td>
                                 </tr>
                                 @empty
                                 <tr>
@@ -410,7 +424,7 @@
                         <div>
                             <p class="text-sm font-semibold {{ in_array($order->status, ['UNPAID_DELIVERED', 'FINISHED']) ? 'text-on-surface' : 'text-slate-500' }}">Status Pelunasan</p>
                             @if($order->status == 'UNPAID_DELIVERED')
-                                <p class="text-[11px] text-error font-bold">Hutang: Rp {{ number_format($order->remaining_payment, 0, ',', '.') }}</p>
+                                <p class="text-[11px] text-error font-bold">Hutang: {{ formatRupiah($order->remaining_payment) }}</p>
                             @elseif($order->status == 'FINISHED')
                                 <p class="text-[11px] text-emerald-600 font-bold">Lunas</p>
                             @else

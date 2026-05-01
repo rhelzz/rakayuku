@@ -50,7 +50,7 @@
                             {{ $p->supplier_name ?? '-' }}
                         </td>
                         <td class="px-6 py-4 text-right font-data-mono font-bold">
-                            Rp {{ number_format($p->total_price, 0, ',', '.') }}
+                            {{ formatRupiah($p->total_price) }}
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($p->invoice_proof)

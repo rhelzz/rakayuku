@@ -159,7 +159,7 @@
                         @if($order->status == 'UNPAID_DELIVERED')
                             <div class="mb-3 p-2 bg-error-container/10 rounded border border-error/10">
                                 <p class="text-[10px] text-error font-bold uppercase tracking-wider mb-1">Sisa Tagihan</p>
-                                <p class="text-sm font-bold text-error">Rp {{ number_format($order->remaining_payment, 0, ',', '.') }}</p>
+                                <p class="text-sm font-bold text-error">{{ formatRupiah($order->remaining_payment) }}</p>
                             </div>
                         @endif
 
@@ -262,7 +262,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-right font-data-mono font-bold">
-                            Rp {{ number_format($order->selling_price, 0, ',', '.') }}
+                            {{ formatRupiah($order->selling_price) }}
                         </td>
                         <td class="px-6 py-4 text-right">
                             <a href="{{ route('orders.show', $order) }}" class="inline-flex items-center gap-1.5 text-primary hover:underline font-bold">
