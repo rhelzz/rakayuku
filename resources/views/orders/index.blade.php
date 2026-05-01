@@ -34,12 +34,20 @@
                             <span class="font-label-caps text-label-caps text-slate-500 uppercase">{{ $order->order_number }}</span>
                             <span class="px-2 py-0.5 rounded-sm bg-slate-50 text-slate-600 font-label-caps text-[10px] border border-slate-200">Menunggu</span>
                         </div>
-                        <h3 class="font-body-md text-body-md font-semibold text-on-surface mb-1 truncate">{{ $order->project_name ?? 'Custom Furniture' }}</h3>
+                        <h3 class="font-body-md text-body-md font-semibold text-on-surface mb-1 truncate">{{ $order->project_name }}</h3>
                         <p class="font-body-sm text-body-sm text-slate-500 mb-4">{{ $order->customer->name }}</p>
                         <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                            <div class="flex items-center gap-1.5 {{ $order->payment_status === 'UNPAID' ? 'text-error' : 'text-emerald-600' }}">
-                                <span class="material-symbols-outlined text-[14px]">{{ $order->payment_status === 'UNPAID' ? 'warning' : 'check_circle' }}</span>
-                                <span class="font-data-mono text-data-mono text-[11px]">{{ $order->payment_status == 'UNPAID' ? 'BELUM LUNAS' : 'LUNAS' }}</span>
+                            <div class="flex items-center gap-1.5">
+                                @if($order->payment_status === \App\Models\Order::PAYMENT_UNPAID)
+                                    <span class="material-symbols-outlined text-[14px] text-error">warning</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-error">BELUM BAYAR</span>
+                                @elseif($order->payment_status === \App\Models\Order::PAYMENT_PARTIAL)
+                                    <span class="material-symbols-outlined text-[14px] text-amber-600">payments</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-amber-600">DIBAYAR SEBAGIAN</span>
+                                @else
+                                    <span class="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-emerald-600">LUNAS</span>
+                                @endif
                             </div>
                             <div class="flex items-center gap-1.5 text-slate-500">
                                 <span class="material-symbols-outlined text-[14px]">calendar_today</span>
@@ -81,9 +89,17 @@
                         </div>
 
                         <div class="flex items-center justify-between pt-3 border-t border-slate-100 pl-2">
-                            <div class="flex items-center gap-1.5 text-emerald-600">
-                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                                <span class="font-data-mono text-data-mono text-[11px]">{{ $order->payment_status == 'UNPAID' ? 'BELUM LUNAS' : 'LUNAS' }}</span>
+                            <div class="flex items-center gap-1.5">
+                                @if($order->payment_status === \App\Models\Order::PAYMENT_UNPAID)
+                                    <span class="material-symbols-outlined text-[14px] text-error">warning</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-error">BELUM BAYAR</span>
+                                @elseif($order->payment_status === \App\Models\Order::PAYMENT_PARTIAL)
+                                    <span class="material-symbols-outlined text-[14px] text-amber-600">payments</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-amber-600">DIBAYAR SEBAGIAN</span>
+                                @else
+                                    <span class="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-emerald-600">LUNAS</span>
+                                @endif
                             </div>
                             <div class="flex items-center gap-1.5 text-slate-500">
                                 <span class="material-symbols-outlined text-[14px]">calendar_today</span>
@@ -116,9 +132,17 @@
                         <h3 class="font-body-md text-body-md font-semibold text-on-surface mb-1 truncate">{{ $order->project_name ?? 'Custom Furniture' }}</h3>
                         <p class="font-body-sm text-body-sm text-slate-500 mb-4">{{ $order->customer->name }}</p>
                         <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                            <div class="flex items-center gap-1.5 text-emerald-700">
-                                <span class="material-symbols-outlined text-[14px]">task_alt</span>
-                                <span class="font-data-mono text-data-mono text-[11px]">{{ $order->payment_status == 'UNPAID' ? 'BELUM LUNAS' : 'LUNAS' }}</span>
+                            <div class="flex items-center gap-1.5">
+                                @if($order->payment_status === \App\Models\Order::PAYMENT_UNPAID)
+                                    <span class="material-symbols-outlined text-[14px] text-error">warning</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-error">BELUM BAYAR</span>
+                                @elseif($order->payment_status === \App\Models\Order::PAYMENT_PARTIAL)
+                                    <span class="material-symbols-outlined text-[14px] text-amber-600">payments</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-amber-600">DIBAYAR SEBAGIAN</span>
+                                @else
+                                    <span class="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
+                                    <span class="font-data-mono text-data-mono text-[11px] text-emerald-600">LUNAS</span>
+                                @endif
                             </div>
                             <div class="flex items-center gap-1.5 text-slate-500">
                                 <span class="material-symbols-outlined text-[14px]">done_all</span>

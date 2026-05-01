@@ -28,19 +28,34 @@
                 <!-- Customer Selection -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="customer_id" class="block font-medium text-slate-700 text-sm">Pelanggan <span class="text-error">*</span></label>
-                    <select name="customer_id" id="customer_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none">
+                    <select name="customer_id" id="customer_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none @error('customer_id') border-error @enderror">
                         <option disabled selected value="">Pilih Pelanggan</option>
                         @foreach($customers as $customer)
-                            <option value="{{ $customer->id }}">{{ $customer->name }} ({{ $customer->phone }})</option>
+                            <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>{{ $customer->name }} ({{ $customer->phone }})</option>
                         @endforeach
                     </select>
+                    @error('customer_id')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                     <p class="text-[11px] text-slate-500">Pelanggan tidak ditemukan? <a href="{{ route('customers.create') }}" class="text-primary hover:underline">Tambah pelanggan baru</a></p>
                 </div>
 
                 <!-- Project Name -->
                 <div class="space-y-1.5 md:col-span-2">
-                    <label for="description" class="block font-medium text-slate-700 text-sm">Nama Proyek / Item <span class="text-error">*</span></label>
-                    <input type="text" name="description" id="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="misal: Meja Makan Jati (6 Kursi)">
+                    <label for="project_name" class="block font-medium text-slate-700 text-sm">Nama Proyek / Item <span class="text-error">*</span></label>
+                    <input type="text" name="project_name" id="project_name" value="{{ old('project_name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('project_name') border-error @enderror" placeholder="misal: Meja Makan Jati (6 Kursi)">
+                    @error('project_name')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Project Description -->
+                <div class="space-y-1.5 md:col-span-2">
+                    <label for="project_description" class="block font-medium text-slate-700 text-sm">Deskripsi Detail (Opsional)</label>
+                    <textarea name="project_description" id="project_description" rows="2" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('project_description') border-error @enderror" placeholder="Catatan tambahan spesifikasi...">{{ old('project_description') }}</textarea>
+                    @error('project_description')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Pricing -->
@@ -48,22 +63,31 @@
                     <label for="selling_price" class="block font-medium text-slate-700 text-sm">Harga Jual (Kesepakatan) <span class="text-error">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">Rp</div>
-                        <input type="number" name="selling_price" id="selling_price" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono" placeholder="0">
+                        <input type="number" name="selling_price" id="selling_price" value="{{ old('selling_price') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono @error('selling_price') border-error @enderror" placeholder="0">
                     </div>
+                    @error('selling_price')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="space-y-1.5">
-                    <label for="dp_amount" class="block font-medium text-slate-700 text-sm">Uang Muka (DP)</label>
+                    <label for="dp_amount" class="block font-medium text-slate-700 text-sm">Uang Muka (DP) <span class="text-error">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">Rp</div>
-                        <input type="number" name="dp_amount" id="dp_amount" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono" placeholder="0" value="0">
+                        <input type="number" name="dp_amount" id="dp_amount" value="{{ old('dp_amount', 0) }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-10 pr-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors font-data-mono @error('dp_amount') border-error @enderror" placeholder="0">
                     </div>
+                    @error('dp_amount')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Deadline -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="deadline" class="block font-medium text-slate-700 text-sm">Target Batas Waktu</label>
-                    <input type="date" name="deadline" id="deadline" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
+                    <input type="date" name="deadline" id="deadline" value="{{ old('deadline') }}" min="{{ date('Y-m-d') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('deadline') border-error @enderror">
+                    @error('deadline')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

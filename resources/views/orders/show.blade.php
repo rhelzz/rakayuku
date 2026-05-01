@@ -14,14 +14,17 @@
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary border border-surface-variant relative">
-                    <span class="material-symbols-outlined text-3xl">shopping_cart</span>
+                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary border border-surface-variant relative shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.56-7.43H5.12"/></svg>
                     @if($order->status == 'IN_PRODUCTION')
                         <div class="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-ping"></div>
                     @endif
                 </div>
                 <div>
-                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $order->project_name ?? 'Custom Furniture' }}</h2>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $order->project_name }}</h2>
+                    @if($order->project_description)
+                        <p class="text-[11px] text-slate-400 italic mt-0.5">{{ $order->project_description }}</p>
+                    @endif
                     <p class="font-body-sm text-body-sm text-slate-500">Klien: {{ $order->customer->name }} | Batas Waktu: {{ $order->deadline ? \Carbon\Carbon::parse($order->deadline)->format('d M Y') : '-' }}</p>
                 </div>
             </div>
@@ -57,19 +60,26 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <!-- Main Stats Card -->
         <div class="lg:col-span-3 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
                     <p class="font-label-caps text-label-caps text-slate-500 uppercase">Harga Jual</p>
                     <p class="text-xl font-bold text-on-surface mt-1">Rp {{ number_format($order->selling_price, 0, ',', '.') }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
-                    <p class="font-label-caps text-label-caps text-slate-500 uppercase">Biaya Produksi Saat Ini</p>
-                    <p class="text-xl font-bold text-on-surface mt-1">Rp {{ number_format($order->total_cost, 0, ',', '.') }}</p>
+                    <p class="font-label-caps text-label-caps text-slate-500 uppercase">Estimasi Biaya</p>
+                    <p class="text-xl font-bold text-on-surface mt-1">Rp {{ number_format($order->live_total_cost, 0, ',', '.') }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
-                    <p class="font-label-caps text-label-caps text-slate-500 uppercase">Keuntungan</p>
-                    @php $profit = ($order->status === 'FINISHED') ? $order->profit : ($order->selling_price - $order->total_cost); @endphp
-                    <p class="text-xl font-bold {{ $profit >= 0 ? 'text-emerald-600' : 'text-error' }} mt-1">Rp {{ number_format($profit, 0, ',', '.') }}</p>
+                    <p class="font-label-caps text-label-caps text-slate-500 uppercase">Estimasi Profit</p>
+                    <p class="text-xl font-bold {{ $order->estimated_profit >= 0 ? 'text-emerald-600' : 'text-error' }} mt-1">
+                        Rp {{ number_format($order->estimated_profit, 0, ',', '.') }}
+                    </p>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border border-slate-200">
+                    <p class="font-label-caps text-label-caps text-slate-500 uppercase">Margin</p>
+                    <p class="text-xl font-bold {{ $order->profit_margin >= 20 ? 'text-emerald-600' : ($order->profit_margin > 0 ? 'text-amber-600' : 'text-error') }} mt-1">
+                        {{ number_format($order->profit_margin, 1) }}%
+                    </p>
                 </div>
             </div>
 
@@ -88,7 +98,7 @@
                         <div class="grid grid-cols-2 gap-8">
                             <div>
                                 <h4 class="text-on-surface font-semibold mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary text-[20px]">person</span> Detail Pelanggan
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Detail Pelanggan
                                 </h4>
                                 <div class="space-y-3">
                                     <div>
@@ -107,7 +117,7 @@
                             </div>
                             <div>
                                 <h4 class="text-on-surface font-semibold mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary text-[20px]">payments</span> Keuangan
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> Keuangan
                                 </h4>
                                 <div class="space-y-3">
                                     <div>
@@ -145,7 +155,7 @@
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah</label>
-                                <input type="number" name="qty" required step="0.01" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="0">
+                                <input type="number" name="qty" required step="1" min="1" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="0">
                             </div>
                             <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah ke Proyek</button>
                         </form>
@@ -158,13 +168,14 @@
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Jumlah Digunakan</th>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">HPP Satuan (saat digunakan)</th>
                                     <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Subtotal</th>
+                                    <th class="py-3 w-10"></th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($order->materials as $om)
                                 <tr class="border-b border-slate-800/50">
                                     <td class="py-3 text-on-surface">{{ $om->material->name }}</td>
-                                    <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 2) }} {{ $om->material->unit }}</td>
+                                    <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 0, ',', '.') }} {{ $om->material->unit }}</td>
                                     <td class="py-3 text-right text-on-surface-variant">Rp {{ number_format($om->price_snapshot, 0, ',', '.') }}</td>
                                     <td class="py-3 text-right font-semibold text-on-surface">Rp {{ number_format($om->subtotal, 0, ',', '.') }}</td>
                                 </tr>
@@ -233,15 +244,17 @@
                         <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                             @csrf
                             <div class="space-y-1.5">
-                                <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe</label>
-                                <select name="type" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
-                                    <option value="DP">Uang Muka (DP)</option>
-                                    <option value="FINAL" selected>Pelunasan</option>
+                                <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe <span class="text-error">*</span></label>
+                                <select name="type" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('type') border-error @enderror">
+                                    <option value="DP" {{ old('type') == 'DP' ? 'selected' : '' }}>Uang Muka (DP)</option>
+                                    <option value="FINAL" {{ old('type', 'FINAL') == 'FINAL' ? 'selected' : '' }}>Pelunasan</option>
                                 </select>
+                                @error('type') <p class="text-[10px] text-error mt-0.5">{{ $message }}</p> @enderror
                             </div>
                             <div class="md:col-span-2 space-y-1.5">
-                                <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp)</label>
-                                <input type="number" name="amount" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="0">
+                                <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp) <span class="text-error">*</span></label>
+                                <input type="number" name="amount" value="{{ old('amount') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('amount') border-error @enderror" placeholder="0">
+                                @error('amount') <p class="text-[10px] text-error mt-0.5">{{ $message }}</p> @enderror
                             </div>
                             <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah Pembayaran</button>
                         </form>
@@ -278,16 +291,18 @@
         <div class="space-y-6">
             <div class="glass-panel p-6 rounded-xl border border-slate-200">
                 <h4 class="text-on-surface font-semibold mb-6 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[20px]">history</span> Siklus Proyek
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+                    Siklus Proyek
                 </h4>
                 <div class="space-y-6 relative">
                     <!-- Vertical Line -->
-                    <div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-200"></div>
+                    <!-- Vertical Line -->
+                    <div class="absolute left-[13.5px] top-2 bottom-2 w-0.5 bg-slate-100"></div>
                     
                     <!-- Pending -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-6 h-6 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center z-10">
-                            <span class="material-symbols-outlined text-[12px] text-emerald-500">check</span>
+                        <div class="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center z-10 shrink-0 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600"><path d="M20 6L9 17l-5-5"/></svg>
                         </div>
                         <div>
                             <p class="text-sm font-semibold text-on-surface">Pesanan Diterima</p>
@@ -297,11 +312,11 @@
 
                     <!-- In Production -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-6 h-6 rounded-full {{ $order->status != 'PENDING' ? 'bg-primary/10 border-2 border-primary' : 'bg-slate-100 border-2 border-slate-200' }} flex items-center justify-center z-10">
+                        <div class="w-7 h-7 rounded-full {{ $order->status != 'PENDING' ? 'bg-primary-fixed border border-primary/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
                             @if($order->status != 'PENDING')
-                                <span class="material-symbols-outlined text-[12px] text-primary fill">factory</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M2 20V9l4-2 4 2 4-2 4 2 4-2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>
                             @else
-                                <span class="material-symbols-outlined text-[12px] text-slate-400">circle</span>
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
                             @endif
                         </div>
                         <div>
@@ -318,11 +333,11 @@
 
                     <!-- Finished -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-6 h-6 rounded-full {{ $order->status == 'FINISHED' ? 'bg-emerald-50 text-emerald-600 border-2 border-emerald-600' : 'bg-slate-100 border-2 border-slate-200' }} flex items-center justify-center z-10">
+                        <div class="w-7 h-7 rounded-full {{ $order->status == 'FINISHED' ? 'bg-emerald-50 border border-emerald-600/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
                             @if($order->status == 'FINISHED')
-                                <span class="material-symbols-outlined text-[12px] text-emerald-600">check</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600"><path d="M20 6L9 17l-5-5"/></svg>
                             @else
-                                <span class="material-symbols-outlined text-[12px] text-slate-400">circle</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="M10 17h4V5H2v12h3m1 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m-3 0h1m2 0h3l1-4h-7z"/></svg>
                             @endif
                         </div>
                         <div>
