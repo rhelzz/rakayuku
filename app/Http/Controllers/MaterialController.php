@@ -22,12 +22,10 @@ class MaterialController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'unit' => 'required|string|max:20',
         ]);
 
         Material::create([
             'name' => $request->name,
-            'unit' => $request->unit,
             'current_qty' => 0,
             'avg_price' => 0,
         ]);
@@ -44,10 +42,9 @@ class MaterialController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'unit' => 'required|string|max:20',
         ]);
 
-        $material->update($request->only(['name', 'unit']));
+        $material->update($request->only(['name']));
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil diperbarui.');
     }
