@@ -6,7 +6,9 @@
 <div class="max-w-2xl mx-auto">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
-        <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Bahan Baku</a>
+        <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+        <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Inventaris</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
         <span class="text-on-surface">Edit Bahan</span>
     </nav>
@@ -28,23 +30,9 @@
             <div class="space-y-4">
                 <div class="space-y-1.5">
                     <label for="name" class="block font-medium text-slate-700 text-sm">Nama Bahan <span class="text-error">*</span></label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $material->name) }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="misal: Kayu Jati Grade A">
+                    <input type="text" name="name" id="name" value="{{ old('name', $material->name) }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="misal: Kayu Jati (m3) atau Lem Kuning (kaleng)">
+                    <p class="text-[11px] text-slate-400 mt-1 italic">Sertakan satuan dalam nama jika diperlukan agar memudahkan pengelolaan.</p>
                     @error('name')
-                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-                
-                <div class="space-y-1.5">
-                    <label for="unit" class="block font-medium text-slate-700 text-sm">Satuan Ukuran <span class="text-error">*</span></label>
-                    <select name="unit" id="unit" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none @error('unit') border-error @enderror">
-                        <option value="pcs" {{ old('unit', $material->unit) == 'pcs' ? 'selected' : '' }}>Buah (pcs)</option>
-                        <option value="bd ft" {{ old('unit', $material->unit) == 'bd ft' ? 'selected' : '' }}>Board Foot (bd ft)</option>
-                        <option value="m3" {{ old('unit', $material->unit) == 'm3' ? 'selected' : '' }}>Meter Kubik (m3)</option>
-                        <option value="meter" {{ old('unit', $material->unit) == 'meter' ? 'selected' : '' }}>Meter (m)</option>
-                        <option value="gal" {{ old('unit', $material->unit) == 'gal' ? 'selected' : '' }}>Galon (gal)</option>
-                        <option value="set" {{ old('unit', $material->unit) == 'set' ? 'selected' : '' }}>Set</option>
-                    </select>
-                    @error('unit')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
                 </div>

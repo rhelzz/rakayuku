@@ -7,6 +7,8 @@
     <!-- Breadcrumbs & Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
             <a href="{{ route('materials.index') }}" class="hover:text-primary transition-colors">Inventaris</a>
             <span class="material-symbols-outlined text-[14px]">chevron_right</span>
             <span class="text-on-surface">Riwayat Bahan</span>
@@ -19,14 +21,14 @@
                 </div>
                 <div>
                     <h2 class="font-headline-md text-headline-md text-on-surface">{{ $material->name }}</h2>
-                    <p class="font-body-sm text-body-sm text-slate-500">ID: {{ $material->id }} | Satuan: {{ $material->unit }}</p>
+                    <p class="font-body-sm text-body-sm text-slate-500">ID: {{ $material->id }}</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-6 px-6 py-3 bg-surface-container-low border border-surface-variant rounded-xl">
                 <div class="text-center">
                     <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Stok Saat Ini</p>
-                    <p class="text-xl font-bold text-on-surface">{{ number_format($material->current_qty) }} <span class="text-xs font-normal text-slate-500">{{ $material->unit }}</span></p>
+                    <p class="text-xl font-bold text-on-surface">{{ number_format($material->current_qty) }}</p>
                 </div>
                 <div class="w-px h-8 bg-surface-variant"></div>
                 <div class="text-center">

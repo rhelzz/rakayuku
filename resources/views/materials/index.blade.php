@@ -3,22 +3,30 @@
 @section('title', 'Inventaris & Bahan Baku')
 
 @section('content')
-<div>
+<div class="space-y-6">
     <!-- Page Header -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Inventaris & Bahan Baku</h2>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">Kelola katalog bahan baku dan pantau ketersediaan stok fisik.</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-            <a href="{{ route('inventory.movements') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center space-x-2">
-                <span class="material-symbols-outlined text-[18px]">history</span>
-                <span>Log Transaksi Stok</span>
-            </a>
-            <a href="{{ route('materials.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary-hover transition-all flex items-center space-x-2 shadow-lg shadow-primary/20">
-                <span class="material-symbols-outlined text-[18px]">add</span>
-                <span>Registrasi Bahan Baru</span>
-            </a>
+    <div class="flex flex-col gap-4">
+        <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
+            <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span class="text-on-surface">Inventaris</span>
+        </nav>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Inventaris & Bahan Baku</h2>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Kelola katalog bahan baku dan pantau ketersediaan stok fisik.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('inventory.movements') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-[18px]">history</span>
+                    <span>Log Transaksi Stok</span>
+                </a>
+                <a href="{{ route('materials.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary-hover transition-all flex items-center space-x-2 shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <span>Registrasi Bahan Baru</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -86,8 +94,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-red-600 font-bold @endif">
-                                {{ number_format($material->current_qty, 0, ',', '.') }} <span class="text-slate-500 text-[11px] font-normal">{{ $material->unit }}</span>
+                            <td class="px-4 py-3 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">
+                                {{ number_format($material->current_qty, 0, ',', '.') }}
                             </td>
                             <td class="px-4 py-3 text-right font-data-mono text-data-mono">
                                 Rp {{ number_format($material->avg_price, 0, ',', '.') }}
