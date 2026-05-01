@@ -27,6 +27,9 @@ class OrderService
                 'payment_status' => ($data['dp_amount'] ?? 0) > 0 ? Order::PAYMENT_PARTIAL : Order::PAYMENT_UNPAID,
             ]);
 
+            // Increment customer order count
+            $order->customer->increment('orders_count');
+
             if (($data['dp_amount'] ?? 0) > 0) {
                 Payment::create([
                     'order_id' => $order->id,
