@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -17,7 +18,7 @@ class OrderService
         return DB::transaction(function () use ($data) {
             $order = Order::create([
                 'customer_id' => $data['customer_id'],
-                'order_number' => $data['order_number'] ?? uniqid('ORD-'),
+                'order_number' => $data['order_number'] ?? $this->generateOrderNumber($data['customer_id']),
                 'project_name' => $data['project_name'],
                 'project_description' => $data['project_description'] ?? null,
                 'deadline' => $data['deadline'] ?? null,
@@ -53,7 +54,7 @@ class OrderService
     }
 
     /**
-     * Finish Order Production and calculate Profit
+     * Finish Order Production and transition to Delivering
      */
     public function finishOrder(Order $order)
     {
@@ -69,11 +70,27 @@ class OrderService
             $profit = $sellingPrice - $totalCost;
 
             $order->update([
-                'status' => Order::STATUS_FINISHED,
+                'status' => Order::STATUS_DELIVERING,
                 'total_cost' => $totalCost,
                 'profit' => $profit,
             ]);
 
+            return $order;
+        });
+    }
+
+    /**
+     * Mark as delivered and decide final status based on payment
+     */
+    public function markAsDelivered(Order $order)
+    {
+        return DB::transaction(function () use ($order) {
+            $newStatus = $order->payment_status === Order::PAYMENT_PAID 
+                ? Order::STATUS_FINISHED 
+                : Order::STATUS_UNPAID_DELIVERED;
+
+            $order->update(['status' => $newStatus]);
+            
             return $order;
         });
     }
@@ -94,12 +111,43 @@ class OrderService
             $totalPaid = $order->payments()->sum('amount');
             $status = $totalPaid >= $order->selling_price ? Order::PAYMENT_PAID : Order::PAYMENT_PARTIAL;
 
-            $order->update([
-                'dp_amount' => $totalPaid, // Note: using dp_amount field to store total paid for now as per old schema but it should probably be renamed or handled via payments relation
+            $updateData = [
+                'dp_amount' => $totalPaid,
                 'payment_status' => $status
-            ]);
+            ];
+
+            // If it was unpaid delivered and now fully paid, mark as finished
+            if ($status === Order::PAYMENT_PAID && $order->status === Order::STATUS_UNPAID_DELIVERED) {
+                $updateData['status'] = Order::STATUS_FINISHED;
+            }
+
+            $order->update($updateData);
 
             return $order;
         });
+    }
+    /**
+     * Generate Auto Order Number
+     * Format: ORDER-DDMMYYYY-FIRSTNAME
+     */
+    private function generateOrderNumber($customerId): string
+    {
+        $customer = Customer::find($customerId);
+        $date = now()->format('dmY');
+        $nameParts = explode(' ', trim($customer->name));
+        $firstName = strtoupper($nameParts[0]);
+        
+        $base = "ORDER-{$date}-{$firstName}";
+        
+        $orderNumber = $base;
+        $counter = 1;
+        
+        // Ensure uniqueness by appending counter if necessary
+        while (Order::where('order_number', $orderNumber)->exists()) {
+            $orderNumber = $base . '-' . sprintf('%02d', $counter);
+            $counter++;
+        }
+        
+        return $orderNumber;
     }
 }
