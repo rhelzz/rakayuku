@@ -33,15 +33,16 @@ class PurchaseController extends Controller
         $request->validate([
             'supplier_name' => 'nullable|string|max:255',
             'invoice_number' => 'nullable|string|max:255',
-            'purchase_date' => 'required|date',
+            'invoice_proof' => 'nullable|image|max:3072', // Max 3MB
+            'purchase_date' => 'required|date|before_or_equal:today',
             'items' => 'required|array|min:1',
             'items.*.material_id' => 'required|exists:materials,id',
-            'items.*.qty' => 'required|numeric|min:0.01',
+            'items.*.qty' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
         try {
-            $this->purchaseService->createPurchase($request->only(['supplier_name', 'invoice_number', 'purchase_date']), $request->items);
+            $this->purchaseService->createPurchase($request->all(), $request->items);
             return redirect()->route('purchases.index')->with('success', 'Pembelian berhasil dicatat dan stok telah diperbarui.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());

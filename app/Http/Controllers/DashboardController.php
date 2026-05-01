@@ -12,19 +12,26 @@ class DashboardController extends Controller
     public function index()
     {
         $totalOrders = Order::count('*');
-        $pendingOrders = Order::where('status', '=', 'PENDING', 'and')->count('*');
-        $inProductionOrders = Order::where('status', '=', 'IN_PRODUCTION', 'and')->count('*');
-        $finishedOrders = Order::where('status', '=', 'FINISHED', 'and')->count('*');
+        $pendingOrders = Order::where('status', '=', Order::STATUS_PENDING, 'and')->count('*');
+        $inProductionOrders = Order::where('status', '=', Order::STATUS_IN_PRODUCTION, 'and')->count('*');
+        $finishedOrders = Order::where('status', '=', Order::STATUS_FINISHED, 'and')->count('*');
         
-        $totalProfit = Order::where('status', '=', 'FINISHED', 'and')->sum('profit');
+        // Financial Metrics
+        $totalProfit = Order::where('status', '=', Order::STATUS_FINISHED, 'and')->sum('profit');
         
-        $lowStockMaterials = Material::where('current_qty', '<', 5, 'and')->get();
+        // Total Piutang (Remaining Payments from non-paid orders)
+        $totalReceivable = Order::all()->sum(function($order) {
+            return $order->remaining_payment;
+        });
+        
+        // Critical Inventory (Less than 2 units)
+        $lowStockMaterials = Material::where('current_qty', '<', 2, 'and')->get();
 
         $recentOrders = Order::with('customer')->latest()->take(5)->get();
 
         return view('dashboard', compact(
             'totalOrders', 'pendingOrders', 'inProductionOrders', 'finishedOrders',
-            'totalProfit', 'lowStockMaterials', 'recentOrders'
+            'totalProfit', 'totalReceivable', 'lowStockMaterials', 'recentOrders'
         ));
     }
 }
