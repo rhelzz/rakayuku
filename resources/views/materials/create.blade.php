@@ -27,19 +27,25 @@
             <div class="space-y-4">
                 <div class="space-y-1.5">
                     <label for="name" class="block font-medium text-slate-700 text-sm">Nama Bahan <span class="text-error">*</span></label>
-                    <input type="text" name="name" id="name" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="misal: Kayu Jati Grade A">
+                    <input type="text" name="name" id="name" value="{{ old('name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="misal: Kayu Jati Grade A">
+                    @error('name')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
                 
                 <div class="space-y-1.5">
                     <label for="unit" class="block font-medium text-slate-700 text-sm">Satuan Ukuran <span class="text-error">*</span></label>
-                    <select name="unit" id="unit" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none">
-                        <option value="pcs">Buah (pcs)</option>
-                        <option value="bd ft">Board Foot (bd ft)</option>
-                        <option value="m3">Meter Kubik (m3)</option>
-                        <option value="meter">Meter (m)</option>
-                        <option value="gal">Galon (gal)</option>
-                        <option value="set">Set</option>
+                    <select name="unit" id="unit" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none @error('unit') border-error @enderror">
+                        <option value="pcs" {{ old('unit') == 'pcs' ? 'selected' : '' }}>Buah (pcs)</option>
+                        <option value="bd ft" {{ old('unit') == 'bd ft' ? 'selected' : '' }}>Board Foot (bd ft)</option>
+                        <option value="m3" {{ old('unit') == 'm3' ? 'selected' : '' }}>Meter Kubik (m3)</option>
+                        <option value="meter" {{ old('unit') == 'meter' ? 'selected' : '' }}>Meter (m)</option>
+                        <option value="gal" {{ old('unit') == 'gal' ? 'selected' : '' }}>Galon (gal)</option>
+                        <option value="set" {{ old('unit') == 'set' ? 'selected' : '' }}>Set</option>
                     </select>
+                    @error('unit')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
