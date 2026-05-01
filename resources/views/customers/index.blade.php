@@ -28,6 +28,7 @@
                 <thead class="bg-surface-container sticky top-0 z-10">
                     <tr>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Nama Klien</th>
+                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Email</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Telepon</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Alamat</th>
                         <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant text-right">Aksi</th>
@@ -37,8 +38,9 @@
                     @forelse($customers as $c)
                     <tr class="hover:bg-surface-container-high/50 transition-colors group">
                         <td class="px-4 py-3 font-medium text-on-surface">{{ $c->name }}</td>
-                        <td class="px-4 py-3 text-slate-400">{{ $c->phone ?? '-' }}</td>
-                        <td class="px-4 py-3 text-slate-400 truncate max-w-xs">{{ $c->address ?? '-' }}</td>
+                        <td class="px-4 py-3 text-slate-400">{{ $c->email ?? '-' }}</td>
+                        <td class="px-4 py-3 text-slate-400">{{ $c->phone }}</td>
+                        <td class="px-4 py-3 text-slate-400 truncate max-w-xs">{{ $c->address }}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-2">
                                 <a href="{{ route('customers.edit', $c) }}" class="text-slate-400 hover:text-primary transition-colors">
