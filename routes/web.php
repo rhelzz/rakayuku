@@ -22,6 +22,8 @@ Route::resource('purchases', PurchaseController::class)->only(['index', 'create'
 Route::resource('orders', OrderController::class)->except(['edit', 'update', 'destroy']);
 Route::post('orders/{order}/start-production', [OrderController::class, 'startProduction'])->name('orders.start-production');
 Route::post('orders/{order}/finish-production', [OrderController::class, 'finishProduction'])->name('orders.finish-production');
+Route::post('orders/{order}/mark-delivered', [OrderController::class, 'markAsDelivered'])->name('orders.mark-delivered');
+Route::get('orders/{order}/print', [OrderController::class, 'printInvoice'])->name('orders.print');
 Route::post('orders/{order}/pay', [OrderController::class, 'pay'])->name('orders.pay');
 
 // Production Phase (Materials & Additional Costs)
