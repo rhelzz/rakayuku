@@ -27,9 +27,10 @@ class OrderController extends Controller
         
         $pendingOrders = $orders->where('status', Order::STATUS_PENDING);
         $inProductionOrders = $orders->where('status', Order::STATUS_IN_PRODUCTION);
+        $deliveryOrders = $orders->whereIn('status', [Order::STATUS_DELIVERING, Order::STATUS_UNPAID_DELIVERED]);
         $finishedOrders = $orders->where('status', Order::STATUS_FINISHED);
 
-        return view('orders.index', compact('pendingOrders', 'inProductionOrders', 'finishedOrders'));
+        return view('orders.index', compact('orders', 'pendingOrders', 'inProductionOrders', 'deliveryOrders', 'finishedOrders'));
     }
 
     public function create()
@@ -79,10 +80,30 @@ class OrderController extends Controller
     {
         try {
             $this->orderService->finishOrder($order);
-            return back()->with('success', 'Produksi telah selesai. HPP dan Profit telah dikalkulasi secara final.');
+            return back()->with('success', 'Produksi selesai. Proyek sekarang dalam tahap pengantaran.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    public function markAsDelivered(Order $order)
+    {
+        try {
+            $this->orderService->markAsDelivered($order);
+            $message = $order->status === Order::STATUS_FINISHED 
+                ? 'Proyek telah selesai dan lunas.' 
+                : 'Proyek telah diantar, namun masih ada sisa pembayaran (Hutang).';
+            
+            return back()->with('success', $message);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function printInvoice(Order $order)
+    {
+        $order->load(['customer', 'payments']);
+        return view('orders.print', compact('order'));
     }
 
     public function pay(Request $request, Order $order)
@@ -94,7 +115,10 @@ class OrderController extends Controller
 
         try {
             $this->orderService->payOrder($order, $request->input('amount'), $request->input('type'));
-            return back()->with('success', 'Pembayaran berhasil ditambahkan.');
+            return back()->with([
+                'success' => 'Pembayaran berhasil ditambahkan.',
+                'active_tab' => 'payments'
+            ]);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -110,7 +134,10 @@ class OrderController extends Controller
         try {
             $material = Material::findOrFail($request->input('material_id'));
             $this->productionService->addMaterialToOrder($order, $material, $request->input('qty'));
-            return back()->with('success', 'Bahan baku berhasil ditambahkan ke proyek.');
+            return back()->with([
+                'success' => 'Bahan baku berhasil ditambahkan ke proyek.',
+                'active_tab' => 'materials'
+            ]);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -120,7 +147,10 @@ class OrderController extends Controller
     {
         try {
             $this->productionService->removeMaterialFromOrder($orderMaterial);
-            return back()->with('success', 'Bahan baku berhasil dihapus dari proyek dan stok dikembalikan.');
+            return back()->with([
+                'success' => 'Bahan baku berhasil dihapus dari proyek dan stok dikembalikan.',
+                'active_tab' => 'materials'
+            ]);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -136,7 +166,10 @@ class OrderController extends Controller
 
         try {
             $this->productionService->addProductionCost($order, $request->input('type'), $request->input('amount'), $request->input('description'));
-            return back()->with('success', 'Biaya tambahan berhasil dicatat.');
+            return back()->with([
+                'success' => 'Biaya tambahan berhasil dicatat.',
+                'active_tab' => 'costs'
+            ]);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }

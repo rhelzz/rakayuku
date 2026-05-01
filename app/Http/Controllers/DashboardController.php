@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
         $totalOrders = Order::count('*');
         $pendingOrders = Order::where('status', '=', Order::STATUS_PENDING, 'and')->count('*');
-        $inProductionOrders = Order::where('status', '=', Order::STATUS_IN_PRODUCTION, 'and')->count('*');
+        $activeOrders = Order::whereIn('status', [Order::STATUS_IN_PRODUCTION, Order::STATUS_DELIVERING, Order::STATUS_UNPAID_DELIVERED])->count('*');
         $finishedOrders = Order::where('status', '=', Order::STATUS_FINISHED, 'and')->count('*');
         
         // Financial Metrics
@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $recentOrders = Order::with('customer')->latest()->take(5)->get();
 
         return view('dashboard', compact(
-            'totalOrders', 'pendingOrders', 'inProductionOrders', 'finishedOrders',
+            'totalOrders', 'pendingOrders', 'activeOrders', 'finishedOrders',
             'totalProfit', 'totalReceivable', 'lowStockMaterials', 'recentOrders'
         ));
     }

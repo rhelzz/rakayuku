@@ -18,7 +18,7 @@ class PurchaseController extends Controller
 
     public function index()
     {
-        $purchases = Purchase::latest('created_at')->get(['*']);
+        $purchases = Purchase::latest('created_at')->paginate(15, ['*']);
         return view('purchases.index', compact('purchases'));
     }
 

@@ -9,7 +9,7 @@ class MaterialController extends Controller
 {
     public function index()
     {
-        $materials = Material::latest('created_at')->get(['*']);
+        $materials = Material::latest('created_at')->paginate(15, ['*']);
         return view('materials.index', compact('materials'));
     }
 
