@@ -74,9 +74,9 @@ export default {
         "lg": "24px"
       },
       fontFamily: {
-        "inter": ["Inter", "sans-serif"],
-        "display": ["Inter", "sans-serif"],
-        "body": ["Inter", "sans-serif"]
+        "poppins": ["Poppins", "sans-serif"],
+        "display": ["Poppins", "sans-serif"],
+        "body": ["Poppins", "sans-serif"]
       },
       fontSize: {
         "headline-md": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
