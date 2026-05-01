@@ -6,53 +6,69 @@
     <title>@yield('title', 'Dashboard') - Rakayuku ERP</title>
     
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
     <!-- Scripts & Styles -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <style>
-        body { background-color: #f8fafc; color: #0f172a; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; color: #0f172a; }
         .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(203, 213, 225, 0.5); }
-        .font-body-md { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 20px; }
-        .font-display-lg { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 700; line-height: 40px; }
-        .font-label-caps { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; line-height: 16px; letter-spacing: 0.05em; }
-        .font-title-sm { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; line-height: 24px; }
-        .font-data-mono { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; line-height: 16px; }
+        .font-body-md { font-family: 'Poppins', sans-serif; font-size: 14px; line-height: 20px; }
+        .font-display-lg { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700; line-height: 40px; }
+        .font-label-caps { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 700; line-height: 16px; letter-spacing: 0.05em; }
+        .font-title-sm { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; line-height: 24px; }
+        .font-data-mono { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; line-height: 16px; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden bg-background font-body-md text-on-background">
 
 <!-- SideNavBar -->
-<nav class="hidden md:flex flex-col py-6 h-screen w-64 bg-white border-r border-slate-200 shadow-sm font-inter text-[13px] font-medium z-50 shrink-0">
+<nav class="hidden md:flex flex-col py-6 h-screen w-64 bg-white border-r border-slate-200 shadow-sm font-poppins text-[13px] font-medium z-50 shrink-0">
     <div class="px-6 mb-8">
         <h1 class="text-primary font-black text-xl tracking-tight">Rakayuku</h1>
         <p class="text-slate-500 text-[11px] mt-1">Sistem Manajemen Furnitur</p>
     </div>
     
-    <div class="flex-1 px-4 space-y-1">
+    <div class="flex-1 px-4 space-y-1 overflow-y-auto" x-data="{ 
+        openMenu: '{{ request()->routeIs('materials.*') || request()->routeIs('inventory.*') ? 'inventory' : '' }}' 
+    }">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('dashboard') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('dashboard') ? "font-variation-settings: 'FILL' 1;" : '' }}">dashboard</span>
             Dashboard
         </a>
         
-        <a href="{{ route('materials.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('materials.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
-            <span class="material-symbols-outlined" style="{{ request()->routeIs('materials.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">inventory_2</span>
-            Inventaris
-        </a>
+        <!-- Inventaris (Tetap Sub-menu) -->
+        <div class="space-y-1">
+            <button @click="openMenu = (openMenu === 'inventory' ? '' : 'inventory')" class="w-full flex items-center justify-between px-3 py-2.5 rounded {{ request()->routeIs('materials.*') || request()->routeIs('inventory.*') ? 'bg-amber-50 text-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined" style="{{ request()->routeIs('materials.*') || request()->routeIs('inventory.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">inventory_2</span>
+                    Inventaris
+                </div>
+                <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="openMenu === 'inventory' ? 'rotate-180' : ''">expand_more</span>
+            </button>
+            <div x-show="openMenu === 'inventory'" x-collapse x-cloak class="pl-10 space-y-1">
+                <a href="{{ route('materials.index') }}" class="block py-2 px-3 rounded {{ request()->routeIs('materials.index') ? 'text-primary font-bold' : 'text-slate-500 hover:text-slate-900' }}">Daftar Bahan</a>
+                <a href="{{ route('inventory.movements') }}" class="block py-2 px-3 rounded {{ request()->routeIs('inventory.movements') ? 'text-primary font-bold' : 'text-slate-500 hover:text-slate-900' }}">Log Pergerakan</a>
+            </div>
+        </div>
         
+        <!-- Pembelian (Kembali Link Tunggal) -->
         <a href="{{ route('purchases.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('purchases.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('purchases.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">shopping_bag</span>
             Pembelian
         </a>
 
+        <!-- Pesanan (Kembali Link Tunggal) -->
         <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('orders.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('orders.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">shopping_cart</span>
             Pesanan
         </a>
         
+        <!-- Pelanggan (Kembali Link Tunggal) -->
         <a href="{{ route('customers.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('customers.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('customers.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">group</span>
             Pelanggan
