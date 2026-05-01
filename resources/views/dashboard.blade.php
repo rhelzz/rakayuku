@@ -57,20 +57,21 @@
             <div class="flex items-baseline gap-1 mt-2">
                 <span class="font-body-md text-body-md text-on-surface-variant">Rp</span>
                 <span class="font-headline-md text-headline-md text-on-background">{{ number_format($totalProfit, 0, ',', '.') }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary ml-1">Akumulasi</span>
+                <span class="font-body-sm text-body-sm text-tertiary ml-1">Selesai</span>
             </div>
         </div>
 
-        <!-- Metric 4: Pending Orders -->
-        <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group">
+        <!-- Metric 4: Total Receivable -->
+        <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group border-l-4 border-l-amber-500">
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span class="material-symbols-outlined text-6xl text-primary-container">schedule</span>
+                <span class="material-symbols-outlined text-6xl text-amber-500">account_balance_wallet</span>
             </div>
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Pesanan Menunggu</span>
-            <div class="flex items-baseline gap-2 mt-2">
-                <span class="font-display-lg text-display-lg text-on-background">{{ $pendingOrders }}</span>
-                <span class="font-body-sm text-body-sm text-on-surface-variant">Menunggu produksi</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Piutang</span>
+            <div class="flex items-baseline gap-1 mt-2">
+                <span class="font-body-md text-body-md text-on-surface-variant">Rp</span>
+                <span class="font-headline-md text-headline-md text-on-background">{{ number_format($totalReceivable, 0, ',', '.') }}</span>
             </div>
+            <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Sisa tagihan pelanggan</span>
         </div>
     </div>
 
