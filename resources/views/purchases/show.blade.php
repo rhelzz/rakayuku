@@ -1,82 +1,101 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Pembelian - ' . ($purchase->invoice_number ?? $purchase->id))
+@section('title', 'Detail Invoice Pembelian')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Breadcrumbs & Header -->
-    <div class="flex flex-col gap-4">
-        <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
-            <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
-            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span class="text-on-surface">Detail Penerimaan</span>
-        </nav>
-        
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="h-14 w-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary border border-surface-variant">
-                    <span class="material-symbols-outlined text-3xl">receipt_long</span>
-                </div>
-                <div>
-                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $purchase->invoice_number ?? 'Penerimaan Manual' }}</h2>
-                    <p class="font-body-sm text-body-sm text-slate-500">Pemasok: {{ $purchase->supplier_name ?? 'Input Manual' }} | Tanggal: {{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-6 px-6 py-3 bg-surface-container-low border border-surface-variant rounded-xl">
-                <div class="text-center">
-                    <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Total Transaksi</p>
-                    <p class="text-xl font-bold text-primary">Rp {{ number_format($purchase->total_price, 0, ',', '.') }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="max-w-5xl mx-auto">
+    <!-- Breadcrumbs -->
+    <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
+        <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+        <span class="text-on-surface">Detail Invoice</span>
+    </nav>
 
-    <!-- Items Table -->
-    <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden">
-        <div class="p-4 border-b border-surface-variant bg-surface-container-lowest/50">
-            <h3 class="font-title-sm text-title-sm text-on-surface">Item yang Dibeli</h3>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+                        </div>
+                        <div>
+                            <h3 class="font-headline-sm text-on-surface">Invoice #{{ $purchase->invoice_number ?? 'Tanpa Nomor' }}</h3>
+                            <p class="text-[11px] text-slate-500 uppercase font-bold tracking-wider">{{ $purchase->supplier_name ?? 'Pemasok Umum' }}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-label-caps text-slate-400 uppercase">Tanggal Belanja</p>
+                        <p class="text-sm font-bold text-on-surface">{{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</p>
+                    </div>
+                </div>
+
+                <div class="p-0 overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50/50">
+                            <tr class="border-b border-surface-variant">
+                                <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px]">Bahan Baku</th>
+                                <th class="py-3 px-4 font-label-caps text-slate-500 uppercase text-[10px] text-right">Jumlah</th>
+                                <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px] text-right">Harga Satuan</th>
+                                <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px] text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-variant/30">
+                            @foreach($purchase->items as $item)
+                            <tr class="hover:bg-slate-50/30 transition-colors">
+                                <td class="py-4 px-6 text-sm font-medium text-on-surface">{{ $item->material->name }}</td>
+                                <td class="py-4 px-4 text-sm text-right font-data-mono">{{ number_format($item->qty, 2) }} {{ $item->material->unit }}</td>
+                                <td class="py-4 px-6 text-sm text-right font-data-mono text-slate-500">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                                <td class="py-4 px-6 text-sm text-right font-bold text-on-surface">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot class="bg-slate-50/80 font-bold border-t border-surface-variant">
+                            <tr>
+                                <td colspan="3" class="py-4 px-6 text-sm text-slate-600 text-right">Total Pembayaran</td>
+                                <td class="py-4 px-6 text-right text-primary font-data-mono text-lg">
+                                    Rp {{ number_format($purchase->total_price, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="border-b border-surface-container-high bg-surface-container-low/50">
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Bahan</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Jumlah</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Harga Satuan</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody class="font-body-sm text-body-sm">
-                    @foreach($purchase->items as $item)
-                        <tr class="border-b border-surface-container-high hover:bg-surface-container/50 transition-colors">
-                            <td class="p-3 px-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="material-symbols-outlined text-slate-500">inventory_2</span>
-                                    <span class="text-on-surface font-medium">{{ $item->material->name }}</span>
-                                </div>
-                            </td>
-                            <td class="p-3 px-4 text-right text-on-surface-variant font-data-mono">
-                                {{ number_format($item->qty) }} {{ $item->material->unit }}
-                            </td>
-                            <td class="p-3 px-4 text-right text-on-surface-variant font-data-mono">
-                                Rp {{ number_format($item->price, 0, ',', '.') }}
-                            </td>
-                            <td class="p-3 px-4 text-right font-bold text-on-surface font-data-mono">
-                                Rp {{ number_format($item->subtotal, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot class="bg-surface-container-lowest/30">
-                    <tr>
-                        <td colspan="3" class="p-4 text-right font-label-caps text-slate-500 uppercase">Total Keseluruhan</td>
-                        <td class="p-4 text-right text-lg font-black text-primary font-data-mono">
-                            Rp {{ number_format($purchase->total_price, 0, ',', '.') }}
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+
+        <!-- Sidebar: Invoice Proof -->
+        <div class="space-y-6">
+            <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden h-fit sticky top-6">
+                <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50">
+                    <h3 class="font-headline-sm text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">image</span>
+                        Lampiran Bukti
+                    </h3>
+                </div>
+                
+                <div class="p-6">
+                    @if($purchase->invoice_proof)
+                        <div class="space-y-4">
+                            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50 group relative">
+                                <img src="{{ asset('storage/' . $purchase->invoice_proof) }}" class="w-full h-auto object-contain max-h-[400px]">
+                                <a href="{{ asset('storage/' . $purchase->invoice_proof) }}" target="_blank" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-semibold gap-2">
+                                    <span class="material-symbols-outlined">zoom_in</span> Lihat Penuh
+                                </a>
+                            </div>
+                            <a href="{{ asset('storage/' . $purchase->invoice_proof) }}" download class="w-full py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold hover:bg-slate-50 text-center flex items-center justify-center gap-2 text-sm transition-all">
+                                <span class="material-symbols-outlined text-[18px]">download</span>
+                                Unduh Gambar
+                            </a>
+                        </div>
+                    @else
+                        <div class="py-12 px-4 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+                            <span class="material-symbols-outlined text-4xl text-slate-300">no_photography</span>
+                            <p class="text-xs text-slate-500 mt-2">Tidak ada bukti invoice yang diupload.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>

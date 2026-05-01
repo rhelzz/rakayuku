@@ -1,115 +1,203 @@
 @extends('layouts.app')
 
-@section('title', 'Catat Pembelian Baru')
+@section('title', 'Catat Pembelian Bahan (Invoice)')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-5xl mx-auto" x-data="purchaseForm()">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
         <a href="{{ route('purchases.index') }}" class="hover:text-primary transition-colors">Pembelian</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span class="text-on-surface">Pembelian Baru</span>
+        <span class="text-on-surface">Invoice Baru</span>
     </nav>
 
-    <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-xl" x-data="{ 
-        items: [{ material_id: '', qty: '', price: '' }],
-        add() { this.items.push({ material_id: '', qty: '', price: '' }) },
-        remove(index) { this.items.splice(index, 1) }
-    }">
-        <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 blur-2xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-            <div class="flex items-center space-x-3 mb-1 relative z-10">
-                <span class="material-symbols-outlined text-primary text-3xl">shopping_cart_checkout</span>
-                <h3 class="font-headline-md text-headline-md text-on-surface">Catat Pembelian Baru</h3>
-            </div>
-            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Catat penerimaan bahan baku baru dan perbarui stok inventaris.</p>
-        </div>
+    <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        @csrf
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Invoice Info -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50">
+                        <h3 class="font-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">receipt_long</span>
+                            Informasi Invoice
+                        </h3>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label for="supplier_name" class="block font-medium text-slate-700 text-sm">Nama Pemasok / Toko</label>
+                            <input type="text" name="supplier_name" id="supplier_name" value="{{ old('supplier_name') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all @error('supplier_name') border-error @enderror" placeholder="misal: UD. Rimba Jaya">
+                            @error('supplier_name') <p class="text-[11px] text-error mt-1">{{ $message }}</p> @enderror
+                        </div>
 
-        <form action="{{ route('purchases.store') }}" method="POST" class="p-6 space-y-8">
-            @csrf
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Supplier Name -->
-                <div class="space-y-1.5">
-                    <label for="supplier_name" class="block font-medium text-slate-700 text-sm">Nama Pemasok</label>
-                    <input type="text" name="supplier_name" id="supplier_name" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="misal: Toko Kayu Sejahtera">
+                        <div class="space-y-1.5">
+                            <label for="invoice_number" class="block font-medium text-slate-700 text-sm">Nomor Invoice</label>
+                            <input type="text" name="invoice_number" id="invoice_number" value="{{ old('invoice_number') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all @error('invoice_number') border-error @enderror" placeholder="INV/{{ date('Y') }}/...">
+                            @error('invoice_number') <p class="text-[11px] text-error mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label for="purchase_date" class="block font-medium text-slate-700 text-sm">Tanggal Belanja <span class="text-error">*</span></label>
+                            <input type="date" name="purchase_date" id="purchase_date" value="{{ old('purchase_date', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all @error('purchase_date') border-error @enderror">
+                            @error('purchase_date') <p class="text-[11px] text-error mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Invoice Number -->
-                <div class="space-y-1.5">
-                    <label for="invoice_number" class="block font-medium text-slate-700 text-sm">Nomor Faktur / Kwitansi</label>
-                    <input type="text" name="invoice_number" id="invoice_number" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="INV/2026/...">
-                </div>
+                <!-- Items Section -->
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50 flex justify-between items-center">
+                        <h3 class="font-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">inventory_2</span>
+                            Daftar Bahan Baku
+                        </h3>
+                        <button type="button" @click="addItem()" class="px-4 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                            Tambah Baris
+                        </button>
+                    </div>
 
-                <!-- Purchase Date -->
-                <div class="space-y-1.5">
-                    <label for="purchase_date" class="block font-medium text-slate-700 text-sm">Tanggal Pembelian <span class="text-error">*</span></label>
-                    <input type="date" name="purchase_date" id="purchase_date" value="{{ date('Y-m-d') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
-                </div>
-            </div>
-
-            <!-- Items Table -->
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h4 class="font-title-sm text-title-sm text-on-surface">Item yang Dibeli</h4>
-                    <button type="button" @click="add()" class="text-primary hover:opacity-80 flex items-center gap-1 text-sm font-semibold">
-                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                        Tambah Item
-                    </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-surface-variant">
-                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px]">Bahan</th>
-                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px] w-24">Jumlah</th>
-                                <th class="py-2 px-1 font-label-caps text-slate-400 uppercase text-[11px] w-48">Harga Satuan</th>
-                                <th class="py-2 px-1 w-10"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-surface-variant/50">
-                            <template x-for="(item, index) in items" :key="index">
-                                <tr class="group">
-                                    <td class="py-3 px-1">
-                                        <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-1.5 text-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
-                                            <option disabled selected value="">Pilih Bahan</option>
-                                            @foreach($materials as $m)
-                                                <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td class="py-3 px-1">
-                                        <input type="number" :name="'items['+index+'][qty]'" required step="0.01" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-1.5 text-sm text-right font-data-mono focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="0">
-                                    </td>
-                                    <td class="py-3 px-1">
-                                        <div class="relative">
-                                            <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none text-slate-400 text-xs">Rp</div>
-                                            <input type="number" :name="'items['+index+'][price]'" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-7 pr-3 py-1.5 text-sm text-right font-data-mono focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" placeholder="0">
-                                        </div>
-                                    </td>
-                                    <td class="py-3 px-1 text-right">
-                                        <button type="button" @click="remove(index)" x-show="items.length > 1" class="text-slate-500 hover:text-error transition-colors">
-                                            <span class="material-symbols-outlined text-[20px]">delete</span>
-                                        </button>
-                                    </td>
+                    <div class="p-0 overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-slate-50/50">
+                                <tr class="border-b border-surface-variant">
+                                    <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px]">Bahan Baku</th>
+                                    <th class="py-3 px-4 font-label-caps text-slate-500 uppercase text-[10px] w-28">Jumlah</th>
+                                    <th class="py-3 px-4 font-label-caps text-slate-500 uppercase text-[10px] w-48 text-right">Harga Satuan</th>
+                                    <th class="py-3 px-6 w-12"></th>
                                 </tr>
-                            </template>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-surface-variant/30">
+                                <template x-for="(item, index) in items" :key="index">
+                                    <tr class="group hover:bg-slate-50/30 transition-colors">
+                                        <td class="py-4 px-6">
+                                            <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none transition-all">
+                                                <option disabled selected value="">-- Pilih Material --</option>
+                                                @foreach($materials as $m)
+                                                    <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <input type="number" :name="'items['+index+'][qty]'" required step="1" min="1" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs font-data-mono">Rp</div>
+                                                <input type="number" :name="'items['+index+'][price]'" required x-model="item.price" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl pl-8 pr-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-6 text-right">
+                                            <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-error/10 hover:text-error transition-all">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-slate-50/80 font-bold border-t border-surface-variant">
+                                    <td colspan="2" class="py-4 px-6 text-sm text-slate-600">Total Estimasi Belanja</td>
+                                    <td class="py-4 px-4 text-right text-primary font-data-mono">
+                                        Rp <span x-text="formatNumber(calculateTotal())"></span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="pt-6 border-t border-surface-variant flex justify-end gap-3">
-                <a href="{{ route('purchases.index') }}" class="px-5 py-2 rounded-lg border border-surface-variant text-slate-600 hover:bg-surface-container-high transition-colors font-medium text-sm">
-                    Batal
-                </a>
-                <button type="submit" class="px-6 py-2 bg-primary-container text-on-primary-container rounded-lg font-semibold hover:bg-primary transition-colors shadow-lg flex items-center gap-2 text-sm">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Simpan Pembelian
-                </button>
+            <!-- Right Column: Proof Upload -->
+            <div class="space-y-6">
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden h-fit sticky top-6">
+                    <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50">
+                        <h3 class="font-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">add_a_photo</span>
+                            Bukti Invoice
+                        </h3>
+                    </div>
+                    
+                    <div class="p-6 space-y-4">
+                        <div class="relative group border-2 border-dashed border-slate-200 rounded-2xl hover:border-primary transition-all bg-slate-50/50 p-4 text-center overflow-hidden min-h-[220px] flex flex-col items-center justify-center">
+                            <template x-if="!imageUrl">
+                                <div class="space-y-2">
+                                    <span class="material-symbols-outlined text-4xl text-slate-300 group-hover:text-primary transition-colors">cloud_upload</span>
+                                    <p class="text-xs text-slate-500 font-medium">Klik atau seret gambar ke sini</p>
+                                    <p class="text-[10px] text-slate-400">Format: JPG, PNG (Max 3MB)</p>
+                                </div>
+                            </template>
+
+                            <template x-if="imageUrl">
+                                <div class="relative w-full h-full">
+                                    <img :src="imageUrl" class="rounded-xl object-contain max-h-[300px] w-full shadow-sm mx-auto">
+                                    <button type="button" @click="removeImage()" class="absolute -top-2 -right-2 bg-error text-white w-7 h-7 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform">
+                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <input type="file" name="invoice_proof" class="absolute inset-0 opacity-0 cursor-pointer" @change="previewImage($event)" accept="image/*">
+                        </div>
+                        @error('invoice_proof') <p class="text-[11px] text-error">{{ $message }}</p> @enderror
+
+                        <div class="pt-4 space-y-3">
+                            <button type="submit" class="w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">save</span>
+                                Simpan Pembelian
+                            </button>
+                            <a href="{{ route('purchases.index') }}" class="w-full py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold hover:bg-slate-50 text-center block text-sm transition-colors">
+                                Batalkan
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
+
+<script>
+    function purchaseForm() {
+        return {
+            items: [{ material_id: '', qty: 0, price: 0 }],
+            imageUrl: null,
+
+            addItem() {
+                this.items.push({ material_id: '', qty: 0, price: 0 });
+            },
+
+            removeItem(index) {
+                this.items.splice(index, 1);
+            },
+
+            calculateTotal() {
+                return this.items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+            },
+
+            previewImage(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.imageUrl = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            },
+
+            removeImage() {
+                this.imageUrl = null;
+                document.querySelector('input[name="invoice_proof"]').value = '';
+            },
+
+            formatNumber(num) {
+                return new Intl.NumberFormat('id-ID').format(num);
+            }
+        }
+    }
+</script>
 @endsection
