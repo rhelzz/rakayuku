@@ -21,7 +21,7 @@ class ProductionService
     /**
      * Use material for order production
      */
-    public function addMaterialToOrder(Order $order, Material $material, int $qty)
+    public function addMaterialToOrder(Order $order, Material $material, float $qty)
     {
         return DB::transaction(function () use ($order, $material, $qty) {
             if ($order->status === 'FINISHED') {
@@ -47,6 +47,37 @@ class ProductionService
             $this->updateOrderTotalCost($order);
 
             return $orderMaterial;
+        });
+    }
+
+    /**
+     * Remove material from order and restore stock
+     */
+    public function removeMaterialFromOrder(OrderMaterial $orderMaterial)
+    {
+        return DB::transaction(function () use ($orderMaterial) {
+            $order = $orderMaterial->order;
+
+            if ($order->status === Order::STATUS_FINISHED) {
+                throw new Exception("Tidak bisa menghapus bahan dari pesanan yang sudah selesai.");
+            }
+
+            // Restore stock
+            $this->inventoryService->correctStock(
+                $orderMaterial->material,
+                $orderMaterial->qty_used,
+                'ADJUSTMENT',
+                $order
+            );
+
+            // Delete the usage record
+            /** @var OrderMaterial $orderMaterial */
+            OrderMaterial::destroy($orderMaterial->id);
+
+            // Recalculate total cost
+            $this->updateOrderTotalCost($order);
+
+            return $order;
         });
     }
 

@@ -22,9 +22,15 @@ class PurchaseService
     public function createPurchase(array $data, array $items)
     {
         return DB::transaction(function () use ($data, $items) {
+            $invoiceProof = null;
+            if (isset($data['invoice_proof']) && $data['invoice_proof'] instanceof \Illuminate\Http\UploadedFile) {
+                $invoiceProof = $data['invoice_proof']->store('invoices', 'public');
+            }
+
             $purchase = Purchase::create([
                 'supplier_name' => $data['supplier_name'] ?? null,
                 'invoice_number' => $data['invoice_number'] ?? null,
+                'invoice_proof' => $invoiceProof,
                 'purchase_date' => $data['purchase_date'] ?? now(),
                 'total_price' => 0, // Akan dihitung ulang
             ]);

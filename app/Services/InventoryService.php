@@ -79,4 +79,36 @@ class InventoryService
             return $material;
         });
     }
+
+    /**
+     * Correct stock (usually for reversing production usage or manual adjustment)
+     */
+    public function correctStock(Material $material, float $qty, string $type = 'ADJUSTMENT', ?object $reference = null)
+    {
+        return DB::transaction(function () use ($material, $qty, $type, $reference) {
+            $material = Material::lockForUpdate()->find($material->id);
+
+            $newQty = $material->current_qty + $qty;
+
+            if ($newQty < 0) {
+                throw new Exception("Koreksi stok akan menghasilkan nilai negatif for: {$material->name}");
+            }
+
+            $material->update([
+                'current_qty' => $newQty,
+            ]);
+
+            // Record movement
+            StockMovement::create([
+                'material_id' => $material->id,
+                'type' => $type,
+                'qty' => $qty,
+                'price_snapshot' => $material->avg_price,
+                'reference_type' => $reference ? get_class($reference) : null,
+                'reference_id' => $reference ? $reference->id : null,
+            ]);
+
+            return $material;
+        });
+    }
 }

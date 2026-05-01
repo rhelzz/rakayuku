@@ -18,12 +18,13 @@ class OrderService
             $order = Order::create([
                 'customer_id' => $data['customer_id'],
                 'order_number' => $data['order_number'] ?? uniqid('ORD-'),
-                'description' => $data['description'] ?? null,
+                'project_name' => $data['project_name'],
+                'project_description' => $data['project_description'] ?? null,
                 'deadline' => $data['deadline'] ?? null,
                 'selling_price' => $data['selling_price'] ?? 0,
                 'dp_amount' => $data['dp_amount'] ?? 0,
-                'status' => 'PENDING',
-                'payment_status' => ($data['dp_amount'] ?? 0) > 0 ? 'PARTIAL' : 'UNPAID',
+                'status' => Order::STATUS_PENDING,
+                'payment_status' => ($data['dp_amount'] ?? 0) > 0 ? Order::PAYMENT_PARTIAL : Order::PAYMENT_UNPAID,
             ]);
 
             if (($data['dp_amount'] ?? 0) > 0) {
@@ -44,7 +45,7 @@ class OrderService
      */
     public function startProduction(Order $order)
     {
-        $order->update(['status' => 'IN_PRODUCTION']);
+        $order->update(['status' => Order::STATUS_IN_PRODUCTION]);
         return $order;
     }
 
@@ -65,7 +66,7 @@ class OrderService
             $profit = $sellingPrice - $totalCost;
 
             $order->update([
-                'status' => 'FINISHED',
+                'status' => Order::STATUS_FINISHED,
                 'total_cost' => $totalCost,
                 'profit' => $profit,
             ]);
@@ -88,7 +89,7 @@ class OrderService
             ]);
 
             $totalPaid = $order->payments()->sum('amount');
-            $status = $totalPaid >= $order->selling_price ? 'PAID' : 'PARTIAL';
+            $status = $totalPaid >= $order->selling_price ? Order::PAYMENT_PAID : Order::PAYMENT_PARTIAL;
 
             $order->update([
                 'dp_amount' => $totalPaid, // Note: using dp_amount field to store total paid for now as per old schema but it should probably be renamed or handled via payments relation
