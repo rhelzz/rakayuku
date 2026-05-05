@@ -21,14 +21,24 @@ class OrderController extends Controller
         $this->productionService = $productionService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('customer')->latest('created_at')->get(['*']);
+        $query = Order::with('customer')
+            ->search($request->search, ['order_number', 'project_name', 'customer.name'])
+            ->dateRange($request->date_range, $request->start_date, $request->end_date)
+            ->sort($request->sort_field ?? 'created_at', $request->sort_dir ?? 'desc');
+
+        $orders = $query->paginate(15)->withQueryString();
         
-        $pendingOrders = $orders->where('status', Order::STATUS_PENDING);
-        $inProductionOrders = $orders->where('status', Order::STATUS_IN_PRODUCTION);
-        $deliveryOrders = $orders->whereIn('status', [Order::STATUS_DELIVERING, Order::STATUS_UNPAID_DELIVERED]);
-        $finishedOrders = $orders->where('status', Order::STATUS_FINISHED);
+        // For Kanban view, we usually want all filtered orders
+        // but to avoid double execution, we can use the paginator items if we're not paging
+        // or just accept the second query for now as Kanban is status-specific.
+        $kanbanOrders = (clone $query)->get();
+        
+        $pendingOrders = $kanbanOrders->where('status', Order::STATUS_PENDING);
+        $inProductionOrders = $kanbanOrders->where('status', Order::STATUS_IN_PRODUCTION);
+        $deliveryOrders = $kanbanOrders->whereIn('status', [Order::STATUS_DELIVERING, Order::STATUS_UNPAID_DELIVERED]);
+        $finishedOrders = $kanbanOrders->where('status', Order::STATUS_FINISHED);
 
         return view('orders.index', compact('orders', 'pendingOrders', 'inProductionOrders', 'deliveryOrders', 'finishedOrders'));
     }
