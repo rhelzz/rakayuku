@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $materials = Material::latest('created_at')->paginate(15, ['*']);
+        $materials = Material::search($request->search, ['name'])
+            ->dateRange($request->date_range, $request->start_date, $request->end_date)
+            ->sort($request->sort_field, $request->sort_dir)
+            ->paginate(15)
+            ->withQueryString();
+
         return view('materials.index', compact('materials'));
     }
 
