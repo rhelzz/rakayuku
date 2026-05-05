@@ -16,9 +16,14 @@ class PurchaseController extends Controller
         $this->purchaseService = $purchaseService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $purchases = Purchase::latest('created_at')->paginate(15, ['*']);
+        $purchases = Purchase::search($request->search, ['invoice_number', 'supplier_name'])
+            ->dateRange($request->date_range, $request->start_date, $request->end_date, 'purchase_date')
+            ->sort($request->sort_field ?? 'purchase_date', $request->sort_dir ?? 'desc')
+            ->paginate(15)
+            ->withQueryString();
+
         return view('purchases.index', compact('purchases'));
     }
 
