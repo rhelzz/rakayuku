@@ -9,9 +9,15 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::latest('created_at')->paginate(15, ['*']);
+        $customers = Customer::withCount('orders')
+            ->search($request->search, ['name', 'email', 'phone', 'address'])
+            ->dateRange($request->date_range, $request->start_date, $request->end_date)
+            ->sort($request->sort_field, $request->sort_dir)
+            ->paginate(15)
+            ->withQueryString();
+
         return view('customers.index', compact('customers'));
     }
 
