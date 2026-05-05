@@ -40,68 +40,60 @@
     </div>
 
     <!-- History Table -->
-    <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden">
-        <div class="p-4 border-b border-surface-variant bg-surface-container-lowest/50">
-            <h3 class="font-title-sm text-title-sm text-on-surface">Riwayat Pergerakan Stok</h3>
-        </div>
+    <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="border-b border-surface-container-high bg-surface-container-low/50">
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Tanggal</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Tipe</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase text-right">Jumlah</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Referensi</th>
-                        <th class="p-3 px-4 font-label-caps text-label-caps text-slate-400 uppercase">Detail</th>
+                <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                    <tr>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Waktu</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Tipe</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Referensi</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Detail Keterangan</th>
                     </tr>
                 </thead>
-                <tbody class="font-body-sm text-body-sm">
+                <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                     @forelse($movements as $movement)
-                        <tr class="border-b border-surface-container-high hover:bg-surface-container/50 transition-colors">
-                            <td class="p-3 px-4 text-on-surface-variant">
-                                {{ $movement->created_at->format('d M Y, H:i') }}
-                            </td>
-                            <td class="p-3 px-4">
-                                @if($movement->type == 'IN')
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200 text-xs font-medium">
-                                        <span class="material-symbols-outlined text-[14px]">arrow_downward</span> STOK MASUK
-                                    </span>
-                                @elseif($movement->type == 'OUT')
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-red-50 text-error border border-red-200 text-xs font-medium">
-                                        <span class="material-symbols-outlined text-[14px]">arrow_upward</span> STOK KELUAR
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high text-slate-400 border border-surface-variant text-xs font-medium">
-                                        <span class="material-symbols-outlined text-[14px]">tune</span> PENYESUAIAN
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="p-3 px-4 text-right font-data-mono font-bold {{ $movement->type == 'IN' ? 'text-green-600' : 'text-error' }}">
-                                {{ $movement->type == 'IN' ? '+' : '-' }}{{ number_format($movement->qty) }}
-                            </td>
-                            <td class="p-3 px-4 text-on-surface-variant">
-                                @if($movement->reference_type)
-                                    <span class="px-2 py-0.5 bg-surface-container-high rounded text-[10px] text-slate-600 uppercase font-bold border border-surface-variant">
-                                        {{ class_basename($movement->reference_type) == 'Purchase' ? 'Pembelian' : (class_basename($movement->reference_type) == 'Order' ? 'Pesanan' : class_basename($movement->reference_type)) }} #{{ $movement->reference_id }}
-                                    </span>
-                                @else
-                                    <span class="text-slate-500 italic">Manual</span>
-                                @endif
-                            </td>
-                            <td class="p-3 px-4 text-on-surface-variant">
-                                @if($movement->reference_type == 'App\Models\Purchase')
-                                    Pembelian dari pemasok
-                                @elseif($movement->reference_type == 'App\Models\Order')
-                                    Digunakan dalam produksi untuk Pesanan #{{ $movement->reference_id }}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                        </tr>
+                    <tr class="hover:bg-surface-container-low transition-colors group">
+                        <td class="px-6 py-4 text-slate-500">
+                            {{ $movement->created_at->format('d/m/Y H:i') }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @if($movement->type == 'IN')
+                                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 uppercase">Masuk</span>
+                            @elseif($movement->type == 'OUT')
+                                <span class="px-2.5 py-1 rounded-full bg-red-50 text-error text-[10px] font-bold border border-red-100 uppercase">Keluar</span>
+                            @else
+                                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase">Penyesuaian</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-right font-data-mono font-bold {{ $movement->type == 'IN' ? 'text-emerald-600' : 'text-error' }}">
+                            {{ $movement->type == 'IN' ? '+' : '-' }}{{ number_format($movement->qty) }}
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($movement->reference_type)
+                                @php $refName = class_basename($movement->reference_type); @endphp
+                                <span class="px-2 py-0.5 bg-surface-container-high rounded text-[10px] text-slate-600 uppercase font-bold border border-surface-variant">
+                                    {{ $refName == 'Purchase' ? 'Pembelian' : ($refName == 'Order' ? 'Pesanan' : $refName) }} #{{ $movement->reference_id }}
+                                </span>
+                            @else
+                                <span class="text-slate-400 italic">Manual</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-slate-500">
+                            @if($movement->reference_type == 'App\Models\Purchase')
+                                Restok dari invoice pemasok.
+                            @elseif($movement->reference_type == 'App\Models\Order')
+                                Digunakan untuk pengerjaan proyek.
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="p-10 text-center text-slate-500 italic">Belum ada pergerakan stok yang tercatat.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">Belum ada riwayat pergerakan.</td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>

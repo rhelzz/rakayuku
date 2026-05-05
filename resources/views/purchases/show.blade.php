@@ -35,25 +35,25 @@
 
                 <div class="p-0 overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50/50">
-                            <tr class="border-b border-surface-variant">
-                                <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px]">Bahan Baku</th>
-                                <th class="py-3 px-4 font-label-caps text-slate-500 uppercase text-[10px] text-right">Jumlah</th>
-                                <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px] text-right">Harga Satuan</th>
-                                <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px] text-right">Subtotal</th>
+                        <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                            <tr>
+                                <th class="py-4 px-6 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Bahan Baku</th>
+                                <th class="py-4 px-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
+                                <th class="py-4 px-6 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Harga Satuan</th>
+                                <th class="py-4 px-6 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Subtotal</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-surface-variant/30">
+                        <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                             @foreach($purchase->items as $item)
-                            <tr class="hover:bg-slate-50/30 transition-colors">
-                                <td class="py-4 px-6 text-sm font-medium text-on-surface">{{ $item->material->name }}</td>
-                                <td class="py-4 px-4 text-sm text-right font-data-mono">{{ number_format($item->qty, 0, ',', '.') }}</td>
-                                <td class="py-4 px-6 text-sm text-right font-data-mono text-slate-500">{{ formatRupiah($item->price) }}</td>
-                                <td class="py-4 px-6 text-sm text-right font-bold text-on-surface">{{ formatRupiah($item->subtotal) }}</td>
+                            <tr class="hover:bg-surface-container-low transition-colors group">
+                                <td class="py-4 px-6 font-medium text-on-surface">{{ $item->material->name }}</td>
+                                <td class="py-4 px-4 text-right font-data-mono text-slate-500">{{ number_format($item->qty, 0, ',', '.') }}</td>
+                                <td class="py-4 px-6 text-right font-data-mono text-slate-500">{{ formatRupiah($item->price) }}</td>
+                                <td class="py-4 px-6 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($item->subtotal) }}</td>
                             </tr>
                             @endforeach
                         </tbody>
-                        <tfoot class="bg-slate-50/80 font-bold border-t border-surface-variant">
+                        <tfoot class="bg-surface-container-high/30 font-bold border-t border-surface-variant">
                             <tr>
                                 <td colspan="3" class="py-4 px-6 text-sm text-slate-600 text-right">Total Pembayaran</td>
                                 <td class="py-4 px-6 text-right text-primary font-data-mono text-lg">

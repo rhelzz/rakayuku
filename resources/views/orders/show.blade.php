@@ -184,42 +184,46 @@
                         </form>
                         @endif
 
-                        <table class="w-full text-left">
-                            <thead class="border-b border-orange-700/30">
-                                <tr>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Bahan Baku</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Jumlah Digunakan</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">HPP Satuan (saat digunakan)</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Subtotal</th>
-                                    <th class="py-3 w-10"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                @forelse($order->materials as $om)
-                                <tr class="border-b border-orange-700/20 group">
-                                    <td class="py-3 text-on-surface">{{ $om->material->name }}</td>
-                                    <td class="py-3 text-right text-on-surface-variant">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
-                                    <td class="py-3 text-right text-on-surface-variant">{{ formatRupiah($om->price_snapshot) }}</td>
-                                    <td class="py-3 text-right font-semibold text-on-surface">{{ formatRupiah($om->subtotal) }}</td>
-                                    <td class="py-3 text-right">
-                                        @if($order->status == 'IN_PRODUCTION')
-                                        <form id="removeMaterial-{{ $om->id }}" action="{{ route('orders.remove-material', $om) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" onclick="confirmAction('removeMaterial-{{ $om->id }}', 'Hapus penggunaan bahan?', 'Stok akan dikembalikan ke inventaris.', 'warning', 'Ya, Hapus')" class="text-slate-400 hover:text-error transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="py-8 text-center text-slate-500 italic">Belum ada bahan yang dialokasikan untuk proyek ini.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                                        <tr>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Bahan Baku</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Modal Satuan</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Subtotal</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
+                                        @forelse($order->materials as $om)
+                                        <tr class="hover:bg-surface-container-low transition-colors group">
+                                            <td class="px-6 py-4 font-medium">{{ $om->material->name }}</td>
+                                            <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ formatRupiah($om->price_snapshot) }}</td>
+                                            <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($om->subtotal) }}</td>
+                                            <td class="px-6 py-4 text-right">
+                                                @if($order->status == 'IN_PRODUCTION')
+                                                <form id="removeMaterial-{{ $om->id }}" action="{{ route('orders.remove-material', $om) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmAction('removeMaterial-{{ $om->id }}', 'Hapus penggunaan bahan?', 'Stok akan dikembalikan ke inventaris.', 'warning', 'Ya, Hapus')" class="text-slate-400 hover:text-error transition-colors">
+                                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">Belum ada bahan yang dialokasikan.</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Costs Tab -->
@@ -261,33 +265,37 @@
                         </form>
                         @endif
 
-                        <table class="w-full text-left">
-                            <thead class="border-b border-orange-700/30">
-                                <tr>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Tipe</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Deskripsi</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                @forelse($order->productionCosts as $cost)
-                                <tr class="border-b border-orange-700/20">
-                                    <td class="py-3 text-on-surface">
-                                        @if($cost->type == 'LABOR') Tenaga Kerja
-                                        @elseif($cost->type == 'RETAIL_MATERIAL') Bahan Eceran
-                                        @elseif($cost->type == 'DELIVERY') Biaya Pengantaran
-                                        @else Lainnya @endif
-                                    </td>
-                                    <td class="py-3 text-on-surface">{{ $cost->description }}</td>
-                                    <td class="py-3 text-right font-semibold text-on-surface">{{ formatRupiah($cost->amount) }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="3" class="py-8 text-center text-slate-500 italic">Belum ada biaya tambahan yang tercatat.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                                        <tr>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Tipe</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Deskripsi</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
+                                        @forelse($order->productionCosts as $cost)
+                                        <tr class="hover:bg-surface-container-low transition-colors group">
+                                            <td class="px-6 py-4">
+                                                @if($cost->type == 'LABOR') <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 uppercase">Tenaga Kerja</span>
+                                                @elseif($cost->type == 'RETAIL_MATERIAL') <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase">Bahan Eceran</span>
+                                                @elseif($cost->type == 'DELIVERY') <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 uppercase">Pengantaran</span>
+                                                @else <span class="px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold border border-slate-100 uppercase">Lainnya</span> @endif
+                                            </td>
+                                            <td class="px-6 py-4 text-on-surface">{{ $cost->description }}</td>
+                                            <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($cost->amount) }}</td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="3" class="px-6 py-12 text-center text-slate-400 italic">Belum ada biaya tambahan.</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Payments Tab -->
@@ -319,28 +327,36 @@
                         </form>
                         @endif
 
-                        <table class="w-full text-left">
-                            <thead class="border-b border-orange-700/30">
-                                <tr>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Tanggal</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px]">Tipe</th>
-                                    <th class="py-3 font-label-caps text-slate-500 uppercase text-[11px] text-right">Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                @forelse($order->payments as $payment)
-                                <tr class="border-b border-orange-700/20">
-                                    <td class="py-3 text-on-surface">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
-                                    <td class="py-3 text-on-surface">{{ $payment->type == 'DP' ? 'Uang Muka (DP)' : 'Pelunasan' }}</td>
-                                    <td class="py-3 text-right font-semibold text-on-surface">{{ formatRupiah($payment->amount) }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="3" class="py-8 text-center text-slate-500 italic">Belum ada pembayaran yang tercatat.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                                        <tr>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Tanggal</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Tipe</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
+                                        @forelse($order->payments as $payment)
+                                        <tr class="hover:bg-surface-container-low transition-colors group">
+                                            <td class="px-6 py-4 text-slate-500">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-2.5 py-1 rounded-full {{ $payment->type == 'DP' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100' }} text-[10px] font-bold border uppercase">
+                                                    {{ $payment->type == 'DP' ? 'Uang Muka (DP)' : 'Pelunasan' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($payment->amount) }}</td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="3" class="px-6 py-12 text-center text-slate-400 italic">Belum ada pembayaran.</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

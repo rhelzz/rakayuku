@@ -32,6 +32,8 @@
                 <option value="7_days" {{ request('date_range') == '7_days' ? 'selected' : '' }}>7 Hari Terakhir</option>
                 <option value="30_days" {{ request('date_range') == '30_days' ? 'selected' : '' }}>30 Hari Terakhir</option>
                 <option value="this_month" {{ request('date_range') == 'this_month' ? 'selected' : '' }}>Bulan Ini</option>
+                <option value="this_quarter" {{ request('date_range') == 'this_quarter' ? 'selected' : '' }}>Triwulan (3 Bln)</option>
+                <option value="6_months" {{ request('date_range') == '6_months' ? 'selected' : '' }}>6 Bulan Terakhir</option>
                 <option value="this_year" {{ request('date_range') == 'this_year' ? 'selected' : '' }}>Tahun Ini</option>
                 <option value="custom" {{ request('date_range') == 'custom' ? 'selected' : '' }}>Rentang Kustom</option>
             </select>

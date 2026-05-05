@@ -83,6 +83,23 @@
             <span class="material-symbols-outlined" style="{{ request()->routeIs('customers.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">group</span>
             Pelanggan
         </a>
+
+        <!-- Laporan & Analytics (Sub-menu) -->
+        <div class="space-y-1" x-data="{ 
+            openReports: '{{ request()->routeIs('reports.*') ? 'reports' : '' }}' 
+        }">
+            <button @click="openReports = (openReports === 'reports' ? '' : 'reports')" class="w-full flex items-center justify-between px-3 py-2.5 rounded {{ request()->routeIs('reports.*') ? 'bg-amber-50 text-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined" style="{{ request()->routeIs('reports.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">monitoring</span>
+                    Laporan
+                </div>
+                <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="openReports === 'reports' ? 'rotate-180' : ''">expand_more</span>
+            </button>
+            <div x-show="openReports === 'reports'" x-collapse x-cloak class="pl-10 space-y-1">
+                <a href="{{ route('reports.analytics') }}" class="block py-2 px-3 rounded {{ request()->routeIs('reports.analytics') ? 'text-primary font-bold' : 'text-slate-500 hover:text-slate-900' }}">Analytics</a>
+                <a href="{{ route('reports.finance') }}" class="block py-2 px-3 rounded {{ request()->routeIs('reports.finance') ? 'text-primary font-bold' : 'text-slate-500 hover:text-slate-900' }}">Keuangan</a>
+            </div>
+        </div>
     </div>
 
     <div class="px-4 mt-auto">

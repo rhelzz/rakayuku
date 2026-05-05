@@ -85,52 +85,42 @@
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-surface-container-high bg-surface-container-low/50">
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">ID Pesanan</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Pelanggan</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Batas Waktu</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase">Status</th>
-                            <th class="p-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Aksi</th>
+                    <thead class="bg-surface-container-high/50 border-b border-surface-variant">
+                        <tr>
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest w-10 text-center">ID</th>
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Pelanggan</th>
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Batas Waktu</th>
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Status</th>
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="font-body-sm text-body-sm">
+                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                         @forelse($recentOrders as $order)
-                            <tr class="border-b border-surface-container-high hover:bg-surface-container/50 transition-colors">
-                                <td class="p-3 px-4 font-data-mono text-data-mono text-primary font-bold">{{ $order->order_number }}</td>
-                                <td class="p-3 px-4 text-on-background font-medium">{{ $order->customer->name }}</td>
-                                <td class="p-3 px-4 text-on-surface-variant">{{ $order->deadline ? \Carbon\Carbon::parse($order->deadline)->format('d M Y') : '-' }}</td>
-                                <td class="p-3 px-4">
-                                    @if($order->status == 'IN_PRODUCTION')
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Produksi
-                                        </span>
-                                    @elseif($order->status == 'DELIVERING')
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-amber-50 text-amber-700 text-xs font-medium border border-amber-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pengantaran
-                                        </span>
-                                    @elseif($order->status == 'UNPAID_DELIVERED')
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-error-container/20 text-error text-xs font-medium border border-error/20">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-error"></span> Hutang
-                                        </span>
-                                    @elseif($order->status == 'FINISHED')
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-50 text-green-700 text-xs font-medium border border-green-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Selesai
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-slate-50 text-slate-600 text-xs font-medium border border-slate-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Menunggu
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="p-3 px-4 text-right">
-                                    <a href="{{ route('orders.show', $order) }}" class="text-primary hover:underline">Detail</a>
-                                </td>
-                            </tr>
+                        <tr class="hover:bg-surface-container-low transition-colors group">
+                            <td class="px-6 py-4 text-center font-data-mono text-primary font-bold">{{ $order->order_number }}</td>
+                            <td class="px-6 py-4 font-medium text-on-surface">{{ $order->customer->name }}</td>
+                            <td class="px-6 py-4 text-slate-500">{{ $order->deadline ? \Carbon\Carbon::parse($order->deadline)->format('d M Y') : '-' }}</td>
+                            <td class="px-6 py-4 text-center">
+                                @if($order->status == 'IN_PRODUCTION')
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 uppercase">Produksi</span>
+                                @elseif($order->status == 'DELIVERING')
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 uppercase">Antar</span>
+                                @elseif($order->status == 'UNPAID_DELIVERED')
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-error-container/20 text-error text-[10px] font-bold border border-error/20 uppercase">Hutang</span>
+                                @elseif($order->status == 'FINISHED')
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100 uppercase">Selesai</span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold border border-slate-100 uppercase">Tunggu</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="{{ route('orders.show', $order) }}" class="text-primary hover:underline font-bold">Detail</a>
+                            </td>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="5" class="p-6 text-center text-on-surface-variant italic">Tidak ada pesanan terbaru.</td>
-                            </tr>
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">Tidak ada pesanan terbaru.</td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
