@@ -30,6 +30,9 @@
         </div>
     </div>
 
+    <!-- Table Filter -->
+    <x-table.filter placeholder="Cari nama bahan..." />
+
     <!-- Content Area -->
     <div class="flex flex-col gap-6">
         <!-- Stats Overview -->
@@ -40,7 +43,7 @@
                 </div>
                 <div>
                     <p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Item</p>
-                    <p class="font-title-sm text-title-sm text-on-surface mt-0.5">{{ $materials->count() }}</p>
+                    <p class="font-title-sm text-title-sm text-on-surface mt-0.5">{{ $materials->total() }}</p>
                 </div>
             </div>
             <div class="glass-panel border border-surface-variant rounded-xl p-4 flex items-center space-x-4">
@@ -49,7 +52,7 @@
                 </div>
                 <div>
                     <p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Stok Rendah</p>
-                    <p class="font-title-sm text-title-sm text-orange-600 mt-0.5">{{ $materials->where('current_qty', '<', 5)->count() }} Item</p>
+                    <p class="font-title-sm text-title-sm text-orange-600 mt-0.5">{{ \App\Models\Material::where('current_qty', '<', 5)->count() }} Item</p>
                 </div>
             </div>
             <div class="glass-panel border border-surface-variant rounded-xl p-4 flex items-center space-x-4">
@@ -65,25 +68,21 @@
 
         <!-- Main Table Card -->
         <div class="glass-panel border border-surface-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
-            <div class="p-4 border-b border-surface-variant flex justify-between items-center bg-surface-container-lowest/50">
-                <h3 class="font-title-sm text-title-sm text-on-surface">Katalog Inventaris</h3>
-                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Update Otomatis via Invoice</span>
-            </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-surface-container-high/80 sticky top-0 z-10 backdrop-blur-md">
+                    <thead class="bg-surface-container-high/50 border-b border-surface-variant">
                         <tr>
-                            <th class="px-4 py-3 font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-surface-variant whitespace-nowrap">Nama Bahan</th>
-                            <th class="px-4 py-3 font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-surface-variant text-right whitespace-nowrap">Stok Tersedia</th>
-                            <th class="px-4 py-3 font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-surface-variant text-right whitespace-nowrap">HPP Rata-rata</th>
-                            <th class="px-4 py-3 font-label-caps text-label-caps text-on-surface-variant uppercase border-b border-surface-variant text-center whitespace-nowrap">Status</th>
-                            <th class="px-4 py-3 border-b border-surface-variant w-10 text-right pr-6">Aksi</th>
+                            <x-table.header label="Nama Bahan" field="name" />
+                            <x-table.header label="Stok Tersedia" field="current_qty" align="right" />
+                            <x-table.header label="HPP Rata-rata" field="avg_price" align="right" />
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Status</th>
+                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right pr-6">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-surface-variant font-body-sm text-body-sm text-on-surface">
+                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                         @forelse($materials as $material)
-                        <tr class="hover:bg-surface-container-high/50 transition-colors group">
-                            <td class="px-4 py-3">
+                        <tr class="hover:bg-surface-container-low transition-colors group">
+                            <td class="px-6 py-4">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-8 h-8 rounded bg-surface-container-high border border-surface-variant flex items-center justify-center text-slate-400 flex-shrink-0">
                                         <span class="material-symbols-outlined text-[18px]">inventory_2</span>
@@ -94,13 +93,13 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">
+                            <td class="px-6 py-4 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">
                                 {{ number_format($material->current_qty, 0, ',', '.') }}
                             </td>
-                            <td class="px-4 py-3 text-right font-data-mono text-data-mono">
+                            <td class="px-6 py-4 text-right font-data-mono text-data-mono">
                                 {{ formatRupiah($material->avg_price) }}
                             </td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-6 py-4 text-center">
                                 @if($material->current_qty >= 5)
                                 <div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
@@ -113,15 +112,15 @@
                                 </div>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-right pr-6">
-                                <a href="{{ route('materials.edit', $material) }}" class="text-slate-500 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                            <td class="px-6 py-4 text-right pr-6">
+                                <a href="{{ route('materials.edit', $material) }}" class="text-slate-400 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">edit</span>
                                 </a>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-12 text-center text-slate-500 italic">
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">
                                 <div class="flex flex-col items-center gap-2">
                                     <span class="material-symbols-outlined text-4xl opacity-20">inventory_2</span>
                                     Belum ada bahan baku yang terdaftar.
