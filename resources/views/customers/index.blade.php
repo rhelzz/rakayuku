@@ -26,35 +26,35 @@
         </div>
     </div>
 
+    <!-- Table Filter -->
+    <x-table.filter placeholder="Cari nama, email, atau telepon pelanggan..." />
+
     <!-- Table Card -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
-        <div class="p-4 border-b border-surface-variant flex justify-between items-center bg-surface-container-lowest/50">
-            <h3 class="font-title-sm text-title-sm text-on-surface">Registrasi Klien</h3>
-        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container sticky top-0 z-10">
+                <thead class="bg-surface-container-high/50 border-b border-surface-variant">
                     <tr>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant w-10">No</th>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Nama Klien</th>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Email</th>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Telepon</th>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant">Alamat</th>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant text-center whitespace-nowrap">Total Proyek</th>
-                        <th class="px-4 py-3 font-label-caps text-label-caps text-slate-400 uppercase border-b border-surface-variant text-right">Aksi</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
+                        <x-table.header label="Nama Klien" field="name" />
+                        <x-table.header label="Email" field="email" />
+                        <x-table.header label="Telepon" field="phone" />
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Alamat</th>
+                        <x-table.header label="Total Proyek" field="orders_count" align="center" />
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-surface-variant font-body-sm text-body-sm text-on-surface">
+                <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                     @forelse($customers as $c)
-                    <tr class="hover:bg-surface-container-high/50 transition-colors group">
-                        <td class="px-4 py-3 font-data-mono text-slate-400">{{ $customers->firstItem() + $loop->index }}</td>
-                        <td class="px-4 py-3">
+                    <tr class="hover:bg-surface-container-low transition-colors group">
+                        <td class="px-6 py-4 text-center font-data-mono text-slate-400">{{ $customers->firstItem() + $loop->index }}</td>
+                        <td class="px-6 py-4">
                             <div class="font-medium text-on-surface">{{ $c->name }}</div>
                         </td>
-                        <td class="px-4 py-3 text-slate-400">{{ $c->email ?? '-' }}</td>
-                        <td class="px-4 py-3 text-slate-400">{{ $c->phone }}</td>
-                        <td class="px-4 py-3 text-slate-400 truncate max-w-xs">{{ $c->address }}</td>
-                        <td class="px-4 py-3 text-center">
+                        <td class="px-6 py-4 text-slate-500">{{ $c->email ?? '-' }}</td>
+                        <td class="px-6 py-4 text-slate-500">{{ $c->phone }}</td>
+                        <td class="px-6 py-4 text-slate-500 truncate max-w-xs" title="{{ $c->address }}">{{ $c->address }}</td>
+                        <td class="px-6 py-4 text-center">
                             @if($c->orders_count > 0)
                                 <span class="px-3 py-1 rounded-full bg-amber-50 text-primary border border-amber-100 font-data-mono font-bold text-xs shadow-sm">
                                     {{ $c->orders_count }}
@@ -63,15 +63,15 @@
                                 <span class="text-[10px] font-label-caps text-slate-400 italic">Belum Ada</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-right">
-                            <div class="flex justify-end gap-2">
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-3">
                                 <a href="{{ route('customers.edit', $c) }}" class="text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    <span class="material-symbols-outlined text-[20px]">edit</span>
                                 </a>
                                 <form action="{{ route('customers.destroy', $c) }}" method="POST" onsubmit="return confirm('Hapus pelanggan ini?')">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-slate-400 hover:text-error transition-colors">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
                                     </button>
                                 </form>
                             </div>
@@ -79,7 +79,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-4 py-8 text-center text-slate-500 italic">Tidak ada pelanggan ditemukan.</td>
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 italic">
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="material-symbols-outlined text-4xl opacity-20">person_off</span>
+                                Tidak ada pelanggan ditemukan.
+                            </div>
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
