@@ -28,12 +28,12 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="glass-panel border border-surface-variant rounded-xl p-4 mb-6">
-        <form action="{{ route('inventory.movements') }}" method="GET" class="flex flex-wrap gap-4 items-end">
-            <div class="space-y-1.5 flex-1 min-w-[200px]">
+    <!-- Table Filter -->
+    <x-table.filter placeholder="Cari pergerakan stok...">
+        <x-slot name="customFilters">
+            <div class="space-y-1.5 w-48">
                 <label class="block font-medium text-slate-700 text-xs uppercase tracking-wider">Filter Bahan</label>
-                <select name="material_id" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none">
+                <select name="material_id" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none outline-none">
                     <option value="">Semua Bahan</option>
                     @foreach($materials as $m)
                         <option value="{{ $m->id }}" {{ request('material_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
@@ -43,43 +43,34 @@
             
             <div class="space-y-1.5 w-40">
                 <label class="block font-medium text-slate-700 text-xs uppercase tracking-wider">Tipe</label>
-                <select name="type" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none">
+                <select name="type" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none outline-none">
                     <option value="">Semua Tipe</option>
                     <option value="IN" {{ request('type') == 'IN' ? 'selected' : '' }}>MASUK (Beli)</option>
                     <option value="OUT" {{ request('type') == 'OUT' ? 'selected' : '' }}>KELUAR (Produksi)</option>
                     <option value="ADJUSTMENT" {{ request('type') == 'ADJUSTMENT' ? 'selected' : '' }}>KOREKSI</option>
                 </select>
             </div>
-
-            <button type="submit" class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors shadow-sm flex items-center space-x-2">
-                <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                <span>Terapkan</span>
-            </button>
-            
-            @if(request()->anyFilled(['material_id', 'type']))
-                <a href="{{ route('inventory.movements') }}" class="px-5 py-2 text-slate-500 hover:text-error transition-colors text-sm font-medium">Reset</a>
-            @endif
-        </form>
-    </div>
+        </x-slot>
+    </x-table.filter>
 
     <!-- Ledger Table -->
-    <div class="glass-panel border border-surface-variant rounded-xl overflow-hidden shadow-sm">
+    <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface-container-high/50 border-b border-surface-variant">
                     <tr>
                         <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Waktu Transaksi</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Bahan Baku</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Tipe</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">HPP Saat Itu</th>
+                        <x-table.header label="Waktu Transaksi" field="created_at" />
+                        <x-table.header label="Bahan Baku" field="material_id" />
+                        <x-table.header label="Tipe" field="type" align="center" />
+                        <x-table.header label="Jumlah" field="qty" align="right" />
+                        <x-table.header label="HPP Saat Itu" field="price_snapshot" align="right" />
                         <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Referensi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                     @forelse($movements as $m)
-                    <tr class="hover:bg-surface-container-low transition-colors">
+                    <tr class="hover:bg-surface-container-low transition-colors group">
                         <td class="px-6 py-4 text-center font-data-mono text-slate-400">{{ $movements->firstItem() + $loop->index }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                             {{ $m->created_at->format('d/m/Y H:i') }}
@@ -124,7 +115,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 italic">Belum ada riwayat transaksi stok.</td>
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 italic">
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="material-symbols-outlined text-4xl opacity-20">history</span>
+                                Belum ada riwayat transaksi stok.
+                            </div>
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
