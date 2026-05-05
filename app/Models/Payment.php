@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    use Searchable;
+
     protected $guarded = ['id'];
 
     public function order()

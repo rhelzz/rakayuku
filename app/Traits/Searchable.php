@@ -49,6 +49,8 @@ trait Searchable
             '30_days' => $query->where($column, '>=', Carbon::now()->subDays(30)),
             'this_month' => $query->whereMonth($column, Carbon::now()->month)
                                  ->whereYear($column, Carbon::now()->year),
+            'this_quarter' => $query->where($column, '>=', Carbon::now()->startOfQuarter()),
+            '6_months' => $query->where($column, '>=', Carbon::now()->subMonths(6)),
             'this_year' => $query->whereYear($column, Carbon::now()->year),
             'custom' => $query->when($startDate, fn($q) => $q->whereDate($column, '>=', $startDate))
                               ->when($endDate, fn($q) => $q->whereDate($column, '<=', $endDate)),
