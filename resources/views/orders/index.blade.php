@@ -2,7 +2,7 @@
 
 @section('title', 'Pesanan & Proyek')
 @section('content')
-<div class="space-y-6" x-data="{ viewMode: 'kanban' }">
+<div class="space-y-6" x-data="{ viewMode: '{{ request('view_mode', 'kanban') }}' }">
     <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
@@ -11,7 +11,7 @@
             <span class="text-on-surface">Pesanan</span>
         </nav>
 
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 pb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
             <div>
                 <h1 class="font-headline-md text-headline-md text-on-background">Pesanan & Proyek</h1>
                 <p class="font-body-sm text-body-sm text-slate-400 mt-1">Kelola alur kerja manufaktur aktif.</p>
@@ -20,11 +20,11 @@
             <div class="flex items-center gap-3">
                 <!-- View Mode Switcher -->
                 <div class="flex bg-surface-container-high p-1 rounded-xl border border-surface-variant">
-                    <button @click="viewMode = 'kanban'" :class="viewMode === 'kanban' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
+                    <button @click="viewMode = 'kanban'; $dispatch('update-view-mode', 'kanban')" :class="viewMode === 'kanban' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
                         <span class="material-symbols-outlined text-[18px]">view_kanban</span>
                         Kanban
                     </button>
-                    <button @click="viewMode = 'table'" :class="viewMode === 'table' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
+                    <button @click="viewMode = 'table'; $dispatch('update-view-mode', 'table')" :class="viewMode === 'table' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
                         <span class="material-symbols-outlined text-[18px]">table_rows</span>
                         Tabel
                     </button>
@@ -37,6 +37,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Table Filter -->
+    <x-table.filter placeholder="Cari nomor pesanan, proyek, atau pelanggan...">
+        <x-slot name="customFilters">
+            <input type="hidden" name="view_mode" :value="viewMode">
+        </x-slot>
+    </x-table.filter>
 
     <!-- Kanban View -->
     <div x-show="viewMode === 'kanban'" class="flex gap-6 overflow-x-auto pb-4 h-[calc(100vh-250px)]">
