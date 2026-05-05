@@ -7,6 +7,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -14,6 +15,13 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::resource('materials', MaterialController::class);
 Route::get('inventory/movements', [StockMovementController::class, 'index'])->name('inventory.movements');
 Route::resource('customers', CustomerController::class);
+
+// Reports & Analytics
+Route::prefix('reports')->name('reports.')->group(function () {
+    Route::get('/analytics', [ReportController::class, 'analytics'])->name('analytics');
+    Route::get('/finance', [ReportController::class, 'finance'])->name('finance');
+    Route::get('/export-excel', [ReportController::class, 'exportExcel'])->name('export.excel');
+});
 
 // Procurement
 Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);
