@@ -21,24 +21,29 @@
                 Catat Invoice Baru
             </a>
         </div>
+    </div>
+
+    <!-- Table Filter -->
+    <x-table.filter placeholder="Cari nomor invoice atau pemasok..." />
+
     <!-- Purchases Table -->
-    <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden">
+    <div class="bg-surface-container-low border border-surface-variant rounded-xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-lowest border-b border-surface-variant">
+                <thead class="bg-surface-container-high/50 border-b border-surface-variant">
                     <tr>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest">Tanggal</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest">Nomor Invoice</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest">Pemasok</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest text-right">Total Belanja</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest text-center">Bukti</th>
-                        <th class="px-6 py-4 font-label-caps text-slate-400 uppercase text-[10px] tracking-widest text-right">Aksi</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest w-10 text-center">No</th>
+                        <x-table.header label="Tanggal" field="purchase_date" />
+                        <x-table.header label="Nomor Invoice" field="invoice_number" />
+                        <x-table.header label="Pemasok" field="supplier_name" />
+                        <x-table.header label="Total Belanja" field="total_price" align="right" />
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Bukti</th>
+                        <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface">
+                <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                     @forelse($purchases as $p)
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <tr class="hover:bg-surface-container-low transition-colors group">
                         <td class="px-6 py-4 text-center font-data-mono text-slate-400">{{ $purchases->firstItem() + $loop->index }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                             {{ \Carbon\Carbon::parse($p->purchase_date)->format('d/m/Y') }}
