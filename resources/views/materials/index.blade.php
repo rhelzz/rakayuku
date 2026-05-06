@@ -73,6 +73,7 @@
                     <thead class="bg-surface-container-high/50 border-b border-surface-variant">
                         <tr>
                             <x-table.header label="Nama Bahan" field="name" />
+                            <x-table.header label="Kode Barang" field="code" />
                             <x-table.header label="Stok Tersedia" field="current_qty" align="right" />
                             <x-table.header label="HPP Rata-rata" field="avg_price" align="right" />
                             <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Status</th>
@@ -89,8 +90,14 @@
                                     </div>
                                     <div>
                                         <div class="font-medium text-on-surface">{{ $material->name }}</div>
-                                        <div class="text-slate-500 font-data-mono text-[11px]">ID: {{ $material->id }}</div>
+                                        @if($material->type)<div class="text-slate-500 text-[11px]">Tipe: {{ $material->type }}</div>@endif
                                     </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-data-mono text-data-mono">
+                                <div class="flex flex-col gap-1">
+                                    <div class="font-semibold text-primary">{{ $material->code }}</div>
+                                    <div class="text-[10px] text-slate-400">ID: {{ $material->id }}</div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">

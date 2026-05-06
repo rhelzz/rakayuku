@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MaterialCodeService;
 use App\Models\Material;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
 {
+    protected MaterialCodeService $codeService;
+
+    public function __construct(MaterialCodeService $codeService)
+    {
+        $this->codeService = $codeService;
+    }
+
     public function index(Request $request)
     {
-        $materials = Material::search($request->search, ['name'])
-            ->dateRange($request->date_range, $request->start_date, $request->end_date)
-            ->sort($request->sort_field, $request->sort_dir)
+        $materials = Material::search($request->search, ['name', 'code', 'type'])
+            ->sort($request->sort_field ?? 'created_at', $request->sort_dir ?? 'desc')
             ->paginate(15)
             ->withQueryString();
 
@@ -27,15 +34,38 @@ class MaterialController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'nullable|string|max:255',
         ]);
+
+        if ($request->type) {
+            $exists = Material::where('name', $request->name)
+                ->where('type', $request->type)
+                ->exists();
+
+            if ($exists) {
+                return back()->withInput()->with('error', 'Barang dengan nama dan tipe yang sama sudah ada.');
+            }
+        } else {
+            $exists = Material::where('name', $request->name)
+                ->whereNull('type')
+                ->exists();
+
+            if ($exists) {
+                return back()->withInput()->with('error', 'Barang dengan nama ini sudah ada.');
+            }
+        }
+
+        $code = $this->codeService->generateCode($request->name, $request->type);
 
         Material::create([
             'name' => $request->name,
+            'type' => $request->type,
+            'code' => $code,
             'current_qty' => 0,
             'avg_price' => 0,
         ]);
 
-        return redirect()->route('materials.index')->with('success', 'Material berhasil ditambahkan.');
+        return redirect()->route('materials.index')->with('success', 'Material berhasil ditambahkan dengan kode: ' . $code);
     }
 
     public function edit(Material $material)
@@ -47,9 +77,13 @@ class MaterialController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'nullable|string|max:255',
         ]);
 
-        $material->update($request->only(['name']));
+        $material->update([
+            'name' => $request->name,
+            'type' => $request->type,
+        ]);
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil diperbarui.');
     }
@@ -58,6 +92,10 @@ class MaterialController extends Controller
     {
         if ($material->current_qty > 0) {
             return back()->with('error', 'Tidak bisa menghapus material yang masih memiliki stok.');
+        }
+
+        if ($material->stockMovements()->exists()) {
+            return back()->with('error', 'Tidak bisa menghapus material yang sudah memiliki pergerakan stok.');
         }
 
         Material::destroy($material->id);

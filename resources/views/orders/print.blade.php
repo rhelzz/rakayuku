@@ -118,7 +118,7 @@
         </div>
 
         <div class="footer">
-            Terima kasih telah mempercayakan kebutuhan furnitur Anda kepada Rakayuku.<br>
+            Terima kasih telah mempercayakan kebutuhan furniture Anda kepada Rakayuku.<br>
             Jl. Raya Produksi Kayu No. 123, Indonesia | www.rakayuku.com
         </div>
     </div>
