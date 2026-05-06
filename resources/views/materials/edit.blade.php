@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Bahan - ' . $material->name)
+@section('title', 'Edit Bahan - ' . $material->name . ($material->type ? ' (' . $material->type . ')' : ''))
 
 @section('content')
 <div class="max-w-2xl mx-auto">

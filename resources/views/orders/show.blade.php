@@ -172,7 +172,7 @@
                                 <select name="material_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
                                     <option disabled selected value="">Pilih...</option>
                                     @foreach($materials as $m)
-                                        <option value="{{ $m->id }}">{{ $m->name }} (Stok: {{ $m->current_qty }})</option>
+                                        <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} (Stok: {{ $m->current_qty }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -199,7 +199,7 @@
                                     <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                                         @forelse($order->materials as $om)
                                         <tr class="hover:bg-surface-container-low transition-colors group">
-                                            <td class="px-6 py-4 font-medium">{{ $om->material->name }}</td>
+                                            <td class="px-6 py-4 font-medium">{{ $om->material->name }}{{ $om->material->type ? ' (' . $om->material->type . ')' : '' }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ formatRupiah($om->price_snapshot) }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($om->subtotal) }}</td>

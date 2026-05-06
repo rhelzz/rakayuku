@@ -76,7 +76,7 @@
                             {{ $m->created_at->format('d/m/Y H:i') }}
                         </td>
                         <td class="px-6 py-4">
-                            <div class="font-medium text-on-surface">{{ $m->material->name }}</div>
+                            <div class="font-medium text-on-surface">{{ $m->material->name }}{{ $m->material->type ? ' (' . $m->material->type . ')' : '' }}</div>
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($m->type === 'IN')

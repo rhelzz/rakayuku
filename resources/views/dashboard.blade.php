@@ -141,7 +141,7 @@
                 @forelse($lowStockMaterials as $material)
                     <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low border border-outline-variant/30">
                         <div>
-                            <p class="text-on-background font-medium">{{ $material->name }}</p>
+                            <p class="text-on-background font-medium">{{ $material->name }}{{ $material->type ? ' (' . $material->type . ')' : '' }}</p>
                             <p class="text-xs text-on-surface-variant">{{ $material->unit }}</p>
                         </div>
                         <div class="text-right">

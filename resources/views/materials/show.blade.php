@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Riwayat Bahan - ' . $material->name)
+@section('title', 'Riwayat Bahan - ' . $material->name . ($material->type ? ' (' . $material->type . ')' : ''))
 
 @section('content')
 <div class="space-y-6">
@@ -20,7 +20,7 @@
                     <span class="material-symbols-outlined text-3xl">inventory_2</span>
                 </div>
                 <div>
-                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $material->name }}</h2>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">{{ $material->name }}{{ $material->type ? ' (' . $material->type . ')' : '' }}</h2>
                     <p class="font-body-sm text-body-sm text-slate-500">ID: {{ $material->id }}</p>
                 </div>
             </div>
