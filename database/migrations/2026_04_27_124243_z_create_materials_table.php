@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->unique()->comment('Material code - auto generated');
             $table->string('type')->nullable()->comment('Material type/variant');
+            $table->string('unit')->default('pcs')->comment('Unit of measurement');
             $table->decimal('current_qty', 15, 2)->default(0);
             $table->decimal('avg_price', 15, 2)->default(0);
             $table->timestamps();
