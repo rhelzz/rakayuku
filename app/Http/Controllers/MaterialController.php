@@ -35,6 +35,7 @@ class MaterialController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'nullable|string|max:255',
+            'unit' => 'required|string|max:50',
         ]);
 
         if ($request->type) {
@@ -60,6 +61,7 @@ class MaterialController extends Controller
         Material::create([
             'name' => $request->name,
             'type' => $request->type,
+            'unit' => ucfirst(strtolower($request->unit)),
             'code' => $code,
             'current_qty' => 0,
             'avg_price' => 0,
@@ -78,11 +80,13 @@ class MaterialController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'nullable|string|max:255',
+            'unit' => 'required|string|max:50',
         ]);
 
         $material->update([
             'name' => $request->name,
             'type' => $request->type,
+            'unit' => ucfirst(strtolower($request->unit)),
         ]);
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil diperbarui.');

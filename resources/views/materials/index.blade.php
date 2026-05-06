@@ -74,6 +74,7 @@
                         <tr>
                             <x-table.header label="Nama Bahan" field="name" />
                             <x-table.header label="Kode Barang" field="code" />
+                            <x-table.header label="Satuan" field="unit" />
                             <x-table.header label="Stok Tersedia" field="current_qty" align="right" />
                             <x-table.header label="HPP Rata-rata" field="avg_price" align="right" />
                             <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-center">Status</th>
@@ -99,6 +100,9 @@
                                     <div class="font-semibold text-primary">{{ $material->code }}</div>
                                     <div class="text-[10px] text-slate-400">ID: {{ $material->id }}</div>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium text-xs">{{ $material->unit }}</span>
                             </td>
                             <td class="px-6 py-4 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">
                                 {{ number_format($material->current_qty, 0, ',', '.') }}

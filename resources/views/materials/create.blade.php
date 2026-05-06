@@ -44,6 +44,15 @@
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="space-y-1.5">
+                    <label for="unit" class="block font-medium text-slate-700 text-sm">Satuan <span class="text-error">*</span></label>
+                    <input type="text" name="unit" id="unit" value="{{ old('unit') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('unit') border-error @enderror" placeholder="Misal: pcs, lembar, kg, meter, liter">
+                    <p class="text-[11px] text-slate-400 mt-1 italic">Input manual satuan sesuai kebutuhan (pcs, lembar, box, meter, set, dll).</p>
+                    @error('unit')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <div class="pt-6 border-t border-surface-variant flex justify-end gap-3">
