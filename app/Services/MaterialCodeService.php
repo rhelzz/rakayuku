@@ -44,11 +44,18 @@ class MaterialCodeService
 
     protected function sanitizeCode(string $input): string
     {
-        $sanitized = strtoupper($input);
+        $textInParentheses = '';
+        if (preg_match('/\(([^)]+)\)/', $input, $matches)) {
+            $textInParentheses = ' ' . $matches[1];
+        }
+
+        $combined = $input . $textInParentheses;
+
+        $sanitized = strtoupper($combined);
         $sanitized = preg_replace('/[^A-Z0-9]/', '_', $sanitized);
         $sanitized = preg_replace('/_+/', '_', $sanitized);
         $sanitized = trim($sanitized, '_');
 
-        return substr($sanitized, 0, 20);
+        return substr($sanitized, 0, 25);
     }
 }
