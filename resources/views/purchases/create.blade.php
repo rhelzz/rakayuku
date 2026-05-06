@@ -75,10 +75,10 @@
                                 <template x-for="(item, index) in items" :key="index">
                                     <tr class="group hover:bg-slate-50/30 transition-colors">
                                         <td class="py-4 px-6">
-                                            <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none transition-all">
+                                            <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border-2 border-slate-200 text-on-surface rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 appearance-none transition-all cursor-pointer hover:border-slate-300 font-medium" style="background-image: url('data:image/svg+xml;utf8,<svg fill=\"%234B5563\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem;">
                                                 <option disabled selected value="">-- Pilih Material --</option>
                                                 @foreach($materials as $m)
-                                                    <option value="{{ $m->id }}">{{ $m->name }}</option>
+                                                    <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} - {{ $m->unit }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
