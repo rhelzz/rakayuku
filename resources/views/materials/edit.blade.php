@@ -27,12 +27,25 @@
             @csrf
             @method('PUT')
             
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg mb-6">
+                <p class="text-sm font-semibold text-slate-700">Kode Barang: <code class="bg-primary text-white px-2 py-1 rounded">{{ $material->code }}</code></p>
+            </div>
+
             <div class="space-y-4">
                 <div class="space-y-1.5">
                     <label for="name" class="block font-medium text-slate-700 text-sm">Nama Bahan <span class="text-error">*</span></label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $material->name) }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="misal: Kayu Jati (m3) atau Lem Kuning (kaleng)">
-                    <p class="text-[11px] text-slate-400 mt-1 italic">Sertakan satuan dalam nama jika diperlukan agar memudahkan pengelolaan.</p>
+                    <input type="text" name="name" id="name" value="{{ old('name', $material->name) }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="misal: Baja atau Kayu">
+                    <p class="text-[11px] text-slate-400 mt-1 italic">Nama dasar material tanpa satuan.</p>
                     @error('name')
+                        <p class="text-[11px] text-error mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="type" class="block font-medium text-slate-700 text-sm">Tipe/Varian <span class="text-slate-400 text-xs">(opsional)</span></label>
+                    <input type="text" name="type" id="type" value="{{ old('type', $material->type) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('type') border-error @enderror" placeholder="misal: Stainless, Galvanis, Premium">
+                    <p class="text-[11px] text-slate-400 mt-1 italic">Untuk membedakan jenis/varian dari material yang sama.</p>
+                    @error('type')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
                 </div>
