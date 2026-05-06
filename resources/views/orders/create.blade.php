@@ -45,7 +45,7 @@
                 <!-- Project Name -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="project_name" class="block font-medium text-slate-700 text-sm">Nama Proyek / Item <span class="text-error">*</span></label>
-                    <input type="text" name="project_name" id="project_name" value="{{ old('project_name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('project_name') border-error @enderror" placeholder="misal: Meja Makan Jati (6 Kursi)">
+                    <input type="text" name="project_name" id="project_name" value="{{ old('project_name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('project_name') border-error @enderror" placeholder="Misal: Meja Makan Jati (6 Kursi)">
                     @error('project_name')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror

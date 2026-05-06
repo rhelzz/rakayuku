@@ -29,7 +29,7 @@
             <div class="space-y-4">
                 <div class="space-y-1.5">
                     <label for="name" class="block font-medium text-slate-700 text-sm">Nama Pelanggan <span class="text-error">*</span></label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="misal: John Doe">
+                    <input type="text" name="name" id="name" value="{{ old('name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('name') border-error @enderror" placeholder="Misal: John Doe">
                     @error('name')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
@@ -37,7 +37,7 @@
 
                 <div class="space-y-1.5">
                     <label for="email" class="block font-medium text-slate-700 text-sm">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('email') border-error @enderror" placeholder="misal: john@example.com">
+                    <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('email') border-error @enderror" placeholder="Misal: john@example.com">
                     @error('email')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
@@ -45,7 +45,7 @@
 
                 <div class="space-y-1.5">
                     <label for="phone" class="block font-medium text-slate-700 text-sm">Nomor Telepon <span class="text-error">*</span></label>
-                    <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('phone') border-error @enderror" placeholder="misal: 08123456789">
+                    <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('phone') border-error @enderror" placeholder="Misal: 08123456789">
                     @error('phone')
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror

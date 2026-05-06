@@ -249,7 +249,7 @@
                             </div>
                             <div class="space-y-1.5 md:col-span-1">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Deskripsi</label>
-                                <input type="text" name="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="{{ $order->status == 'DELIVERING' ? 'misal: Sewa Mobil Pick-up' : 'misal: Paku 2 inch 10 biji' }}">
+                                <input type="text" name="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="{{ $order->status == 'DELIVERING' ? 'Misal: Sewa Mobil Pick-up' : 'Misal: Paku 2 inch 10 biji' }}">
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp)</label>

@@ -30,7 +30,7 @@
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-1.5 md:col-span-2">
                             <label for="supplier_name" class="block font-medium text-slate-700 text-sm">Nama Pemasok / Toko</label>
-                            <input type="text" name="supplier_name" id="supplier_name" value="{{ old('supplier_name') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all @error('supplier_name') border-error @enderror" placeholder="misal: UD. Rimba Jaya">
+                            <input type="text" name="supplier_name" id="supplier_name" value="{{ old('supplier_name') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all @error('supplier_name') border-error @enderror" placeholder="Misal: UD. Rimba Jaya">
                             @error('supplier_name') <p class="text-[11px] text-error mt-1">{{ $message }}</p> @enderror
                         </div>
 
