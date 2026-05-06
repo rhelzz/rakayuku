@@ -20,7 +20,7 @@
                 <span class="material-symbols-outlined text-primary text-3xl">add_shopping_cart</span>
                 <h3 class="font-headline-md text-headline-md text-on-surface">Daftarkan Proyek Baru</h3>
             </div>
-            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Buat pesanan furnitur baru dan inisialisasi pelacakan manufaktur.</p>
+            <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Buat pesanan furniture baru dan inisialisasi pelacakan manufaktur.</p>
         </div>
 
         <form action="{{ route('orders.store') }}" method="POST" class="p-6 space-y-6">

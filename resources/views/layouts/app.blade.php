@@ -40,7 +40,7 @@
 <nav class="hidden md:flex flex-col py-6 h-screen w-64 bg-white border-r border-slate-200 shadow-sm font-poppins text-[13px] font-medium z-50 shrink-0">
     <div class="px-6 mb-8">
         <h1 class="text-primary font-black text-xl tracking-tight">Rakayuku</h1>
-        <p class="text-slate-500 text-[11px] mt-1">Sistem Manajemen Furnitur</p>
+        <p class="text-slate-500 text-[11px] mt-1">Sistem Manajemen Furniture</p>
     </div>
     
     <div class="flex-1 px-4 space-y-1 overflow-y-auto" x-data="{ 
