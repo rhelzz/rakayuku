@@ -51,9 +51,9 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Pelanggan berhasil dihapus.');
     }
 
-    public function export()
+    public function export(Request $request)
     {    
-        return Excel::download(new CustomerExport(), 'Daftar_Pelanggan_' . now()->format('Y-m-d_His') . '.xlsx');
+        return Excel::download(new CustomerExport($request->start_date, $request->end_date), 'Daftar_Pelanggan_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }
     

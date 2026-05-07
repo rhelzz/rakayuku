@@ -3,7 +3,7 @@
 @section('title', 'Inventaris & Bahan Baku')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="{ showExportModal: false }">
     <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
@@ -22,10 +22,10 @@
                     <span class="material-symbols-outlined text-[18px]">history</span>
                     <span>Log Transaksi</span>
                 </a>
-                <a href="{{ route('materials.export') }}" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-body-sm font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
+                <button @click="showExportModal = true" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-body-sm font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
                     <span class="material-symbols-outlined text-[18px]">download</span>
                     <span>Export Excel</span>
-                </a>
+                </button>
                 <a href="{{ route('materials.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm font-semibold hover:bg-primary-hover transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                     <span>Registrasi Bahan</span>
@@ -151,6 +151,44 @@
                     {{ $materials->links() }}
                 </div>
             @endif
+        </div>
+    </div>
+    <!-- Export Modal -->
+    <div x-show="showExportModal" class="fixed inset-0 z-50" style="display: none;" x-cloak>
+        <div x-show="showExportModal" x-transition.opacity class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showExportModal = false"></div>
+        <div x-show="showExportModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+             class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-surface-container-low">
+                <h3 class="font-headline-sm text-on-surface flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600">file_download</span> Export Excel</h3>
+                <button @click="showExportModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form action="{{ route('materials.export') }}" method="GET" class="p-6 space-y-5">
+                <p class="text-sm text-slate-500 font-body-sm">Pilih rentang waktu untuk data yang ingin di-export. Biarkan kosong untuk export semua data.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-label-caps text-slate-500 mb-1">Dari Tanggal</label>
+                        <input type="date" name="start_date" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-primary focus:ring-primary sm:text-sm font-data-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-label-caps text-slate-500 mb-1">Sampai Tanggal</label>
+                        <input type="date" name="end_date" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-primary focus:ring-primary sm:text-sm font-data-mono">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-6">
+                    <button type="button" @click="showExportModal = false" class="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors text-sm">Batal</button>
+                    <button type="submit" @click="setTimeout(() => showExportModal = false, 500)" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-md shadow-emerald-500/20 flex items-center gap-2 text-sm">
+                        <span class="material-symbols-outlined text-[18px]">download</span> Export Data
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

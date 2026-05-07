@@ -22,8 +22,10 @@ return new class extends Migration
             $table->decimal('dp_amount', 15, 2)->default(0);
             $table->decimal('total_cost', 15, 2)->default(0);
             $table->decimal('profit', 15, 2)->default(0);
-            $table->enum('status', ['PENDING', 'IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED', 'CANCELLED'])->default('PENDING');
             $table->enum('payment_status', ['UNPAID', 'PARTIAL', 'PAID'])->default('UNPAID');
+            $table->text('cancel_reason')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamps();
         });
     }

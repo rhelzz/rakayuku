@@ -114,8 +114,8 @@ class MaterialController extends Controller
         return redirect()->route('materials.index')->with('success', 'Material berhasil dihapus.');
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new MaterialExport(), 'Daftar_Bahan_Baku_' . now()->format('Y-m-d_His') . '.xlsx');
+        return Excel::download(new MaterialExport($request->start_date, $request->end_date), 'Daftar_Bahan_Baku_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

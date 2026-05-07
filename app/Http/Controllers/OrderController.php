@@ -245,8 +245,8 @@ class OrderController extends Controller
         }
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new OrderExport(), 'Daftar_Pesanan_' . now()->format('Y-m-d_His') . '.xlsx');
+        return Excel::download(new OrderExport($request->start_date, $request->end_date), 'Daftar_Pesanan_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

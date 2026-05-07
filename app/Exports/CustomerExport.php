@@ -9,9 +9,17 @@ use Carbon\Carbon;
 
 class CustomerExport extends BaseExport implements FromArray, WithTitle
 {
-    public function __construct()
+    public function __construct($startDate = null, $endDate = null)
     {
-        $customers = Customer::withCount('orders')->get();
+        $query = Customer::withCount('orders');
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        } elseif ($startDate) {
+            $query->where('created_at', '>=', $startDate . ' 00:00:00');
+        } elseif ($endDate) {
+            $query->where('created_at', '<=', $endDate . ' 23:59:59');
+        }
+        $customers = $query->get();
 
         $this->rows = [
             ['DAFTAR PELANGGAN - RAKAYUKU ERP'],

@@ -9,9 +9,17 @@ use Carbon\Carbon;
 
 class MaterialExport extends BaseExport implements FromArray, WithTitle
 {
-    public function __construct()
+    public function __construct($startDate = null, $endDate = null)
     {
-        $materials = Material::all();
+        $query = Material::query();
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        } elseif ($startDate) {
+            $query->where('created_at', '>=', $startDate . ' 00:00:00');
+        } elseif ($endDate) {
+            $query->where('created_at', '<=', $endDate . ' 23:59:59');
+        }
+        $materials = $query->get();
 
         $this->rows = [
             ['DAFTAR BAHAN BAKU - RAKAYUKU ERP'],

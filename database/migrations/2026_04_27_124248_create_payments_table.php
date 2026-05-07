@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 15, 2);
-            $table->enum('type', ['DP', 'FINAL']);
+            $table->enum('type', ['DP', 'FINAL', 'INSTALLMENT']);
             $table->date('payment_date');
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

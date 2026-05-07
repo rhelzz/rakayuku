@@ -9,9 +9,17 @@ use Carbon\Carbon;
 
 class PurchaseExport extends BaseExport implements FromArray, WithTitle
 {
-    public function __construct()
+    public function __construct($startDate = null, $endDate = null)
     {
-        $purchases = Purchase::with('items.material')->get();
+        $query = Purchase::with('items.material');
+        if ($startDate && $endDate) {
+            $query->whereBetween('purchase_date', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        } elseif ($startDate) {
+            $query->where('purchase_date', '>=', $startDate . ' 00:00:00');
+        } elseif ($endDate) {
+            $query->where('purchase_date', '<=', $endDate . ' 23:59:59');
+        }
+        $purchases = $query->get();
 
         $this->rows = [
             ['DAFTAR PEMBELIAN/PENGADAAN - RAKAYUKU ERP'],

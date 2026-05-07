@@ -3,7 +3,7 @@
 @section('title', 'Ringkasan Dashboard')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="{ showExportModal: false, exportUrl: '', exportTitle: '' }">
     <!-- Page Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -13,10 +13,10 @@
         <div class="flex flex-wrap gap-3">
             <div class="flex items-center gap-2">
                 <span class="text-sm font-semibold text-slate-600">Quick Export:</span>
-                <a href="{{ route('orders.export') }}" class="px-3 py-1.5 text-xs bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">Pesanan</a>
-                <a href="{{ route('customers.export') }}" class="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">Pelanggan</a>
-                <a href="{{ route('materials.export') }}" class="px-3 py-1.5 text-xs bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200">Bahan</a>
-                <a href="{{ route('purchases.export') }}" class="px-3 py-1.5 text-xs bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200">Pembelian</a>
+                <button @click="exportUrl = '{{ route('orders.export') }}'; exportTitle = 'Pesanan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">Pesanan</button>
+                <button @click="exportUrl = '{{ route('customers.export') }}'; exportTitle = 'Pelanggan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">Pelanggan</button>
+                <button @click="exportUrl = '{{ route('materials.export') }}'; exportTitle = 'Bahan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200">Bahan</button>
+                <button @click="exportUrl = '{{ route('purchases.export') }}'; exportTitle = 'Pembelian'; showExportModal = true" class="px-3 py-1.5 text-xs bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200">Pembelian</button>
             </div>
             <a href="{{ route('orders.create') }}" class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-body-sm hover:opacity-90 transition-opacity flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">add</span> Pesanan Baru
@@ -169,6 +169,45 @@
                     Kelola Inventaris
                 </a>
             </div>
+        </div>
+    </div>
+    <!-- Export Modal -->
+    <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
+        <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
+        <div x-show="showExportModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+             class="absolute top-1/2 left-1/2 bg-white rounded-2xl shadow-xl overflow-hidden" 
+             style="width: 100%; max-width: 28rem; transform: translate(-50%, -50%);">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-surface-container-low">
+                <h3 class="font-headline-sm text-on-surface flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600">file_download</span> Export <span x-text="exportTitle"></span></h3>
+                <button @click="showExportModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form :action="exportUrl" method="GET" class="p-6 space-y-5">
+                <p class="text-sm text-slate-500 font-body-sm">Pilih rentang waktu untuk data yang ingin di-export. Biarkan kosong untuk export semua data.</p>
+                <div class="grid gap-4" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+                    <div>
+                        <label class="block text-xs font-label-caps text-slate-500 mb-1">Dari Tanggal</label>
+                        <input type="date" name="start_date" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-primary focus:ring-primary sm:text-sm font-data-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-label-caps text-slate-500 mb-1">Sampai Tanggal</label>
+                        <input type="date" name="end_date" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-primary focus:ring-primary sm:text-sm font-data-mono">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-6">
+                    <button type="button" @click="showExportModal = false" class="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors text-sm">Batal</button>
+                    <button type="submit" @click="setTimeout(() => showExportModal = false, 500)" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-md shadow-emerald-500/20 flex items-center gap-2 text-sm">
+                        <span class="material-symbols-outlined text-[18px]">download</span> Export Data
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

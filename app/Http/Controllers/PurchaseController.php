@@ -62,8 +62,8 @@ class PurchaseController extends Controller
         return view('purchases.show', compact('purchase'));
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new PurchaseExport(), 'Daftar_Pembelian_' . now()->format('Y-m-d_His') . '.xlsx');
+        return Excel::download(new PurchaseExport($request->start_date, $request->end_date), 'Daftar_Pembelian_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

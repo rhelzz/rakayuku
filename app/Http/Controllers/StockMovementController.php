@@ -25,8 +25,8 @@ class StockMovementController extends Controller
         return view('inventory.movements', compact('movements', 'materials'));
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new StockMovementExport(), 'Laporan_Pergerakan_Stok_' . now()->format('Y-m-d_His') . '.xlsx');
+        return Excel::download(new StockMovementExport($request->start_date, $request->end_date), 'Laporan_Pergerakan_Stok_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }
