@@ -10,8 +10,15 @@
             <h2 class="font-display-lg text-display-lg text-on-background">Ringkasan Dashboard</h2>
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Metrik real-time untuk pemrosesan kayu dan inventaris.</p>
         </div>
-        <div class="flex gap-3">
-            <a href="{{ route('orders.create') }}" class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-body-sm text-body-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+        <div class="flex flex-wrap gap-3">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-slate-600">Quick Export:</span>
+                <a href="{{ route('orders.export') }}" class="px-3 py-1.5 text-xs bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">Pesanan</a>
+                <a href="{{ route('customers.export') }}" class="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">Pelanggan</a>
+                <a href="{{ route('materials.export') }}" class="px-3 py-1.5 text-xs bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200">Bahan</a>
+                <a href="{{ route('purchases.export') }}" class="px-3 py-1.5 text-xs bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200">Pembelian</a>
+            </div>
+            <a href="{{ route('orders.create') }}" class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-body-sm hover:opacity-90 transition-opacity flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">add</span> Pesanan Baru
             </a>
         </div>

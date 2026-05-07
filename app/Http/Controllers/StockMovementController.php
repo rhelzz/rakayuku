@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\StockMovement;
+use App\Exports\StockMovementExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockMovementController extends Controller
 {
@@ -21,5 +23,10 @@ class StockMovementController extends Controller
         $materials = \App\Models\Material::orderBy('name')->get();
 
         return view('inventory.movements', compact('movements', 'materials'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new StockMovementExport(), 'Laporan_Pergerakan_Stok_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

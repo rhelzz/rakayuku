@@ -18,13 +18,17 @@
                 <p class="font-body-sm text-body-sm text-on-surface-variant">Kelola katalog bahan baku dan pantau ketersediaan stok fisik.</p>
             </div>
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('inventory.movements') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center space-x-2">
+                <a href="{{ route('inventory.movements') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">history</span>
-                    <span>Log Transaksi Stok</span>
+                    <span>Log Transaksi</span>
                 </a>
-                <a href="{{ route('materials.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary-hover transition-all flex items-center space-x-2 shadow-lg shadow-primary/20">
+                <a href="{{ route('materials.export') }}" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-body-sm font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
+                    <span>Export Excel</span>
+                </a>
+                <a href="{{ route('materials.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm font-semibold hover:bg-primary-hover transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
                     <span class="material-symbols-outlined text-[18px]">add</span>
-                    <span>Registrasi Bahan Baru</span>
+                    <span>Registrasi Bahan</span>
                 </a>
             </div>
         </div>

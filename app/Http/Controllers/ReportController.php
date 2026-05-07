@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ReportService;
 use App\Exports\FinancialReportExport;
+use App\Exports\PaymentExport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -55,5 +56,10 @@ class ReportController extends Controller
         $filename = 'Laporan_Keuangan_Rakayuku_' . now()->format('Y-m-d_His') . '.xlsx';
 
         return Excel::download(new FinancialReportExport($range, $start, $end, $this->reportService), $filename);
+    }
+
+    public function exportPayments()
+    {
+        return Excel::download(new PaymentExport(), 'Laporan_Pembayaran_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

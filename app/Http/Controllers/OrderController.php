@@ -8,7 +8,9 @@ use App\Models\Material;
 use App\Models\OrderMaterial;
 use App\Services\OrderService;
 use App\Services\ProductionService;
+use App\Exports\OrderExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -29,10 +31,7 @@ class OrderController extends Controller
             ->sort($request->sort_field ?? 'created_at', $request->sort_dir ?? 'desc');
 
         $orders = $query->paginate(15)->withQueryString();
-        
-        // For Kanban view, we usually want all filtered orders
-        // but to avoid double execution, we can use the paginator items if we're not paging
-        // or just accept the second query for now as Kanban is status-specific.
+
         $kanbanOrders = (clone $query)->get();
         
         $pendingOrders = $kanbanOrders->where('status', Order::STATUS_PENDING);
@@ -183,5 +182,10 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrderExport(), 'Daftar_Pesanan_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

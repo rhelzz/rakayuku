@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Exports\CustomerExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -48,4 +50,10 @@ class CustomerController extends Controller
         Customer::destroy($customer->id);
         return redirect()->route('customers.index')->with('success', 'Pelanggan berhasil dihapus.');
     }
+
+    public function export()
+    {    
+        return Excel::download(new CustomerExport(), 'Daftar_Pelanggan_' . now()->format('Y-m-d_His') . '.xlsx');
+    }
 }
+    

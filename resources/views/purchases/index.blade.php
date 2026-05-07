@@ -16,10 +16,16 @@
                 <h1 class="font-headline-md text-headline-md text-on-background">Riwayat Pembelian</h1>
                 <p class="font-body-sm text-body-sm text-slate-400 mt-1">Daftar invoice belanja bahan baku dan operasional.</p>
             </div>
-            <a href="{{ route('purchases.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-                Catat Invoice Baru
-            </a>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('purchases.export') }}" class="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 text-sm shadow-md">
+                    <span class="material-symbols-outlined text-[20px]">download</span>
+                    Export
+                </a>
+                <a href="{{ route('purchases.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                    Catat Invoice
+                </a>
+            </div>
         </div>
     </div>
 

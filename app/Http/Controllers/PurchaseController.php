@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Purchase;
 use App\Models\Material;
 use App\Services\PurchaseService;
+use App\Exports\PurchaseExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PurchaseController extends Controller
 {
@@ -58,5 +60,10 @@ class PurchaseController extends Controller
     {
         $purchase->load('items.material');
         return view('purchases.show', compact('purchase'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new PurchaseExport(), 'Daftar_Pembelian_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

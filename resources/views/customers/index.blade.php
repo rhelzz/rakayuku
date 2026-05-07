@@ -17,8 +17,12 @@
                 <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Daftar Pelanggan</h2>
                 <p class="font-body-sm text-body-sm text-slate-400">Kelola informasi klien dan riwayat proyek.</p>
             </div>
-            <div class="flex space-x-3">
-                <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary-hover transition-colors flex items-center space-x-2 shadow-lg shadow-primary/20">
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('customers.export') }}" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-body-sm font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
+                    <span>Export Excel</span>
+                </a>
+                <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg font-body-sm font-semibold hover:bg-primary-hover transition-colors flex items-center gap-2 shadow-lg shadow-primary/20">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                     <span>Tambah Pelanggan</span>
                 </a>

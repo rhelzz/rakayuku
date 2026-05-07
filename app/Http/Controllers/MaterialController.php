@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Services\MaterialCodeService;
 use App\Models\Material;
+use App\Exports\MaterialExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MaterialController extends Controller
 {
@@ -28,6 +30,11 @@ class MaterialController extends Controller
     public function create()
     {
         return view('materials.create');
+    }
+
+    public function show(Material $material)
+    {
+        return view('materials.show', compact('material'));
     }
 
     public function store(Request $request)
@@ -105,5 +112,10 @@ class MaterialController extends Controller
         Material::destroy($material->id);
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil dihapus.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new MaterialExport(), 'Daftar_Bahan_Baku_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

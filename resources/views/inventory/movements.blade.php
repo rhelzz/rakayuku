@@ -19,8 +19,12 @@
                 <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Log Transaksi Stok</h2>
                 <p class="font-body-sm text-body-sm text-on-surface-variant">Pantau seluruh aliran masuk dan keluar bahan baku.</p>
             </div>
-            <div class="flex space-x-3">
-                <a href="{{ route('materials.index') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center space-x-2">
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('inventory.movements.export') }}" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-body-sm font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
+                    <span>Export</span>
+                </a>
+                <a href="{{ route('materials.index') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">inventory</span>
                     <span>Daftar Bahan</span>
                 </a>
