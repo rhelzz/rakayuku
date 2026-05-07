@@ -18,24 +18,18 @@ class ProductionService
         $this->inventoryService = $inventoryService;
     }
 
-    /**
-     * Use material for order production
-     */
     public function addMaterialToOrder(Order $order, Material $material, float $qty)
     {
         return DB::transaction(function () use ($order, $material, $qty) {
-            if ($order->status === 'FINISHED') {
-                throw new Exception("Tidak bisa menambah bahan ke pesanan yang sudah selesai (FINISHED).");
+            if ($order->status !== Order::STATUS_IN_PRODUCTION) {
+                throw new Exception("Bahan baku hanya bisa ditambahkan saat status PRODUKSI.");
             }
 
-            // Snapshot current average price (HPP)
             $unitPrice = $material->avg_price;
             $subtotal = $unitPrice * $qty;
 
-            // Reduce stock via InventoryService
             $this->inventoryService->reduceStockForProduction($material, $qty, $order);
 
-            // Record material usage for the order
             $orderMaterial = OrderMaterial::create([
                 'order_id' => $order->id,
                 'material_id' => $material->id,
@@ -50,19 +44,15 @@ class ProductionService
         });
     }
 
-    /**
-     * Remove material from order and restore stock
-     */
     public function removeMaterialFromOrder(OrderMaterial $orderMaterial)
     {
         return DB::transaction(function () use ($orderMaterial) {
             $order = $orderMaterial->order;
 
-            if ($order->status === Order::STATUS_FINISHED) {
-                throw new Exception("Tidak bisa menghapus bahan dari pesanan yang sudah selesai.");
+            if ($order->status !== Order::STATUS_IN_PRODUCTION) {
+                throw new Exception("Bahan baku hanya bisa dihapus saat status PRODUKSI.");
             }
 
-            // Restore stock
             $this->inventoryService->correctStock(
                 $orderMaterial->material,
                 $orderMaterial->qty_used,
@@ -70,25 +60,19 @@ class ProductionService
                 $order
             );
 
-            // Delete the usage record
-            /** @var OrderMaterial $orderMaterial */
             OrderMaterial::destroy($orderMaterial->id);
 
-            // Recalculate total cost
             $this->updateOrderTotalCost($order);
 
             return $order;
         });
     }
 
-    /**
-     * Add additional production cost (Labor, Transport, Tools, etc.)
-     */
     public function addProductionCost(Order $order, string $type, float $amount, string $description = null)
     {
         return DB::transaction(function () use ($order, $type, $amount, $description) {
-            if ($order->status === 'FINISHED') {
-                throw new Exception("Tidak bisa menambah biaya produksi ke pesanan yang sudah selesai (FINISHED).");
+            if (!in_array($order->status, [Order::STATUS_IN_PRODUCTION, Order::STATUS_DELIVERING])) {
+                throw new Exception("Biaya produksi hanya bisa ditambahkan saat status PRODUKSI atau PENGANTARAN.");
             }
 
             $cost = ProductionCost::create([
@@ -104,18 +88,34 @@ class ProductionService
         });
     }
 
-    /**
-     * Recalculate and update the total cost (HPP + Additional) for an order
-     */
+    public function removeProductionCost(ProductionCost $productionCost)
+    {
+        return DB::transaction(function () use ($productionCost) {
+            $order = $productionCost->order;
+
+            if (!in_array($order->status, [Order::STATUS_IN_PRODUCTION, Order::STATUS_DELIVERING])) {
+                throw new Exception("Biaya produksi hanya bisa dihapus saat status PRODUKSI atau PENGANTARAN.");
+            }
+
+            ProductionCost::destroy($productionCost->id);
+
+            $this->updateOrderTotalCost($order);
+
+            return $order;
+        });
+    }
+
     public function updateOrderTotalCost(Order $order)
     {
         $materialCost = $order->materials()->sum('subtotal');
         $additionalCost = $order->productionCosts()->sum('amount');
         
         $totalCost = $materialCost + $additionalCost;
+        $profit = $order->selling_price - $totalCost;
 
         $order->update([
             'total_cost' => $totalCost,
+            'profit' => $profit,
         ]);
 
         return $totalCost;

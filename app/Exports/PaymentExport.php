@@ -15,7 +15,7 @@ class PaymentExport extends BaseExport implements FromArray, WithTitle
 
         $this->rows = [
             ['LAPORAN PEMBAYARAN - RAKAYUKU ERP'],
-            ['No', 'Tanggal Bayar', 'Nomor Pesanan', 'Nama Pelanggan', 'Jumlah Bayar (IDR)', 'Metode Bayar', 'Status', 'Keterangan'],
+            ['No', 'Tanggal Bayar', 'Nomor Pesanan', 'Nama Pelanggan', 'Tipe Pembayaran', 'Jumlah Bayar (IDR)'],
         ];
 
         $totalPayment = 0;
@@ -23,13 +23,11 @@ class PaymentExport extends BaseExport implements FromArray, WithTitle
         foreach ($payments as $index => $payment) {
             $this->rows[] = [
                 $index + 1,
-                $payment->payment_date->format('d/m/Y'),
+                Carbon::parse($payment->payment_date)->format('d/m/Y'),
                 $payment->order->order_number,
                 $payment->order->customer->name,
+                $payment->type === 'DP' ? 'Uang Muka (DP)' : 'Pelunasan',
                 $payment->amount,
-                ucfirst($payment->payment_method),
-                ucfirst($payment->status),
-                $payment->notes ?? '-',
             ];
 
             $totalPayment += $payment->amount;

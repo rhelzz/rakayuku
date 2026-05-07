@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Customer;
 use App\Models\Material;
 use App\Models\OrderMaterial;
+use App\Models\ProductionCost;
 use App\Services\OrderService;
 use App\Services\ProductionService;
 use App\Exports\OrderExport;
@@ -57,7 +58,7 @@ class OrderController extends Controller
             'project_description' => 'nullable|string',
             'deadline' => 'nullable|date|after_or_equal:today',
             'selling_price' => 'required|numeric|min:0',
-            'dp_amount' => 'required|numeric|min:0',
+            'dp_amount' => 'required|numeric|min:0|lte:selling_price',
         ]);
 
         try {
@@ -71,8 +72,49 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->load(['customer', 'materials.material', 'productionCosts', 'payments']);
-        $materials = Material::where('current_qty', '>', 0, 'and')->get(['*']); 
+        $materials = Material::where('current_qty', '>', 0)->get();
         return view('orders.show', compact('order', 'materials'));
+    }
+
+    public function edit(Order $order)
+    {
+        if (!$order->isEditable()) {
+            return back()->with('error', 'Pesanan hanya bisa diedit saat status PENDING.');
+        }
+
+        $customers = Customer::all();
+        return view('orders.edit', compact('order', 'customers'));
+    }
+
+    public function update(Request $request, Order $order)
+    {
+        $request->validate([
+            'project_name' => 'required|string|max:255',
+            'project_description' => 'nullable|string',
+            'deadline' => 'nullable|date',
+            'selling_price' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            $this->orderService->updateOrder($order, $request->all());
+            return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function cancel(Request $request, Order $order)
+    {
+        $request->validate([
+            'cancel_reason' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            $this->orderService->cancelOrder($order, $request->input('cancel_reason'));
+            return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil dibatalkan.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function startProduction(Order $order)
@@ -119,11 +161,17 @@ class OrderController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
-            'type' => 'required|in:DP,FINAL'
+            'type' => 'required|in:DP,FINAL,INSTALLMENT',
+            'notes' => 'nullable|string|max:255',
         ]);
 
         try {
-            $this->orderService->payOrder($order, $request->input('amount'), $request->input('type'));
+            $this->orderService->payOrder(
+                $order, 
+                $request->input('amount'), 
+                $request->input('type'),
+                $request->input('notes')
+            );
             return back()->with([
                 'success' => 'Pembayaran berhasil ditambahkan.',
                 'active_tab' => 'payments'
@@ -177,6 +225,19 @@ class OrderController extends Controller
             $this->productionService->addProductionCost($order, $request->input('type'), $request->input('amount'), $request->input('description'));
             return back()->with([
                 'success' => 'Biaya tambahan berhasil dicatat.',
+                'active_tab' => 'costs'
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function removeCost(ProductionCost $productionCost)
+    {
+        try {
+            $this->productionService->removeProductionCost($productionCost);
+            return back()->with([
+                'success' => 'Biaya produksi berhasil dihapus.',
                 'active_tab' => 'costs'
             ]);
         } catch (\Exception $e) {

@@ -11,17 +11,62 @@ class Order extends Model
 
     protected $guarded = ['id'];
 
-    // Status Constants
+    protected $casts = [
+        'deadline' => 'date',
+        'selling_price' => 'decimal:2',
+        'dp_amount' => 'decimal:2',
+        'total_cost' => 'decimal:2',
+        'profit' => 'decimal:2',
+        'cancelled_at' => 'datetime',
+    ];
+
     const STATUS_PENDING = 'PENDING';
     const STATUS_IN_PRODUCTION = 'IN_PRODUCTION';
     const STATUS_DELIVERING = 'DELIVERING';
     const STATUS_UNPAID_DELIVERED = 'UNPAID_DELIVERED';
     const STATUS_FINISHED = 'FINISHED';
+    const STATUS_CANCELLED = 'CANCELLED';
 
-    // Payment Status Constants
     const PAYMENT_UNPAID = 'UNPAID';
     const PAYMENT_PARTIAL = 'PARTIAL';
     const PAYMENT_PAID = 'PAID';
+
+    public static function activeStatuses(): array
+    {
+        return [
+            self::STATUS_PENDING,
+            self::STATUS_IN_PRODUCTION,
+            self::STATUS_DELIVERING,
+            self::STATUS_UNPAID_DELIVERED,
+        ];
+    }
+
+    public static function terminalStatuses(): array
+    {
+        return [
+            self::STATUS_FINISHED,
+            self::STATUS_CANCELLED,
+        ];
+    }
+
+    public function isEditable(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isCancellable(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_PENDING,
+            self::STATUS_IN_PRODUCTION,
+        ]);
+    }
+
+    public function isPayable(): bool
+    {
+        return $this->payment_status !== self::PAYMENT_PAID
+            && $this->status !== self::STATUS_CANCELLED;
+    }
 
     public function customer()
     {
@@ -43,9 +88,6 @@ class Order extends Model
         return $this->hasMany(Payment::class);
     }
 
-    /**
-     * Financial Calculations (Live)
-     */
     public function getEstimatedMaterialCostAttribute()
     {
         return $this->materials()->sum('subtotal');
@@ -79,6 +121,6 @@ class Order extends Model
 
     public function getRemainingPaymentAttribute()
     {
-        return $this->selling_price - $this->total_paid;
+        return max(0, $this->selling_price - $this->total_paid);
     }
 }

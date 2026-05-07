@@ -4,6 +4,21 @@
 
 @section('content')
 <div class="space-y-6" x-data="{ activeTab: '{{ session('active_tab', 'overview') }}' }">
+    @if($order->status == 'CANCELLED')
+    <div class="p-4 bg-slate-100 border border-slate-300 rounded-xl flex items-start gap-3">
+        <span class="material-symbols-outlined text-slate-500 text-[24px] mt-0.5">block</span>
+        <div>
+            <p class="text-sm font-bold text-slate-700">Pesanan Dibatalkan</p>
+            @if($order->cancel_reason)
+                <p class="text-xs text-slate-500 mt-1">Alasan: {{ $order->cancel_reason }}</p>
+            @endif
+            @if($order->cancelled_at)
+                <p class="text-[10px] text-slate-400 mt-1">Dibatalkan pada: {{ $order->cancelled_at->format('d M Y, H:i') }}</p>
+            @endif
+        </div>
+    </div>
+    @endif
+
     <!-- Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
@@ -31,13 +46,25 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 flex-wrap">
                 @if($order->status == 'PENDING')
+                    <a href="{{ route('orders.edit', $order) }}" class="px-5 py-2 bg-white text-on-surface border border-surface-variant rounded-lg font-semibold hover:bg-surface-container transition-colors flex items-center gap-2 text-sm">
+                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                        Edit
+                    </a>
                     <form id="startProductionForm" action="{{ route('orders.start-production', $order) }}" method="POST">
                         @csrf
                         <button type="button" onclick="confirmAction('startProductionForm', 'Mulai produksi sekarang?', 'Stok bahan baku akan mulai dialokasikan ke proyek ini.', 'warning', 'Mulai Produksi')" class="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-colors flex items-center gap-2">
                             <span class="material-symbols-outlined text-[20px]">play_arrow</span>
                             Mulai Produksi
+                        </button>
+                    </form>
+                    <form id="cancelOrderForm" action="{{ route('orders.cancel', $order) }}" method="POST" x-data="{ reason: '' }">
+                        @csrf
+                        <input type="hidden" name="cancel_reason" x-model="reason">
+                        <button type="button" onclick="cancelOrder()" class="px-5 py-2 bg-white text-error border border-error/30 rounded-lg font-semibold hover:bg-error-container/20 transition-colors flex items-center gap-2 text-sm">
+                            <span class="material-symbols-outlined text-[18px]">block</span>
+                            Batalkan
                         </button>
                     </form>
                 @elseif($order->status == 'IN_PRODUCTION')
@@ -46,6 +73,14 @@
                         <button type="button" onclick="confirmAction('finishProductionForm', 'Selesaikan tahap produksi?', 'Anda tidak akan bisa menambah/menghapus bahan baku lagi setelah ini.', 'info', 'Ya, Selesaikan')" class="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition-colors flex items-center gap-2">
                             <span class="material-symbols-outlined text-[20px]">local_shipping</span>
                             Selesaikan Produksi
+                        </button>
+                    </form>
+                    <form id="cancelOrderForm" action="{{ route('orders.cancel', $order) }}" method="POST" x-data="{ reason: '' }">
+                        @csrf
+                        <input type="hidden" name="cancel_reason" x-model="reason">
+                        <button type="button" onclick="cancelOrder()" class="px-5 py-2 bg-white text-error border border-error/30 rounded-lg font-semibold hover:bg-error-container/20 transition-colors flex items-center gap-2 text-sm">
+                            <span class="material-symbols-outlined text-[18px]">block</span>
+                            Batalkan
                         </button>
                     </form>
                 @elseif($order->status == 'DELIVERING')
@@ -64,6 +99,11 @@
                     <span class="px-6 py-2 bg-error-container text-error rounded-lg font-semibold border border-error/30 flex items-center gap-2">
                         <span class="material-symbols-outlined text-[20px]">warning</span>
                         Menunggu Pelunasan (Hutang)
+                    </span>
+                @elseif($order->status == 'CANCELLED')
+                    <span class="px-6 py-2 bg-slate-200 text-slate-600 rounded-lg font-semibold border border-slate-300 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">block</span>
+                        Dibatalkan
                     </span>
                 @else
                     <a href="{{ route('orders.print', $order) }}" target="_blank" class="px-6 py-2 bg-white text-on-surface border border-surface-variant rounded-lg font-semibold hover:bg-surface-container transition-colors flex items-center gap-2">
@@ -172,7 +212,7 @@
                                 <select name="material_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
                                     <option disabled selected value="">Pilih...</option>
                                     @foreach($materials as $m)
-                                        <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} (Stok: {{ $m->current_qty }})</option>
+                                        <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} (Stok: {{ number_format($m->current_qty, 0, ',', '.') }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -235,21 +275,14 @@
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe</label>
                                 <select name="type" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
-                                    @if($order->status == 'IN_PRODUCTION')
-                                        <option value="LABOR">Tenaga Kerja / Lembur</option>
-                                        <option value="RETAIL_MATERIAL">Bahan Eceran / Tambahan (Paku, Lem, dll)</option>
-                                    @endif
-                                    
-                                    @if($order->status == 'DELIVERING')
-                                        <option value="DELIVERY">Biaya Pengantaran / Transport</option>
-                                    @endif
-                                    
+                                    <option value="LABOR">Tenaga Kerja / Lembur</option>
+                                    <option value="RETAIL_MATERIAL">Bahan Eceran / Tambahan (Paku, Lem, dll)</option>
                                     <option value="OTHER">Lainnya</option>
                                 </select>
                             </div>
-                            <div class="space-y-1.5 md:col-span-1">
+                            <div class="space-y-1.5 md:col-span-2">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Deskripsi</label>
-                                <input type="text" name="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="{{ $order->status == 'DELIVERING' ? 'Misal: Sewa Mobil Pick-up' : 'Misal: Paku 2 inch 10 biji' }}">
+                                <input type="text" name="description" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="Misal: Paku 2 inch 10 biji">
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp)</label>
@@ -261,7 +294,7 @@
                                        placeholder="0">
                                 <input type="hidden" name="amount" x-model="rawAmount">
                             </div>
-                            <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah Biaya</button>
+                            <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors md:col-span-4">Tambah Biaya</button>
                         </form>
                         @endif
 
@@ -273,6 +306,7 @@
                                             <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Tipe</th>
                                             <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest">Deskripsi</th>
                                             <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Jumlah</th>
+                                            <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
@@ -286,10 +320,21 @@
                                             </td>
                                             <td class="px-6 py-4 text-on-surface">{{ $cost->description }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($cost->amount) }}</td>
+                                            <td class="px-6 py-4 text-right">
+                                                @if(in_array($order->status, ['IN_PRODUCTION', 'DELIVERING']))
+                                                <form id="removeCost-{{ $cost->id }}" action="{{ route('orders.remove-cost', $cost) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmAction('removeCost-{{ $cost->id }}', 'Hapus biaya ini?', 'Biaya akan dihapus dan total HPP akan dihitung ulang.', 'warning', 'Ya, Hapus')" class="text-slate-400 hover:text-error transition-colors">
+                                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </td>
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="3" class="px-6 py-12 text-center text-slate-400 italic">Belum ada biaya tambahan.</td>
+                                            <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic">Belum ada biaya tambahan.</td>
                                         </tr>
                                         @endforelse
                                     </tbody>
@@ -300,30 +345,76 @@
 
                     <!-- Payments Tab -->
                     <div x-show="activeTab === 'payments'" class="space-y-6">
-                        @if($order->payment_status !== 'PAID')
-                        <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
-                              x-data="{ displayPay: '', rawPay: '' }">
+                        @if($order->isPayable())
+                        @php
+                            $hasDP = $order->payments->where('type', 'DP')->count() > 0;
+                            $totalPaid = $order->payments->sum('amount');
+                            $remainingPayment = $order->selling_price - $totalPaid;
+                        @endphp
+
+                        <!-- Info Sisa Tagihan -->
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border {{ $remainingPayment > 0 ? 'bg-amber-50/50 border-amber-200' : 'bg-emerald-50/50 border-emerald-200' }}">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px] {{ $remainingPayment > 0 ? 'text-amber-600' : 'text-emerald-600' }}">{{ $remainingPayment > 0 ? 'account_balance_wallet' : 'check_circle' }}</span>
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-widest {{ $remainingPayment > 0 ? 'text-amber-600' : 'text-emerald-600' }}">Sisa Tagihan</p>
+                                    <p class="text-lg font-bold {{ $remainingPayment > 0 ? 'text-amber-700' : 'text-emerald-700' }}">{{ formatRupiah($remainingPayment) }}</p>
+                                </div>
+                            </div>
+                            <div class="sm:ml-auto text-right">
+                                <p class="text-[10px] text-slate-500">Sudah dibayar: <span class="font-bold text-emerald-600">{{ formatRupiah($totalPaid) }}</span> dari <span class="font-bold text-on-surface">{{ formatRupiah($order->selling_price) }}</span></p>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 pb-8 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-end"
+                              x-data="{ displayPay: '', rawPay: '', maxAmount: {{ (int)$remainingPayment }}, overLimit: false }">
                             @csrf
-                            <div class="space-y-1.5">
+                            <div class="space-y-1.5 md:w-48 shrink-0">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Tipe <span class="text-error">*</span></label>
-                                <select name="type" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('type') border-error @enderror">
-                                    <option value="DP" {{ old('type') == 'DP' ? 'selected' : '' }}>Uang Muka (DP)</option>
-                                    <option value="FINAL" {{ old('type', 'FINAL') == 'FINAL' ? 'selected' : '' }}>Pelunasan</option>
-                                </select>
+                                @if($hasDP)
+                                    <div class="w-full bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg px-3 py-2 text-sm font-bold flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[16px]">paid</span>
+                                        Pelunasan
+                                    </div>
+                                    <input type="hidden" name="type" value="FINAL">
+                                @else
+                                    <select name="type" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('type') border-error @enderror">
+                                        <option value="DP" {{ old('type') == 'DP' ? 'selected' : '' }}>Uang Muka (DP)</option>
+                                        <option value="FINAL" {{ old('type') == 'FINAL' ? 'selected' : '' }}>Pelunasan</option>
+                                    </select>
+                                @endif
                                 @error('type') <p class="text-[10px] text-error mt-0.5">{{ $message }}</p> @enderror
                             </div>
-                            <div class="md:col-span-2 space-y-1.5">
+                            <div class="flex-1 space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah (Rp) <span class="text-error">*</span></label>
-                                <input type="text" 
-                                       x-model="displayPay"
-                                       x-on:input="displayPay = formatRupiahJS($event.target.value); rawPay = displayPay.replace(/\./g, '')"
-                                       required 
-                                       class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('amount') border-error @enderror" 
-                                       placeholder="0">
-                                <input type="hidden" name="amount" x-model="rawPay">
+                                <div class="relative">
+                                    <input type="text" 
+                                           x-model="displayPay"
+                                           x-on:input="
+                                               displayPay = formatRupiahJS($event.target.value);
+                                               rawPay = displayPay.replace(/\./g, '');
+                                               if (parseInt(rawPay) > maxAmount) {
+                                                   rawPay = maxAmount.toString();
+                                                   displayPay = formatRupiahJS(rawPay);
+                                                   overLimit = true;
+                                                   setTimeout(() => overLimit = false, 2000);
+                                               }
+                                           "
+                                           required 
+                                           class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm @error('amount') border-error @enderror" 
+                                           placeholder="Maks. {{ number_format($remainingPayment, 0, ',', '.') }}">
+                                    <input type="hidden" name="amount" x-model="rawPay">
+                                    <p x-show="overLimit" x-transition class="absolute left-0 top-full mt-1 text-[10px] text-error flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[12px]">warning</span>
+                                        Maksimal sisa tagihan: Rp {{ number_format($remainingPayment, 0, ',', '.') }}
+                                    </p>
+                                </div>
                                 @error('amount') <p class="text-[10px] text-error mt-0.5">{{ $message }}</p> @enderror
                             </div>
-                            <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah Pembayaran</button>
+                            <div class="space-y-1.5 shrink-0">
+                                <label class="text-[11px] font-label-caps text-transparent uppercase select-none">&nbsp;</label>
+                                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg font-semibold text-sm hover:opacity-90 transition-colors whitespace-nowrap w-full">Tambah Pembayaran</button>
+                            </div>
                         </form>
                         @endif
 
@@ -342,8 +433,8 @@
                                         <tr class="hover:bg-surface-container-low transition-colors group">
                                             <td class="px-6 py-4 text-slate-500">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
                                             <td class="px-6 py-4">
-                                                <span class="px-2.5 py-1 rounded-full {{ $payment->type == 'DP' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100' }} text-[10px] font-bold border uppercase">
-                                                    {{ $payment->type == 'DP' ? 'Uang Muka (DP)' : 'Pelunasan' }}
+                                                <span class="px-2.5 py-1 rounded-full {{ $payment->type == 'DP' ? 'bg-amber-50 text-amber-700 border-amber-100' : ($payment->type == 'INSTALLMENT' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100') }} text-[10px] font-bold border uppercase">
+                                                    {{ $payment->type_label }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($payment->amount) }}</td>
@@ -518,6 +609,36 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(formId).submit();
+            }
+        });
+    }
+
+    function cancelOrder() {
+        Swal.fire({
+            title: 'Batalkan pesanan ini?',
+            text: 'Tindakan ini tidak bisa dibatalkan. Stok yang sudah dipakai akan dikembalikan.',
+            icon: 'warning',
+            input: 'textarea',
+            inputLabel: 'Alasan Pembatalan (opsional)',
+            inputPlaceholder: 'Misal: Pelanggan membatalkan pesanan...',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Batalkan',
+            cancelButtonText: 'Kembali',
+            background: '#ffffff',
+            color: '#0f172a',
+            customClass: {
+                popup: 'rounded-xl',
+                confirmButton: 'rounded-lg px-6 py-2 font-semibold',
+                cancelButton: 'rounded-lg px-6 py-2 font-semibold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById('cancelOrderForm');
+                const reasonInput = form.querySelector('input[name="cancel_reason"]');
+                if (reasonInput) reasonInput.value = result.value || '';
+                form.submit();
             }
         });
     }

@@ -74,6 +74,17 @@
                 <canvas id="cashflowChart"></canvas>
             </div>
         </div>
+
+        <!-- Top Materials Used -->
+        <div class="glass-panel border border-surface-variant rounded-xl p-6 shadow-sm lg:col-span-2">
+            <h3 class="font-title-sm text-title-sm mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-rose-500">category</span>
+                Top 5 Bahan Baku Terpakai (Berdasarkan Nilai)
+            </h3>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="topMaterialsChart"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -82,6 +93,7 @@
     const orderData = @json($orderTrends);
     const inventoryData = @json($inventoryHealth);
     const cashflowData = @json($cashflow);
+    const materialData = @json($topMaterials);
 
     const labels = orderData.map(d => d.month);
 
@@ -177,3 +189,4 @@
     });
 </script>
 @endsection
+
