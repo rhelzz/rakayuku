@@ -31,10 +31,8 @@ abstract class BaseExport implements WithStyles, ShouldAutoSize, WithCustomStart
     public static function afterSheet(AfterSheet $event)
     {
         $sheet = $event->sheet->getDelegate();
-        
         try {
             $lastColLetter = $sheet->getHighestColumn();
-            
             if (!empty($lastColLetter) && $lastColLetter !== 'A') {
                 $sheet->mergeCells('A1:' . $lastColLetter . '1');
             }
@@ -210,7 +208,6 @@ abstract class BaseExport implements WithStyles, ShouldAutoSize, WithCustomStart
                 $columnCount = count($row);
             }
         }
-        
         if ($columnCount === 0) {
             return $styles;
         }
@@ -222,7 +219,7 @@ abstract class BaseExport implements WithStyles, ShouldAutoSize, WithCustomStart
         $styles['A2:' . $lastColumn . '2'] = $headerStyle;
 
         $dataRowStart = 3;
-        $lastRow = count($this->rows) + 1; // +1 for 1-based indexing
+        $lastRow = count($this->rows) + 1;
 
         for ($row = $dataRowStart; $row < $lastRow - 1; $row++) {
             if (($row - $dataRowStart) % 2 === 0) {
