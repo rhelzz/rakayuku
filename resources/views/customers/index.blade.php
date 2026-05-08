@@ -101,8 +101,8 @@
         @endif
     </div>
     <!-- Export Modal -->
-    <div x-show="showExportModal" class="fixed inset-0 z-50" style="display: none;" x-cloak>
-        <div x-show="showExportModal" x-transition.opacity class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showExportModal = false"></div>
+    <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
+        <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
         <div x-show="showExportModal"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 translate-y-4 scale-95"
@@ -110,7 +110,8 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
              x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-             class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+             class="absolute top-1/2 left-1/2 bg-white rounded-2xl shadow-xl overflow-hidden"
+             style="width: 100%; max-width: 28rem; transform: translate(-50%, -50%);">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-surface-container-low">
                 <h3 class="font-headline-sm text-on-surface flex items-center gap-2"><span class="material-symbols-outlined text-emerald-600">file_download</span> Export Excel</h3>
                 <button @click="showExportModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
