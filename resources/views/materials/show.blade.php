@@ -28,7 +28,7 @@
             <div class="flex items-center gap-6 px-6 py-3 bg-surface-container-low border border-surface-variant rounded-xl">
                 <div class="text-center">
                     <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Stok Saat Ini</p>
-                    <p class="text-xl font-bold text-on-surface">{{ number_format($material->current_qty) }}</p>
+                    <p class="text-xl font-bold text-on-surface">{{ formatQty($material->current_qty) }} {{ $material->unit }}</p>
                 </div>
                 <div class="w-px h-8 bg-surface-variant"></div>
                 <div class="text-center">
@@ -68,7 +68,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-right font-data-mono font-bold {{ $movement->type == 'IN' ? 'text-emerald-600' : 'text-error' }}">
-                            {{ $movement->type == 'IN' ? '+' : '-' }}{{ number_format($movement->qty) }}
+                            {{ $movement->type == 'IN' ? '+' : '-' }}{{ formatQty($movement->qty) }}
                         </td>
                         <td class="px-6 py-4">
                             @if($movement->reference_type)

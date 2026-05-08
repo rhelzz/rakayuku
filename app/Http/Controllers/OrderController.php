@@ -185,7 +185,7 @@ class OrderController extends Controller
     {
         $request->validate([
             'material_id' => 'required|exists:materials,id',
-            'qty' => 'required|integer|min:1',
+            'qty' => 'required|numeric|min:0.01',
         ]);
 
         try {

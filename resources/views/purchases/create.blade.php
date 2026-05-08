@@ -83,7 +83,7 @@
                                             </select>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <input type="number" :name="'items['+index+'][qty]'" required step="1" min="1" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
+                                            <input type="number" :name="'items['+index+'][qty]'" required step="any" min="0.01" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
                                         </td>
                                         <td class="py-4 px-4">
                                             <div class="relative" x-data="{ 

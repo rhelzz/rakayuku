@@ -27,3 +27,21 @@ if (!function_exists('parseRupiah')) {
         return (float) str_replace(['Rp', '.', ' ', ','], '', $rupiah);
     }
 }
+
+if (!function_exists('formatQty')) {
+    /**
+     * Format quantity adaptively:
+     * - Integer values display without decimals: 10
+     * - Decimal values display with trimmed decimals: 10,5 or 10,75
+     *
+     * @param float|int $value
+     * @return string
+     */
+    function formatQty($value): string
+    {
+        if ($value == intval($value)) {
+            return number_format($value, 0, ',', '.');
+        }
+        return rtrim(rtrim(number_format($value, 2, ',', '.'), '0'), ',');
+    }
+}

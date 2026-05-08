@@ -109,7 +109,7 @@
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium text-xs">{{ $material->unit }}</span>
                             </td>
                             <td class="px-6 py-4 text-right font-data-mono text-data-mono @if($material->current_qty < 5) text-error font-bold @endif">
-                                {{ number_format($material->current_qty, 0, ',', '.') }}
+                                {{ formatQty($material->current_qty) }}
                             </td>
                             <td class="px-6 py-4 text-right font-data-mono text-data-mono">
                                 {{ formatRupiah($material->avg_price) }}

@@ -47,7 +47,7 @@
                             @foreach($purchase->items as $item)
                             <tr class="hover:bg-surface-container-low transition-colors group">
                                 <td class="py-4 px-6 font-medium text-on-surface">{{ $item->material->name }}{{ $item->material->type ? ' (' . $item->material->type . ')' : '' }}</td>
-                                <td class="py-4 px-4 text-right font-data-mono text-slate-500">{{ number_format($item->qty, 0, ',', '.') }}</td>
+                                <td class="py-4 px-4 text-right font-data-mono text-slate-500">{{ formatQty($item->qty) }} {{ $item->material->unit }}</td>
                                 <td class="py-4 px-6 text-right font-data-mono text-slate-500">{{ formatRupiah($item->price) }}</td>
                                 <td class="py-4 px-6 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($item->subtotal) }}</td>
                             </tr>

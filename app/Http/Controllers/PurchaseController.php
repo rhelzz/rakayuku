@@ -44,7 +44,7 @@ class PurchaseController extends Controller
             'purchase_date' => 'required|date|before_or_equal:today',
             'items' => 'required|array|min:1',
             'items.*.material_id' => 'required|exists:materials,id',
-            'items.*.qty' => 'required|integer|min:1',
+            'items.*.qty' => 'required|numeric|min:0.01',
             'items.*.price' => 'required|numeric|min:0',
         ]);
 

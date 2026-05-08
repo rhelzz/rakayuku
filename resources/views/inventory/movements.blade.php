@@ -92,7 +92,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-right font-data-mono font-bold {{ $m->type === 'IN' ? 'text-emerald-600' : ($m->type === 'OUT' ? 'text-orange-600' : 'text-slate-600') }}">
-                            {{ $m->type === 'OUT' ? '-' : ($m->type === 'IN' ? '+' : '') }}{{ number_format(abs($m->qty), 0, ',', '.') }}
+                            {{ $m->type === 'OUT' ? '-' : ($m->type === 'IN' ? '+' : '') }}{{ formatQty(abs($m->qty)) }}
                         </td>
                         <td class="px-6 py-4 text-right font-data-mono text-slate-500">
                             Rp {{ number_format($m->price_snapshot, 0, ',', '.') }}

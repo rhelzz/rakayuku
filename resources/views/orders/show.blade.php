@@ -212,13 +212,13 @@
                                 <select name="material_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm">
                                     <option disabled selected value="">Pilih...</option>
                                     @foreach($materials as $m)
-                                        <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} (Stok: {{ number_format($m->current_qty, 0, ',', '.') }})</option>
+                                        <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} — Stok: {{ formatQty($m->current_qty) }} {{ $m->unit }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah</label>
-                                <input type="number" name="qty" required step="1" min="1" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="0">
+                                <input type="number" name="qty" required step="any" min="0.01" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" placeholder="0">
                             </div>
                             <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Tambah ke Proyek</button>
                         </form>
@@ -240,7 +240,7 @@
                                         @forelse($order->materials as $om)
                                         <tr class="hover:bg-surface-container-low transition-colors group">
                                             <td class="px-6 py-4 font-medium">{{ $om->material->name }}{{ $om->material->type ? ' (' . $om->material->type . ')' : '' }}</td>
-                                            <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ number_format($om->qty_used, 0, ',', '.') }}</td>
+                                            <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ formatQty($om->qty_used) }} {{ $om->material->unit }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ formatRupiah($om->price_snapshot) }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($om->subtotal) }}</td>
                                             <td class="px-6 py-4 text-right">

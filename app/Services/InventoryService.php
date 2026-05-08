@@ -12,7 +12,7 @@ class InventoryService
     /**
      * Add stock from purchase and calculate Moving Average HPP
      */
-    public function addStockFromPurchase(Material $material, int $qty, float $newPrice, ?object $reference = null)
+    public function addStockFromPurchase(Material $material, float $qty, float $newPrice, ?object $reference = null)
     {
         return DB::transaction(function () use ($material, $qty, $newPrice, $reference) {
             // Lock the material for update to prevent race conditions
@@ -53,7 +53,7 @@ class InventoryService
     /**
      * Reduce stock for production usage
      */
-    public function reduceStockForProduction(Material $material, int $qty, ?object $reference = null)
+    public function reduceStockForProduction(Material $material, float $qty, ?object $reference = null)
     {
         return DB::transaction(function () use ($material, $qty, $reference) {
             $material = Material::lockForUpdate()->find($material->id);
