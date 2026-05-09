@@ -11,14 +11,14 @@
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Metrik real-time untuk pemrosesan kayu dan inventaris.</p>
         </div>
         <div class="flex flex-wrap gap-3">
-            <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-slate-600">Quick Export:</span>
-                <button @click="exportUrl = '{{ route('cashflows.export') }}'; exportTitle = 'Arus Kas'; showExportModal = true" class="px-3 py-1.5 text-xs bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">Arus Kas</button>
-                <button @click="exportUrl = '{{ route('orders.export_receivables') }}'; exportTitle = 'Piutang'; showExportModal = true" class="px-3 py-1.5 text-xs bg-rose-50 text-rose-700 rounded-lg hover:bg-rose-100 transition-colors border border-rose-200">Piutang</button>
-                <button @click="exportUrl = '{{ route('orders.export') }}'; exportTitle = 'Pesanan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">Pesanan</button>
-                <button @click="exportUrl = '{{ route('customers.export') }}'; exportTitle = 'Pelanggan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">Pelanggan</button>
-                <button @click="exportUrl = '{{ route('materials.export') }}'; exportTitle = 'Bahan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200">Bahan</button>
-                <button @click="exportUrl = '{{ route('purchases.export') }}'; exportTitle = 'Pembelian'; showExportModal = true" class="px-3 py-1.5 text-xs bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200">Pembelian</button>
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-semibold text-slate-600 mr-1">Quick Export:</span>
+                <button @click="exportUrl = '{{ route('cashflows.export') }}'; exportTitle = 'Arus Kas'; showExportModal = true" class="px-3 py-1.5 text-xs bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200 whitespace-nowrap">Arus Kas</button>
+                <button @click="exportUrl = '{{ route('orders.export_receivables') }}'; exportTitle = 'Piutang'; showExportModal = true" class="px-3 py-1.5 text-xs bg-rose-50 text-rose-700 rounded-lg hover:bg-rose-100 transition-colors border border-rose-200 whitespace-nowrap">Piutang</button>
+                <button @click="exportUrl = '{{ route('orders.export') }}'; exportTitle = 'Pesanan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200 whitespace-nowrap">Pesanan</button>
+                <button @click="exportUrl = '{{ route('customers.export') }}'; exportTitle = 'Pelanggan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 whitespace-nowrap">Pelanggan</button>
+                <button @click="exportUrl = '{{ route('materials.export') }}'; exportTitle = 'Bahan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200 whitespace-nowrap">Bahan</button>
+                <button @click="exportUrl = '{{ route('purchases.export') }}'; exportTitle = 'Pembelian'; showExportModal = true" class="px-3 py-1.5 text-xs bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200 whitespace-nowrap">Pembelian</button>
             </div>
             <a href="{{ route('orders.create') }}" class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-body-sm hover:opacity-90 transition-opacity flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">add</span> Pesanan Baru

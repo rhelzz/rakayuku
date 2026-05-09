@@ -34,13 +34,21 @@
         }
     </script>
 </head>
-<body class="flex h-screen overflow-hidden bg-background font-body-md text-on-background">
+<body class="flex h-screen overflow-hidden bg-background font-body-md text-on-background" x-data="{ sidebarOpen: false }">
+
+<!-- Mobile sidebar backdrop -->
+<div x-show="sidebarOpen" class="fixed inset-0 bg-black/50 z-40 md:hidden" x-transition.opacity @click="sidebarOpen = false" x-cloak></div>
 
 <!-- SideNavBar -->
-<nav class="hidden md:flex flex-col py-6 h-screen w-64 bg-white border-r border-slate-200 shadow-sm font-poppins text-[13px] font-medium z-50 shrink-0">
-    <div class="px-6 mb-8">
-        <h1 class="text-primary font-black text-xl tracking-tight">Rakayuku</h1>
-        <p class="text-slate-500 text-[11px] mt-1">Sistem Manajemen Furniture</p>
+<nav :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}" class="fixed md:static inset-y-0 left-0 z-50 w-64 h-full bg-white border-r border-slate-200 shadow-sm font-poppins text-[13px] font-medium shrink-0 flex flex-col py-6 transition-transform duration-300 transform md:translate-x-0">
+    <div class="px-6 mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-primary font-black text-xl tracking-tight">Rakayuku</h1>
+            <p class="text-slate-500 text-[11px] mt-1">Sistem Manajemen Furniture</p>
+        </div>
+        <button @click="sidebarOpen = false" class="md:hidden text-slate-500 hover:text-slate-800">
+            <span class="material-symbols-outlined">close</span>
+        </button>
     </div>
     
     <div class="flex-1 px-4 space-y-1 overflow-y-auto" x-data="{ 
@@ -124,9 +132,11 @@
 <!-- Main Content Area -->
 <div class="flex flex-col flex-1 h-full overflow-hidden">
     <!-- TopAppBar (Mobile) -->
-    <header class="flex justify-between items-center px-4 h-14 w-full z-40 bg-white border-b border-slate-200 shadow-sm shrink-0 md:hidden">
+    <header class="flex justify-between items-center px-4 h-14 w-full z-30 bg-white border-b border-slate-200 shadow-sm shrink-0 md:hidden">
         <div class="flex items-center gap-4">
-            <span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+            <button @click="sidebarOpen = true" class="text-primary hover:bg-slate-100 p-1.5 rounded-lg transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
             <span class="text-lg font-bold tracking-tight text-primary">Rakayuku ERP</span>
         </div>
     </header>
