@@ -7,6 +7,8 @@ use App\Models\PurchaseItem;
 use App\Models\Material;
 use Illuminate\Support\Facades\DB;
 
+use App\Models\Cashflow;
+
 class PurchaseService
 {
     protected InventoryService $inventoryService;
@@ -16,9 +18,7 @@ class PurchaseService
         $this->inventoryService = $inventoryService;
     }
 
-    /**
-     * Create Purchase (Pembelian Bahan Baku) and trigger Inventory stock-in
-     */
+
     public function createPurchase(array $data, array $items)
     {
         return DB::transaction(function () use ($data, $items) {
@@ -27,15 +27,22 @@ class PurchaseService
                 $invoiceProof = $data['invoice_proof']->store('invoices', 'public');
             }
 
+            $totalPrice = 0;
+            foreach ($items as $item) {
+                $totalPrice += $item['qty'] * $item['price'];
+            }
+
+            if ($totalPrice > 0 && $totalPrice > Cashflow::currentBalance()) {
+                throw new \Exception('Saldo perusahaan tidak mencukupi untuk melakukan pembelian. Sisa Saldo: ' . formatRupiah(Cashflow::currentBalance()));
+            }
+
             $purchase = Purchase::create([
                 'supplier_name' => $data['supplier_name'] ?? null,
                 'invoice_number' => $data['invoice_number'] ?? null,
                 'invoice_proof' => $invoiceProof,
                 'purchase_date' => $data['purchase_date'] ?? now(),
-                'total_price' => 0, // Akan dihitung ulang
+                'total_price' => $totalPrice, 
             ]);
-
-            $totalPrice = 0;
 
             foreach ($items as $item) {
                 $material = Material::findOrFail($item['material_id']);
@@ -43,9 +50,6 @@ class PurchaseService
                 $price = $item['price'];
                 $subtotal = $qty * $price;
 
-                $totalPrice += $subtotal;
-
-                // Catat detail pembelian
                 PurchaseItem::create([
                     'purchase_id' => $purchase->id,
                     'material_id' => $material->id,
@@ -54,12 +58,16 @@ class PurchaseService
                     'subtotal' => $subtotal,
                 ]);
 
-                // Update stock dan HPP Moving Average melalui InventoryService
                 $this->inventoryService->addStockFromPurchase($material, $qty, $price, $purchase);
             }
 
-            // Update total pembelian
-            $purchase->update(['total_price' => $totalPrice]);
+            if ($totalPrice > 0) {
+                $purchase->cashflow()->create([
+                    'type' => 'OUT',
+                    'amount' => $totalPrice,
+                    'description' => 'Pembelian bahan baku ke ' . ($purchase->supplier_name ?? 'Supplier') . ' (Inv: ' . ($purchase->invoice_number ?? '-') . ')',
+                ]);
+            }
 
             return $purchase;
         });

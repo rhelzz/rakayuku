@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cashflow;
 use App\Models\Order;
 use App\Models\Material;
 use App\Models\Purchase;
@@ -28,10 +29,13 @@ class DashboardController extends Controller
         $lowStockMaterials = Material::where('current_qty', '<', 2)->get();
 
         $recentOrders = Order::with('customer')->latest()->take(5)->get();
+        
+        $currentBalance = Cashflow::currentBalance();
 
         return view('dashboard', compact(
             'totalOrders', 'pendingOrders', 'activeOrders', 'finishedOrders',
-            'totalProfit', 'totalReceivable', 'lowStockMaterials', 'recentOrders'
+            'totalProfit', 'totalReceivable', 'lowStockMaterials', 'recentOrders',
+            'currentBalance'
         ));
     }
 }

@@ -15,4 +15,9 @@ class Purchase extends Model
     {
         return $this->hasMany(PurchaseItem::class);
     }
+
+    public function cashflow()
+    {
+        return $this->morphOne(Cashflow::class, 'reference');
+    }
 }

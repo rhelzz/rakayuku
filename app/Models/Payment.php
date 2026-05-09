@@ -34,4 +34,9 @@ class Payment extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function cashflow()
+    {
+        return $this->morphOne(Cashflow::class, 'reference');
+    }
 }

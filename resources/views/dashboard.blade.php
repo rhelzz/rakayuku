@@ -13,6 +13,8 @@
         <div class="flex flex-wrap gap-3">
             <div class="flex items-center gap-2">
                 <span class="text-sm font-semibold text-slate-600">Quick Export:</span>
+                <button @click="exportUrl = '{{ route('cashflows.export') }}'; exportTitle = 'Arus Kas'; showExportModal = true" class="px-3 py-1.5 text-xs bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">Arus Kas</button>
+                <button @click="exportUrl = '{{ route('orders.export_receivables') }}'; exportTitle = 'Piutang'; showExportModal = true" class="px-3 py-1.5 text-xs bg-rose-50 text-rose-700 rounded-lg hover:bg-rose-100 transition-colors border border-rose-200">Piutang</button>
                 <button @click="exportUrl = '{{ route('orders.export') }}'; exportTitle = 'Pesanan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">Pesanan</button>
                 <button @click="exportUrl = '{{ route('customers.export') }}'; exportTitle = 'Pelanggan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">Pelanggan</button>
                 <button @click="exportUrl = '{{ route('materials.export') }}'; exportTitle = 'Bahan'; showExportModal = true" class="px-3 py-1.5 text-xs bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200">Bahan</button>
@@ -24,17 +26,29 @@
         </div>
     </div>
 
-    <!-- KPI Bento Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group border-l-4 border-l-primary">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <span class="material-symbols-outlined text-6xl text-primary">account_balance_wallet</span>
+            </div>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Saldo Perusahaan</span>
+            <div class="flex flex-col mt-2 overflow-hidden">
+                <span class="text-xl lg:text-2xl font-bold tracking-tight text-on-background whitespace-nowrap" title="{{ formatRupiah($currentBalance) }}">{{ formatRupiah($currentBalance) }}</span>
+                <span class="font-body-sm text-body-sm text-primary mt-1">
+                    <a href="{{ route('cashflows.index') }}" class="hover:underline flex items-center gap-1">Detail Arus Kas <span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+                </span>
+            </div>
+        </div>
+
         <!-- Metric 1: Active Projects -->
         <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group">
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-primary-container">handyman</span>
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Proyek Berjalan</span>
-            <div class="flex items-baseline gap-2 mt-2">
-                <span class="font-display-lg text-display-lg text-on-background">{{ $activeOrders }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary flex items-center">Dalam Proses</span>
+            <div class="flex flex-col mt-2">
+                <span class="text-xl lg:text-2xl font-bold tracking-tight text-on-background leading-none">{{ $activeOrders }}</span>
+                <span class="font-body-sm text-body-sm text-tertiary mt-1">Dalam Proses</span>
             </div>
         </div>
 
@@ -44,15 +58,17 @@
                 <span class="material-symbols-outlined text-6xl text-error">warning</span>
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Peringatan Stok Rendah</span>
-            <div class="flex items-baseline gap-2 mt-2">
-                <span class="font-display-lg text-display-lg text-on-background">{{ count($lowStockMaterials) }}</span>
-                <span class="font-body-sm text-body-sm text-error flex items-center">Bahan Baku</span>
+            <div class="flex flex-col mt-2">
+                <span class="text-xl lg:text-2xl font-bold tracking-tight text-on-background leading-none">{{ count($lowStockMaterials) }}</span>
+                <div class="flex flex-col mt-1 gap-0.5">
+                    <span class="font-body-sm text-body-sm text-error">Bahan Baku</span>
+                    @if(count($lowStockMaterials) > 0)
+                        <span class="font-body-sm text-body-sm text-on-surface-variant">Perlu peninjauan segera</span>
+                    @else
+                        <span class="font-body-sm text-body-sm text-tertiary">Semua stok mencukupi</span>
+                    @endif
+                </div>
             </div>
-            @if(count($lowStockMaterials) > 0)
-                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Perlu peninjauan segera</span>
-            @else
-                <span class="font-body-sm text-body-sm text-tertiary mt-1">Semua stok mencukupi</span>
-            @endif
         </div>
 
         <!-- Metric 3: Total Profit -->
@@ -61,9 +77,9 @@
                 <span class="material-symbols-outlined text-6xl text-primary-container">payments</span>
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Keuntungan</span>
-            <div class="flex items-baseline gap-1 mt-2">
-                <span class="font-headline-md text-headline-md text-on-background">{{ formatRupiah($totalProfit) }}</span>
-                <span class="font-body-sm text-body-sm text-tertiary ml-1">Selesai</span>
+            <div class="flex flex-col mt-2 overflow-hidden">
+                <span class="text-xl lg:text-2xl font-bold tracking-tight text-on-background whitespace-nowrap" title="{{ formatRupiah($totalProfit) }}">{{ formatRupiah($totalProfit) }}</span>
+                <span class="font-body-sm text-body-sm text-tertiary mt-1">Selesai</span>
             </div>
         </div>
 
@@ -73,10 +89,10 @@
                 <span class="material-symbols-outlined text-6xl text-amber-500">account_balance_wallet</span>
             </div>
             <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Piutang</span>
-            <div class="flex items-baseline gap-1 mt-2">
-                <span class="font-headline-md text-headline-md text-on-background">{{ formatRupiah($totalReceivable) }}</span>
+            <div class="flex flex-col mt-2 overflow-hidden">
+                <span class="text-xl lg:text-2xl font-bold tracking-tight text-on-background whitespace-nowrap" title="{{ formatRupiah($totalReceivable) }}">{{ formatRupiah($totalReceivable) }}</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Sisa tagihan pelanggan</span>
             </div>
-            <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Sisa tagihan pelanggan</span>
         </div>
     </div>
 

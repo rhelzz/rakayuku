@@ -78,6 +78,12 @@
             Pesanan
         </a>
         
+        <!-- Arus Kas -->
+        <a href="{{ route('cashflows.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('cashflows.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
+            <span class="material-symbols-outlined" style="{{ request()->routeIs('cashflows.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">account_balance_wallet</span>
+            Arus Kas
+        </a>
+        
         <!-- Pelanggan (Kembali Link Tunggal) -->
         <a href="{{ route('customers.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded {{ request()->routeIs('customers.*') ? 'bg-amber-50 text-primary border-r-4 border-primary' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }} transition-all duration-150 group cursor-pointer">
             <span class="material-symbols-outlined" style="{{ request()->routeIs('customers.*') ? "font-variation-settings: 'FILL' 1;" : '' }}">group</span>

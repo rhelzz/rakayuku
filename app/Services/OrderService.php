@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\Payment;
+use App\Models\Cashflow;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -35,12 +36,18 @@ class OrderService
             $order->customer->increment('orders_count');
 
             if ($dpAmount > 0) {
-                Payment::create([
+                $payment = Payment::create([
                     'order_id' => $order->id,
                     'amount' => $dpAmount,
                     'type' => Payment::TYPE_DP,
                     'payment_date' => now(),
                     'notes' => 'DP awal saat pembuatan pesanan',
+                ]);
+
+                $payment->cashflow()->create([
+                    'type' => 'IN',
+                    'amount' => $dpAmount,
+                    'description' => 'Pembayaran DP Pesanan ' . $order->order_number,
                 ]);
             }
 
@@ -182,12 +189,18 @@ class OrderService
                 throw new Exception('Pesanan ini sudah lunas. Tidak bisa menambahkan pembayaran.');
             }
 
-            Payment::create([
+            $payment = Payment::create([
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'type' => $type,
                 'payment_date' => now(),
                 'notes' => $notes,
+            ]);
+
+            $payment->cashflow()->create([
+                'type' => 'IN',
+                'amount' => $amount,
+                'description' => 'Pembayaran ' . $payment->type_label . ' Pesanan ' . $order->order_number,
             ]);
 
             $totalPaid = $currentPaid + $amount;

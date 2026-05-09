@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReceivableExport;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\Material;
@@ -248,5 +249,10 @@ class OrderController extends Controller
     public function export(Request $request)
     {
         return Excel::download(new OrderExport($request->start_date, $request->end_date), 'Daftar_Pesanan_' . now()->format('Y-m-d_His') . '.xlsx');
+    }
+
+    public function exportReceivables(Request $request)
+    {
+        return Excel::download(new ReceivableExport($request->start_date, $request->end_date), 'Daftar_Piutang_' . now()->format('Y-m-d_His') . '.xlsx');
     }
 }

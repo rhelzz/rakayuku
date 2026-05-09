@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CashflowController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -30,7 +31,12 @@ Route::prefix('reports')->name('reports.')->group(function () {
 Route::get('purchases/export', [PurchaseController::class, 'export'])->name('purchases.export');
 Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);
 
+Route::get('cashflows/export', [CashflowController::class, 'export'])->name('cashflows.export');
+Route::get('cashflows', [CashflowController::class, 'index'])->name('cashflows.index');
+Route::post('cashflows', [CashflowController::class, 'store'])->name('cashflows.store');
+
 Route::get('orders/export', [OrderController::class, 'export'])->name('orders.export');
+Route::get('orders/export-receivables', [OrderController::class, 'exportReceivables'])->name('orders.export_receivables');
 Route::get('orders/{order}/print', [OrderController::class, 'printInvoice'])->name('orders.print');
 Route::resource('orders', OrderController::class)->except(['destroy']);
 Route::post('orders/{order}/start-production', [OrderController::class, 'startProduction'])->name('orders.start-production');
