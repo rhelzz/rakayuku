@@ -90,6 +90,26 @@ class MaterialController extends Controller
             'unit' => 'required|string|max:50',
         ]);
 
+        if ($request->type) {
+            $exists = Material::where('name', $request->name)
+                ->where('type', $request->type)
+                ->where('id', '!=', $material->id)
+                ->exists();
+
+            if ($exists) {
+                return back()->withInput()->with('error', 'Bahan baku dengan nama dan tipe yang sama sudah ada.');
+            }
+        } else {
+            $exists = Material::where('name', $request->name)
+                ->whereNull('type')
+                ->where('id', '!=', $material->id)
+                ->exists();
+
+            if ($exists) {
+                return back()->withInput()->with('error', 'Bahan baku dengan nama ini sudah ada.');
+            }
+        }
+
         $material->update([
             'name' => $request->name,
             'type' => $request->type,

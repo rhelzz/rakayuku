@@ -47,6 +47,10 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
+        if ($customer->orders()->exists()) {
+            return back()->with('error', 'Pelanggan tidak bisa dihapus karena memiliki riwayat pesanan (data dibutuhkan untuk laporan).');
+        }
+
         Customer::destroy($customer->id);
         return redirect()->route('customers.index')->with('success', 'Pelanggan berhasil dihapus.');
     }

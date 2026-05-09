@@ -96,6 +96,11 @@ class OrderController extends Controller
             'selling_price' => 'required|numeric|min:0',
         ]);
 
+        $totalPaid = $order->payments()->sum('amount');
+        if ($request->selling_price < $totalPaid) {
+            return back()->withInput()->with('error', 'Harga jual tidak boleh lebih kecil dari total yang sudah dibayar pelanggan (Rp ' . number_format($totalPaid, 0, ',', '.') . ').');
+        }
+
         try {
             $this->orderService->updateOrder($order, $request->all());
             return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil diperbarui.');
