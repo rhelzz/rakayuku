@@ -49,3 +49,6 @@ Route::post('/orders/{order}/add-material', [OrderController::class, 'addMateria
 Route::delete('/order-materials/{orderMaterial}', [OrderController::class, 'removeMaterial'])->name('orders.remove-material');
 Route::post('/orders/{order}/add-cost', [OrderController::class, 'addCost'])->name('orders.add-cost');
 Route::delete('/production-costs/{productionCost}', [OrderController::class, 'removeCost'])->name('orders.remove-cost');
+
+Route::post('/orders/{order}/add-residue', [OrderController::class, 'addResidue'])->name('orders.add-residue');
+Route::delete('/order-residues/{orderResidue}', [OrderController::class, 'removeResidue'])->name('orders.remove-residue');

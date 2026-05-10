@@ -72,9 +72,44 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['customer', 'materials.material', 'productionCosts', 'payments']);
+        $order->load(['customer', 'materials.material', 'productionCosts', 'payments', 'residues.material']);
         $materials = Material::where('current_qty', '>', 0)->get();
         return view('orders.show', compact('order', 'materials'));
+    }
+
+    public function addResidue(Request $request, Order $order)
+    {
+        $request->validate([
+            'order_material_id' => 'required|exists:order_materials,id',
+            'type' => 'required|in:REUSABLE,RECYCLE,WASTE',
+            'qty' => 'required|numeric|min:0.01',
+            'reduction_value' => 'nullable|numeric|min:0',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $orderMaterial = OrderMaterial::findOrFail($request->input('order_material_id'));
+            $this->productionService->addResidueToOrder($order, $orderMaterial, $request->all());
+            return back()->with([
+                'success' => 'Residu berhasil dicatat.',
+                'active_tab' => 'materials'
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function removeResidue(\App\Models\OrderResidue $orderResidue)
+    {
+        try {
+            $this->productionService->removeResidue($orderResidue);
+            return back()->with([
+                'success' => 'Data residu berhasil dihapus.',
+                'active_tab' => 'materials'
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function edit(Order $order)

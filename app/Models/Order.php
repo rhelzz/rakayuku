@@ -88,6 +88,11 @@ class Order extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function residues()
+    {
+        return $this->hasMany(OrderResidue::class);
+    }
+
     public function getEstimatedMaterialCostAttribute()
     {
         return $this->materials()->sum('subtotal');
@@ -100,7 +105,11 @@ class Order extends Model
 
     public function getLiveTotalCostAttribute()
     {
-        return $this->estimated_material_cost + $this->estimated_additional_cost;
+        $residueReduction = $this->residues()
+            ->whereIn('type', ['REUSABLE', 'RECYCLE'])
+            ->sum('reduction_value');
+
+        return ($this->estimated_material_cost + $this->estimated_additional_cost) - $residueReduction;
     }
 
     public function getEstimatedProfitAttribute()

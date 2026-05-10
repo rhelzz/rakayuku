@@ -111,4 +111,12 @@ class InventoryService
             return $material;
         });
     }
+
+    /**
+     * Add stock back from production residue
+     */
+    public function addStockFromResidue(Material $material, float $qty, ?object $reference = null)
+    {
+        return $this->correctStock($material, $qty, 'RESIDUE_RETURN', $reference);
+    }
 }

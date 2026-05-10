@@ -236,15 +236,20 @@
                                             <th class="px-6 py-4 font-label-caps text-slate-500 uppercase text-[10px] tracking-widest text-right">Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
+                                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50" x-data="{ activeResidueForm: null }">
                                         @forelse($order->materials as $om)
                                         <tr class="hover:bg-surface-container-low transition-colors group">
                                             <td class="px-6 py-4 font-medium">{{ $om->material->name }}{{ $om->material->type ? ' (' . $om->material->type . ')' : '' }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ formatQty($om->qty_used) }} {{ $om->material->unit }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono text-slate-500">{{ formatRupiah($om->price_snapshot) }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($om->subtotal) }}</td>
-                                            <td class="px-6 py-4 text-right">
+                                            <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
                                                 @if($order->status == 'IN_PRODUCTION')
+                                                <button type="button" 
+                                                        @click="activeResidueForm = (activeResidueForm === {{ $om->id }} ? null : {{ $om->id }})"
+                                                        class="text-slate-400 hover:text-primary transition-colors" title="Catat Residu/Sisa">
+                                                    <span class="material-symbols-outlined text-[18px]">recycling</span>
+                                                </button>
                                                 <form id="removeMaterial-{{ $om->id }}" action="{{ route('orders.remove-material', $om) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
@@ -255,6 +260,50 @@
                                                 @endif
                                             </td>
                                         </tr>
+                                        <!-- Inline Residue Form -->
+                                        @if($order->status == 'IN_PRODUCTION')
+                                        <tr x-show="activeResidueForm === {{ $om->id }}" x-transition class="bg-primary/5">
+                                            <td colspan="5" class="px-6 py-4">
+                                                <form action="{{ route('orders.add-residue', $order) }}" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"
+                                                      x-data="{ 
+                                                        qty: 0, 
+                                                        type: 'REUSABLE',
+                                                        priceSnapshot: {{ $om->price_snapshot }},
+                                                        reductionValue: 0,
+                                                        calculateReduction() {
+                                                            this.reductionValue = (this.qty * this.priceSnapshot);
+                                                        }
+                                                      }">
+                                                    @csrf
+                                                    <input type="hidden" name="order_material_id" value="{{ $om->id }}">
+                                                    
+                                                    <div class="space-y-1">
+                                                        <label class="text-[10px] font-bold text-slate-500 uppercase">Tipe Residu</label>
+                                                        <select name="type" x-model="type" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs">
+                                                            <option value="REUSABLE">REUSABLE (Nambah Stok & Kurangi HPP)</option>
+                                                            <option value="RECYCLE">RECYCLE (Kurangi HPP Saja)</option>
+                                                            <option value="WASTE">WASTE (Hanya Catatan)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <label class="text-[10px] font-bold text-slate-500 uppercase">Qty Sisa ({{ $om->material->unit }})</label>
+                                                        <input type="number" name="qty" x-model="qty" @input="calculateReduction()" step="any" min="0.01" max="{{ $om->qty_used }}" required class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs">
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <label class="text-[10px] font-bold text-slate-500 uppercase">Nilai Reduksi (Rp)</label>
+                                                        <input type="number" name="reduction_value" x-model="reductionValue" step="any" min="0" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-data-mono">
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <label class="text-[10px] font-bold text-slate-500 uppercase">Catatan</label>
+                                                        <input type="text" name="description" placeholder="Misal: Sisa 2m bagus" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs">
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="w-full bg-primary text-white py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition-colors">Simpan Residu</button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endif
                                         @empty
                                         <tr>
                                             <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">Belum ada bahan yang dialokasikan.</td>
@@ -264,6 +313,62 @@
                                 </table>
                             </div>
                         </div>
+
+                        <!-- Residue List Section -->
+                        @if($order->residues->count() > 0)
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-label-caps text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[16px]">recycling</span>
+                                <span>Daftar Residu / Sisa Material</span>
+                            </h4>
+                            <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="bg-slate-50/50 border-b border-surface-variant">
+                                        <tr>
+                                            <th class="px-6 py-3 font-label-caps text-slate-500 uppercase text-[9px]">Material</th>
+                                            <th class="px-6 py-3 font-label-caps text-slate-500 uppercase text-[9px]">Tipe</th>
+                                            <th class="px-6 py-3 font-label-caps text-slate-500 uppercase text-[9px] text-right">Qty</th>
+                                            <th class="px-6 py-3 font-label-caps text-slate-500 uppercase text-[9px] text-right">Potongan HPP</th>
+                                            <th class="px-6 py-3 font-label-caps text-slate-500 uppercase text-[9px]">Catatan</th>
+                                            <th class="px-6 py-3 font-label-caps text-slate-500 uppercase text-[9px] text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-surface-variant/30 font-body-sm text-[12px] text-on-surface bg-white/30">
+                                        @foreach($order->residues as $res)
+                                        <tr class="hover:bg-slate-50 transition-colors">
+                                            <td class="px-6 py-3 font-medium">{{ $res->material->name }}</td>
+                                            <td class="px-6 py-3">
+                                                @if($res->type === 'REUSABLE')
+                                                    <span class="px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-[9px] font-bold border border-green-100 uppercase">REUSABLE</span>
+                                                @elseif($res->type === 'RECYCLE')
+                                                    <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[9px] font-bold border border-blue-100 uppercase">RECYCLE</span>
+                                                @else
+                                                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold border border-slate-200 uppercase">WASTE</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-3 text-right font-data-mono text-slate-500">{{ formatQty($res->qty) }} {{ $res->material->unit }}</td>
+                                            <td class="px-6 py-3 text-right font-data-mono text-primary font-bold">
+                                                {{ $res->type !== 'WASTE' ? '- ' . formatRupiah($res->reduction_value) : 'Rp 0' }}
+                                            </td>
+                                            <td class="px-6 py-3 text-slate-500 italic">{{ $res->description ?? '-' }}</td>
+                                            <td class="px-6 py-3 text-right">
+                                                @if($order->status == 'IN_PRODUCTION')
+                                                <form id="removeResidue-{{ $res->id }}" action="{{ route('orders.remove-residue', $res) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmAction('removeResidue-{{ $res->id }}', 'Hapus data residu?', 'HPP dan stok akan disesuaikan kembali.', 'warning', 'Ya, Hapus')" class="text-slate-400 hover:text-error transition-colors">
+                                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Costs Tab -->
