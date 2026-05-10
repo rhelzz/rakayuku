@@ -266,12 +266,33 @@
                                             <td colspan="5" class="px-6 py-4">
                                                 <form action="{{ route('orders.add-residue', $order) }}" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"
                                                       x-data="{ 
-                                                        qty: 0, 
+                                                        qty: '', 
                                                         type: 'REUSABLE',
                                                         priceSnapshot: {{ $om->price_snapshot }},
-                                                        reductionValue: 0,
+                                                        maxQty: {{ $om->qty_used }},
+                                                        displayReduction: '',
+                                                        rawReduction: '',
+                                                        validateQty() {
+                                                            let val = parseFloat(this.qty);
+                                                            if (val > this.maxQty) {
+                                                                this.qty = this.maxQty;
+                                                                Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Batas Maksimal',
+                                                                    text: 'Jumlah residu tidak boleh melebihi jumlah terpakai (' + this.maxQty + ')',
+                                                                    toast: true,
+                                                                    position: 'top-end',
+                                                                    showConfirmButton: false,
+                                                                    timer: 3000
+                                                                });
+                                                            }
+                                                            this.calculateReduction();
+                                                        },
                                                         calculateReduction() {
-                                                            this.reductionValue = (this.qty * this.priceSnapshot);
+                                                            let val = parseFloat(this.qty || 0);
+                                                            let total = Math.round(val * this.priceSnapshot);
+                                                            this.rawReduction = total;
+                                                            this.displayReduction = formatRupiahJS(total);
                                                         }
                                                       }">
                                                     @csrf
@@ -287,11 +308,16 @@
                                                     </div>
                                                     <div class="space-y-1">
                                                         <label class="text-[10px] font-bold text-slate-500 uppercase">Qty Sisa ({{ $om->material->unit }})</label>
-                                                        <input type="number" name="qty" x-model="qty" @input="calculateReduction()" step="any" min="0.01" max="{{ $om->qty_used }}" required class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs">
+                                                        <input type="number" name="qty" x-model="qty" @input="validateQty()" step="any" min="0.01" :max="maxQty" required class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs" placeholder="0.00">
                                                     </div>
                                                     <div class="space-y-1">
                                                         <label class="text-[10px] font-bold text-slate-500 uppercase">Nilai Reduksi (Rp)</label>
-                                                        <input type="number" name="reduction_value" x-model="reductionValue" step="any" min="0" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-data-mono">
+                                                        <input type="text" 
+                                                               x-model="displayReduction"
+                                                               x-on:input="displayReduction = formatRupiahJS($event.target.value); rawReduction = displayReduction.replace(/\./g, '')"
+                                                               class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-data-mono"
+                                                               placeholder="0">
+                                                        <input type="hidden" name="reduction_value" x-model="rawReduction">
                                                     </div>
                                                     <div class="space-y-1">
                                                         <label class="text-[10px] font-bold text-slate-500 uppercase">Catatan</label>
