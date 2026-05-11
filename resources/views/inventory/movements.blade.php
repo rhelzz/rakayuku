@@ -35,7 +35,7 @@
     <!-- Table Filter -->
     <x-table.filter placeholder="Cari pergerakan stok...">
         <x-slot name="customFilters">
-            <div class="space-y-1.5 w-48">
+            <div class="space-y-1.5 w-full md:w-48">
                 <label class="block font-medium text-slate-700 text-xs uppercase tracking-wider">Filter Bahan</label>
                 <select name="material_id" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none outline-none">
                     <option value="">Semua Bahan</option>
@@ -45,7 +45,7 @@
                 </select>
             </div>
             
-            <div class="space-y-1.5 w-40">
+            <div class="space-y-1.5 w-full md:w-40">
                 <label class="block font-medium text-slate-700 text-xs uppercase tracking-wider">Tipe</label>
                 <select name="type" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary appearance-none outline-none">
                     <option value="">Semua Tipe</option>
