@@ -148,11 +148,11 @@
 
             <!-- Interactive Tabs -->
             <div class="glass-panel rounded-xl border border-slate-200 overflow-hidden">
-                <div class="flex border-b border-slate-200 bg-surface-container-low/50">
-                    <button @click="activeTab = 'overview'" :class="activeTab === 'overview' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="px-6 py-4 text-sm font-semibold transition-all">Ringkasan</button>
-                    <button @click="activeTab = 'materials'" :class="activeTab === 'materials' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="px-6 py-4 text-sm font-semibold transition-all">Bahan Baku (Penggunaan Stok)</button>
-                    <button @click="activeTab = 'costs'" :class="activeTab === 'costs' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="px-6 py-4 text-sm font-semibold transition-all">Biaya Tambahan</button>
-                    <button @click="activeTab = 'payments'" :class="activeTab === 'payments' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="px-6 py-4 text-sm font-semibold transition-all">Pembayaran</button>
+                <div class="flex overflow-x-auto border-b border-slate-200 bg-surface-container-low/50" style="scrollbar-width: none;">
+                    <button @click="activeTab = 'overview'" :class="activeTab === 'overview' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="whitespace-nowrap px-4 sm:px-6 py-4 text-sm font-semibold transition-all">Ringkasan</button>
+                    <button @click="activeTab = 'materials'" :class="activeTab === 'materials' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="whitespace-nowrap px-4 sm:px-6 py-4 text-sm font-semibold transition-all">Bahan Baku (Penggunaan Stok)</button>
+                    <button @click="activeTab = 'costs'" :class="activeTab === 'costs' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="whitespace-nowrap px-4 sm:px-6 py-4 text-sm font-semibold transition-all">Biaya Tambahan</button>
+                    <button @click="activeTab = 'payments'" :class="activeTab === 'payments' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="whitespace-nowrap px-4 sm:px-6 py-4 text-sm font-semibold transition-all">Pembayaran</button>
                 </div>
 
                 <div class="p-6 min-h-[400px]">
@@ -193,7 +193,7 @@
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-label-caps text-slate-500 uppercase tracking-widest">Status Pembayaran</p>
-                                        <span class="px-2 py-0.5 {{ $order->payment_status === 'PAID' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-700 border-amber-200' }} rounded text-[10px] font-bold border">
+                                        <span class="inline-block whitespace-nowrap px-2 py-0.5 {{ $order->payment_status === 'PAID' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-700 border-amber-200' }} rounded text-[10px] font-bold border">
                                             {{ $order->payment_status == 'UNPAID' ? 'BELUM LUNAS' : ($order->payment_status == 'PARTIAL' ? 'SEBAGIAN' : 'LUNAS') }}
                                         </span>
                                     </div>
@@ -365,11 +365,11 @@
                                             <td class="px-6 py-3 font-medium">{{ $res->material->name }}</td>
                                             <td class="px-6 py-3">
                                                 @if($res->type === 'REUSABLE')
-                                                    <span class="px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-[9px] font-bold border border-green-100 uppercase">REUSABLE</span>
+                                                    <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-[9px] font-bold border border-green-100 uppercase">REUSABLE</span>
                                                 @elseif($res->type === 'RECYCLE')
-                                                    <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[9px] font-bold border border-blue-100 uppercase">RECYCLE</span>
+                                                    <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[9px] font-bold border border-blue-100 uppercase">RECYCLE</span>
                                                 @else
-                                                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold border border-slate-200 uppercase">WASTE</span>
+                                                    <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[9px] font-bold border border-slate-200 uppercase">WASTE</span>
                                                 @endif
                                             </td>
                                             <td class="px-6 py-3 text-right font-data-mono text-slate-500">{{ formatQty($res->qty) }} {{ $res->material->unit }}</td>
@@ -444,10 +444,10 @@
                                         @forelse($order->productionCosts as $cost)
                                         <tr class="hover:bg-surface-container-low transition-colors group">
                                             <td class="px-6 py-4">
-                                                @if($cost->type == 'LABOR') <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 uppercase">Tenaga Kerja</span>
-                                                @elseif($cost->type == 'RETAIL_MATERIAL') <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase">Bahan Eceran</span>
-                                                @elseif($cost->type == 'DELIVERY') <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 uppercase">Pengantaran</span>
-                                                @else <span class="px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold border border-slate-100 uppercase">Lainnya</span> @endif
+                                                @if($cost->type == 'LABOR') <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 uppercase">Tenaga Kerja</span>
+                                                @elseif($cost->type == 'RETAIL_MATERIAL') <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 uppercase">Bahan Eceran</span>
+                                                @elseif($cost->type == 'DELIVERY') <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100 uppercase">Pengantaran</span>
+                                                @else <span class="inline-block whitespace-nowrap px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold border border-slate-100 uppercase">Lainnya</span> @endif
                                             </td>
                                             <td class="px-6 py-4 text-on-surface">{{ $cost->description }}</td>
                                             <td class="px-6 py-4 text-right font-data-mono font-bold text-on-surface">{{ formatRupiah($cost->amount) }}</td>
@@ -497,7 +497,7 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 pb-8 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-end"
+                        <form action="{{ route('orders.pay', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 pb-8 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 md:items-end items-stretch"
                               x-data="{ displayPay: '', rawPay: '', maxAmount: {{ (int)$remainingPayment }}, overLimit: false }">
                             @csrf
                             <div class="space-y-1.5 md:w-48 shrink-0">
@@ -564,7 +564,7 @@
                                         <tr class="hover:bg-surface-container-low transition-colors group">
                                             <td class="px-6 py-4 text-slate-500">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
                                             <td class="px-6 py-4">
-                                                <span class="px-2.5 py-1 rounded-full {{ $payment->type == 'DP' ? 'bg-amber-50 text-amber-700 border-amber-100' : ($payment->type == 'INSTALLMENT' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100') }} text-[10px] font-bold border uppercase">
+                                                <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded-full {{ $payment->type == 'DP' ? 'bg-amber-50 text-amber-700 border-amber-100' : ($payment->type == 'INSTALLMENT' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100') }} text-[10px] font-bold border uppercase">
                                                     {{ $payment->type_label }}
                                                 </span>
                                             </td>

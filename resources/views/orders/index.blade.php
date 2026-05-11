@@ -17,25 +17,25 @@
                 <p class="font-body-sm text-body-sm text-slate-400 mt-1">Kelola alur kerja manufaktur aktif.</p>
             </div>
             
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <!-- View Mode Switcher -->
                 <div class="flex bg-surface-container-high p-1 rounded-xl border border-surface-variant">
-                    <button @click="viewMode = 'kanban'; $dispatch('update-view-mode', 'kanban')" :class="viewMode === 'kanban' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
+                    <button @click="viewMode = 'kanban'; $dispatch('update-view-mode', 'kanban')" :class="viewMode === 'kanban' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
                         <span class="material-symbols-outlined text-[18px]">view_kanban</span>
-                        Kanban
+                        <span class="hidden sm:inline">Kanban</span>
                     </button>
-                    <button @click="viewMode = 'table'; $dispatch('update-view-mode', 'table')" :class="viewMode === 'table' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
+                    <button @click="viewMode = 'table'; $dispatch('update-view-mode', 'table')" :class="viewMode === 'table' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
                         <span class="material-symbols-outlined text-[18px]">table_rows</span>
-                        Tabel
+                        <span class="hidden sm:inline">Tabel</span>
                     </button>
                 </div>
 
-                <button @click="showExportModal = true" class="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 text-sm shadow-md">
+                <button @click="showExportModal = true" class="px-4 py-2 sm:py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 text-sm shadow-md">
                     <span class="material-symbols-outlined text-[20px]">download</span>
-                    Export
+                    <span class="hidden sm:inline">Export</span>
                 </button>
 
-                <a href="{{ route('orders.create') }}" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2 text-sm">
+                <a href="{{ route('orders.create') }}" class="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2 text-sm">
                     <span class="material-symbols-outlined text-[20px]">add</span>
                     Proyek Baru
                 </a>
@@ -51,9 +51,9 @@
     </x-table.filter>
 
     <!-- Kanban View -->
-    <div x-show="viewMode === 'kanban'" class="flex gap-6 overflow-x-auto pb-4 h-[calc(100vh-250px)]">
+    <div x-show="viewMode === 'kanban'" class="flex gap-4 sm:gap-6 overflow-x-auto pb-4 h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)] snap-x snap-mandatory" style="scrollbar-width: none;">
         <!-- Pending Column -->
-        <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
+        <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-slate-400"></div>
@@ -96,7 +96,7 @@
         </div>
 
         <!-- In Production Column -->
-        <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
+        <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-primary"></div>
@@ -148,7 +148,7 @@
         </div>
 
         <!-- Delivery & Debt Column -->
-        <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
+        <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-amber-500"></div>
@@ -195,7 +195,7 @@
         </div>
 
         <!-- Finished Column -->
-        <div class="flex-shrink-0 w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm">
+        <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-600"></div>
