@@ -54,6 +54,11 @@ class ProductionService
                 throw new Exception("Bahan baku hanya bisa dihapus saat status PRODUKSI.");
             }
 
+            $hasResidue = OrderResidue::where('order_material_id', $orderMaterial->id)->exists();
+            if ($hasResidue) {
+                throw new Exception("Bahan baku tidak bisa dihapus karena sudah memiliki residu.");
+            }
+
             $this->inventoryService->correctStock(
                 $orderMaterial->material,
                 $orderMaterial->qty_used,
@@ -76,6 +81,10 @@ class ProductionService
                 throw new Exception("Residu hanya bisa ditambahkan saat status PRODUKSI.");
             }
 
+            if ((int) $orderMaterial->order_id !== (int) $order->id) {
+                throw new Exception("Material tidak sesuai dengan pesanan.");
+            }
+
             $qty = (float) $data['qty'];
             $type = $data['type'];
             $description = $data['description'] ?? null;
@@ -94,10 +103,6 @@ class ProductionService
 
             $priceSnapshot = $orderMaterial->price_snapshot;
             $reductionValue = $qty * $priceSnapshot;
-
-            if (isset($data['reduction_value'])) {
-                $reductionValue = (float) $data['reduction_value'];
-            }
 
             $residue = OrderResidue::create([
                 'order_id' => $order->id,
