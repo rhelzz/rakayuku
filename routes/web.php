@@ -9,8 +9,16 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CashflowController;
+use App\Http\Controllers\FinanceController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::prefix('finance')->name('finance.')->group(function () {
+    Route::get('/', [FinanceController::class, 'index'])->name('index');
+    Route::get('/inventory', [FinanceController::class, 'inventoryDetail'])->name('inventory');
+    Route::get('/receivables', [FinanceController::class, 'receivablesDetail'])->name('receivables');
+    Route::get('/payables', [FinanceController::class, 'payablesDetail'])->name('payables');
+});
 
 Route::get('materials/export', [MaterialController::class, 'export'])->name('materials.export');
 Route::resource('materials', MaterialController::class);
@@ -29,6 +37,7 @@ Route::prefix('reports')->name('reports.')->group(function () {
 });
 
 Route::get('purchases/export', [PurchaseController::class, 'export'])->name('purchases.export');
+Route::post('purchases/{purchase}/pay', [PurchaseController::class, 'pay'])->name('purchases.pay');
 Route::resource('purchases', PurchaseController::class)->only(['index', 'create', 'store', 'show']);
 
 Route::get('cashflows/export', [CashflowController::class, 'export'])->name('cashflows.export');
