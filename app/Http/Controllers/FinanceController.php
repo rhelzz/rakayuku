@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OverallBalanceExport;
 use App\Models\Order;
 use App\Models\Purchase;
 use App\Models\Material;
 use App\Models\Payment;
 use App\Models\Cashflow;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
@@ -77,5 +78,15 @@ class FinanceController extends Controller
             ->get();
             
         return view('finance.payables', compact('purchases'));
+    }
+
+    public function exportOverall(Request $request)
+    {
+        $filename = 'Ringkasan_Overall_Keuangan_' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(
+            new OverallBalanceExport($request->start_date, $request->end_date),
+            $filename
+        );
     }
 }

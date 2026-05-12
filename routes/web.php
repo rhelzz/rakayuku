@@ -18,6 +18,7 @@ Route::prefix('finance')->name('finance.')->group(function () {
     Route::get('/inventory', [FinanceController::class, 'inventoryDetail'])->name('inventory');
     Route::get('/receivables', [FinanceController::class, 'receivablesDetail'])->name('receivables');
     Route::get('/payables', [FinanceController::class, 'payablesDetail'])->name('payables');
+    Route::get('/export-overall', [FinanceController::class, 'exportOverall'])->name('export.overall');
 });
 
 Route::get('materials/export', [MaterialController::class, 'export'])->name('materials.export');
