@@ -262,6 +262,12 @@
                                         </tr>
                                         <!-- Inline Residue Form -->
                                         @if($order->status == 'IN_PRODUCTION')
+                                        @php
+                                            $existingResidueQty = $order->residues
+                                                ->where('order_material_id', $om->id)
+                                                ->sum('qty');
+                                            $remainingQty = max(0, $om->qty_used - $existingResidueQty);
+                                        @endphp
                                         <tr x-show="activeResidueForm === {{ $om->id }}" x-transition class="bg-primary/5">
                                             <td colspan="5" class="px-6 py-4">
                                                 <form action="{{ route('orders.add-residue', $order) }}" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"
@@ -269,7 +275,7 @@
                                                         qty: '', 
                                                         type: 'REUSABLE',
                                                         priceSnapshot: {{ $om->price_snapshot }},
-                                                        maxQty: {{ $om->qty_used }},
+                                                        maxQty: {{ $remainingQty }},
                                                         displayReduction: '',
                                                         rawReduction: '',
                                                         validateQty() {
@@ -279,7 +285,7 @@
                                                                 Swal.fire({
                                                                     icon: 'warning',
                                                                     title: 'Batas Maksimal',
-                                                                    text: 'Jumlah residu tidak boleh melebihi jumlah terpakai (' + this.maxQty + ')',
+                                                                    text: 'Jumlah residu tidak boleh melebihi sisa terpakai (' + this.maxQty + ')',
                                                                     toast: true,
                                                                     position: 'top-end',
                                                                     showConfirmButton: false,

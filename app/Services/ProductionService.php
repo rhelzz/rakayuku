@@ -79,16 +79,22 @@ class ProductionService
             $qty = (float) $data['qty'];
             $type = $data['type'];
             $description = $data['description'] ?? null;
-            
-            // Validasi qty tidak boleh melebihi qty terpakai
-            if ($qty > $orderMaterial->qty_used) {
-                throw new Exception("Jumlah residu tidak boleh melebihi jumlah yang digunakan.");
+
+            $existingResidueQty = (float) OrderResidue::where('order_material_id', $orderMaterial->id)
+                ->sum('qty');
+            $remainingQty = (float) $orderMaterial->qty_used - $existingResidueQty;
+
+            if ($remainingQty <= 0) {
+                throw new Exception("Sisa residu untuk material ini sudah habis.");
+            }
+
+            if ($qty > $remainingQty) {
+                throw new Exception("Jumlah residu tidak boleh melebihi sisa terpakai.");
             }
 
             $priceSnapshot = $orderMaterial->price_snapshot;
             $reductionValue = $qty * $priceSnapshot;
 
-            // Jika user provide reduction_value manual (opsional)
             if (isset($data['reduction_value'])) {
                 $reductionValue = (float) $data['reduction_value'];
             }
