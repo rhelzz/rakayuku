@@ -50,14 +50,17 @@ class ReportService
      */
     public function getFinancialData($range, $start = null, $end = null)
     {
-        return Order::with(['customer', 'materials', 'productionCosts'])
+        return Order::with(['customer', 'materials', 'productionCosts', 'residues'])
             ->dateRange($range, $start, $end)
             ->latest()
             ->get()
             ->map(function ($order) {
                 $materialCost = $order->materials->sum('subtotal');
                 $productionCost = $order->productionCosts->sum('amount');
-                $totalHpp = $materialCost + $productionCost;
+                $residueReduction = $order->residues
+                    ->whereIn('type', ['REUSABLE', 'RECYCLE'])
+                    ->sum('reduction_value');
+                $totalHpp = ($materialCost + $productionCost) - $residueReduction;
                 $profit = $order->selling_price - $totalHpp;
                 $margin = $order->selling_price > 0 ? ($profit / $order->selling_price) * 100 : 0;
 
