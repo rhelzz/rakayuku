@@ -64,11 +64,71 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Payment Status & Form (for Credit Purchases) -->
+            @if($purchase->payment_status !== 'PAID')
+            <div class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h4 class="font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-600">account_balance_wallet</span>
+                            Status Pembayaran Hutang
+                        </h4>
+                        <p class="text-[11px] text-slate-500">Invoice ini dibeli secara kredit/hutang.</p>
+                    </div>
+                    <div class="bg-amber-50 px-4 py-2 rounded-xl border border-amber-100 text-right">
+                        <p class="text-[10px] font-bold text-amber-600 uppercase">Sisa Hutang</p>
+                        <p class="text-xl font-bold text-amber-700 font-data-mono">{{ formatRupiah($purchase->total_price - $purchase->paid_amount) }}</p>
+                    </div>
+                </div>
+
+                <form action="{{ route('purchases.pay', $purchase) }}" method="POST" class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
+                      x-data="{ displayAmount: '', rawAmount: '' }">
+                    @csrf
+                    <div class="space-y-1.5 md:col-span-2">
+                        <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah Bayar (Rp)</label>
+                        <input type="text" 
+                               x-model="displayAmount"
+                               x-on:input="displayAmount = formatRupiahJS($event.target.value); rawAmount = displayAmount.replace(/\./g, '')"
+                               required 
+                               class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" 
+                               placeholder="0">
+                        <input type="hidden" name="amount" x-model="rawAmount">
+                    </div>
+                    <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Bayar Hutang</button>
+                </form>
+            </div>
+            @endif
         </div>
 
         <!-- Sidebar: Invoice Proof -->
         <div class="space-y-6">
             <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden h-fit sticky top-6">
+                <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50">
+                    <h3 class="font-headline-sm text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">info</span>
+                        Status
+                    </h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500">Status Bayar:</span>
+                        <span class="inline-block whitespace-nowrap px-2 py-1 rounded-full {{ $purchase->payment_status === 'PAID' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100' }} text-[10px] font-bold border uppercase">
+                            {{ $purchase->payment_status === 'PAID' ? 'LUNAS' : ($purchase->payment_status === 'PARTIAL' ? 'DICICIL' : 'HUTANG') }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500">Total:</span>
+                        <span class="text-sm font-bold">{{ formatRupiah($purchase->total_price) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-slate-100 pt-3">
+                        <span class="text-xs text-slate-500">Terbayar:</span>
+                        <span class="text-sm font-bold text-emerald-600">{{ formatRupiah($purchase->paid_amount) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden h-fit">
                 <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50">
                     <h3 class="font-headline-sm text-on-surface flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">image</span>
