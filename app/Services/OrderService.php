@@ -33,7 +33,7 @@ class OrderService
                 'payment_status' => $dpAmount >= $sellingPrice ? Order::PAYMENT_PAID : ($dpAmount > 0 ? Order::PAYMENT_PARTIAL : Order::PAYMENT_UNPAID),
             ]);
 
-            $order->customer->increment('orders_count');
+            $order->customer->increment('orders_count', 1, []);
 
             if ($dpAmount > 0) {
                 $payment = Payment::create([
@@ -82,7 +82,7 @@ class OrderService
         });
     }
 
-    public function cancelOrder(Order $order, string $reason = null)
+    public function cancelOrder(Order $order, ?string $reason = null)
     {
         if (!$order->isCancellable()) {
             throw new Exception('Pesanan hanya bisa dibatalkan saat status PENDING atau PRODUKSI.');
@@ -108,7 +108,7 @@ class OrderService
                 'cancelled_at' => now(),
             ]);
 
-            $order->customer->decrement('orders_count');
+            $order->customer->decrement('orders_count', 1, []);
 
             return $order;
         });
@@ -137,7 +137,11 @@ class OrderService
         return DB::transaction(function () use ($order) {
             $materialCost = $order->materials()->sum('subtotal');
             $additionalCost = $order->productionCosts()->sum('amount');
-            $totalCost = $materialCost + $additionalCost;
+            $residueReduction = $order->residues()
+                ->whereIn('type', ['REUSABLE', 'RECYCLE'])
+                ->sum('reduction_value');
+                
+            $totalCost = ($materialCost + $additionalCost) - $residueReduction;
             $profit = $order->selling_price - $totalCost;
 
             $order->update([
@@ -167,7 +171,7 @@ class OrderService
         });
     }
 
-    public function payOrder(Order $order, float $amount, string $type = 'FINAL', string $notes = null)
+    public function payOrder(Order $order, float $amount, string $type = 'FINAL', ?string $notes = null)
     {
         return DB::transaction(function () use ($order, $amount, $type, $notes) {
             if ($order->status === Order::STATUS_CANCELLED) {
@@ -220,9 +224,9 @@ class OrderService
         });
     }
 
-    private function generateOrderNumber($customerId): string
+    private function generateOrderNumber(int $customerId): string
     {
-        $customer = Customer::find($customerId);
+        $customer = Customer::find($customerId, ['*']);
         $date = now()->format('dmY');
         $nameParts = explode(' ', trim($customer->name));
         $firstName = strtoupper($nameParts[0]);
@@ -232,7 +236,7 @@ class OrderService
         $orderNumber = $base;
         $counter = 1;
         
-        while (Order::where('order_number', $orderNumber)->exists()) {
+        while (Order::where('order_number', '=', $orderNumber, 'and')->exists()) {
             $orderNumber = $base . '-' . sprintf('%02d', $counter);
             $counter++;
         }
