@@ -316,6 +316,7 @@
                                                                x-model="displayReduction"
                                                                x-on:input="displayReduction = formatRupiahJS($event.target.value); rawReduction = displayReduction.replace(/\./g, '')"
                                                                class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-data-mono"
+                                                               disabled
                                                                placeholder="0">
                                                         <input type="hidden" name="reduction_value" x-model="rawReduction">
                                                     </div>
