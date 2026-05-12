@@ -18,9 +18,9 @@
                 <p class="font-body-sm text-body-sm text-on-surface-variant">Ikhtisar posisi keuangan, aset inventaris, dan arus kas perusahaan.</p>
             </div>
             <div class="flex flex-wrap gap-3">
-                <button @click="showExportModal = true" class="px-4 py-2 bg-emerald-600 text-white rounded-lg font-body-sm font-semibold hover:bg-emerald-700 transition-colors flex items-center gap-2">
+                <button @click="showExportModal = true" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-body-sm font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
                     <span class="material-symbols-outlined text-[18px]">download</span>
-                    <span>Export Overall</span>
+                    <span>Export Excel</span>
                 </button>
                 <a href="{{ route('cashflows.index') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>

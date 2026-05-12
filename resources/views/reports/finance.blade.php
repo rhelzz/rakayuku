@@ -18,9 +18,9 @@
                 <p class="font-body-sm text-body-sm text-on-surface-variant">Analisa margin keuntungan dan efisiensi biaya proyek.</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ request()->fullUrlWithQuery(['export' => 'excel']) }}" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all flex items-center gap-2">
+                <a href="{{ request()->fullUrlWithQuery(['export' => 'excel']) }}" class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
                     <span class="material-symbols-outlined text-[20px]">description</span>
-                    Export ke Excel
+                    Export Excel
                 </a>
             </div>
         </div>

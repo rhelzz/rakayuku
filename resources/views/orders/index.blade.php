@@ -32,7 +32,7 @@
 
                 <button @click="showExportModal = true" class="px-4 py-2 sm:py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 text-sm shadow-md">
                     <span class="material-symbols-outlined text-[20px]">download</span>
-                    <span class="hidden sm:inline">Export</span>
+                    <span class="hidden sm:inline">Export Excel</span>
                 </button>
 
                 <a href="{{ route('orders.create') }}" class="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex items-center gap-2 text-sm">

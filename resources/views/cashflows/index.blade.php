@@ -17,7 +17,7 @@
                 <p class="font-body-sm text-body-sm text-slate-400 mt-1">Riwayat mutasi saldo masuk dan keluar perusahaan.</p>
             </div>
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('cashflows.export', request()->all()) }}" class="px-6 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-bold hover:bg-emerald-100 transition-all flex items-center gap-2">
+                <a href="{{ route('cashflows.export', request()->all()) }}" class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 shadow-md">
                     <span class="material-symbols-outlined text-[20px]">file_download</span>
                     Export Excel
                 </a>
@@ -31,15 +31,17 @@
 
     <!-- Saldo Card -->
     <div class="grid grid-cols-1 mb-6">
-        <div class="bg-gradient-to-r from-primary from-60% to-primary-container rounded-2xl p-5 md:p-6 flex flex-col relative overflow-hidden group shadow-lg shadow-primary/20">
-            <div class="absolute -top-10 -right-10 p-4 opacity-30 group-hover:opacity-50 transition-opacity">
-                <span class="material-symbols-outlined text-[150px] text-primary">account_balance_wallet</span>
+        <div class="relative overflow-hidden bg-gradient-to-br from-primary to-primary-hover rounded-3xl p-8 shadow-xl shadow-primary/20 text-white">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -mr-20 -mt-20"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-black/10 blur-2xl rounded-full -ml-10 -mb-10"></div>
+            <div class="relative z-10">
+                <p class="text-primary-container text-sm font-bold uppercase tracking-widest mb-1 opacity-80">Saldo Saat Ini</p>
+                <h1 class="text-4xl md:text-5xl font-black font-data-mono">{{ formatRupiah($currentBalance) }}</h1>
+                <div class="flex items-center gap-2 mt-4 text-xs bg-white/20 w-fit px-3 py-1.5 rounded-full backdrop-blur-md">
+                    <span class="material-symbols-outlined text-xs">info</span>
+                    <span>Total ketersediaan dana perusahaan dari seluruh transaksi</span>
+                </div>
             </div>
-            <span class="font-label-caps text-label-caps text-white/90 uppercase tracking-wider mb-1 relative z-10">Saldo Saat Ini</span>
-            <div class="flex flex-col relative z-10">
-                <span class="text-3xl md:text-4xl font-bold tracking-tight text-white">{{ formatRupiah($currentBalance) }}</span>
-            </div>
-            <span class="font-body-sm text-body-sm text-white/90 mt-1 relative z-10">Total ketersediaan dana perusahaan dari seluruh transaksi</span>
         </div>
     </div>
 
