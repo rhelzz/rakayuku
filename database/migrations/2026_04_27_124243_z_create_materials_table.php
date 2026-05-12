@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('code')->unique()->comment('Material code - auto generated');
             $table->string('type')->nullable()->comment('Material type/variant');
             $table->string('unit')->default('pcs')->comment('Unit of measurement');
+            $table->boolean('is_dimension')->default(false)->comment('Whether this material has dimensions (e.g. Wood)');
+            $table->decimal('length', 15, 2)->default(0)->nullable();
+            $table->decimal('width', 15, 2)->default(0)->nullable();
+            $table->decimal('thickness', 15, 2)->default(0)->nullable();
             $table->decimal('current_qty', 15, 2)->default(0);
             $table->decimal('avg_price', 15, 2)->default(0);
             $table->timestamps();

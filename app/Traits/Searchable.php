@@ -10,7 +10,7 @@ trait Searchable
     /**
      * Scope for multi-column search
      */
-    public function scopeSearch(Builder $query, $search, array $columns): Builder
+    public function scopeSearch(Builder $query, $search = null, array $columns = []): Builder
     {
         if (!$search) {
             return $query;
@@ -36,7 +36,7 @@ trait Searchable
     /**
      * Scope for date range filtering
      */
-    public function scopeDateRange(Builder $query, $range, $startDate = null, $endDate = null, $column = 'created_at'): Builder
+    public function scopeDateRange(Builder $query, $range = null, $startDate = null, $endDate = null, $column = 'created_at'): Builder
     {
         if (!$range && !$startDate) {
             return $query;

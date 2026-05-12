@@ -43,10 +43,14 @@ class MaterialController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'nullable|string|max:255',
             'unit' => 'required|string|max:50',
+            'is_dimension' => 'nullable|boolean',
+            'length' => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
+            'thickness' => 'nullable|numeric|min:0',
         ]);
 
         if ($request->type) {
-            $exists = Material::where('name', $request->name)
+            $exists = Material::query()->where('name', $request->name)
                 ->where('type', $request->type)
                 ->exists();
 
@@ -54,7 +58,7 @@ class MaterialController extends Controller
                 return back()->withInput()->with('error', 'Barang dengan nama dan tipe yang sama sudah ada.');
             }
         } else {
-            $exists = Material::where('name', $request->name)
+            $exists = Material::query()->where('name', $request->name)
                 ->whereNull('type')
                 ->exists();
 
@@ -70,6 +74,10 @@ class MaterialController extends Controller
             'type' => $request->type,
             'unit' => ucfirst(strtolower($request->unit)),
             'code' => $code,
+            'is_dimension' => $request->has('is_dimension'),
+            'length' => $request->length ?? 0,
+            'width' => $request->width ?? 0,
+            'thickness' => $request->thickness ?? 0,
             'current_qty' => 0,
             'avg_price' => 0,
         ]);
@@ -88,10 +96,14 @@ class MaterialController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'nullable|string|max:255',
             'unit' => 'required|string|max:50',
+            'is_dimension' => 'nullable|boolean',
+            'length' => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
+            'thickness' => 'nullable|numeric|min:0',
         ]);
 
         if ($request->type) {
-            $exists = Material::where('name', $request->name)
+            $exists = Material::query()->where('name', $request->name)
                 ->where('type', $request->type)
                 ->where('id', '!=', $material->id)
                 ->exists();
@@ -100,7 +112,7 @@ class MaterialController extends Controller
                 return back()->withInput()->with('error', 'Bahan baku dengan nama dan tipe yang sama sudah ada.');
             }
         } else {
-            $exists = Material::where('name', $request->name)
+            $exists = Material::query()->where('name', $request->name)
                 ->whereNull('type')
                 ->where('id', '!=', $material->id)
                 ->exists();
@@ -114,6 +126,10 @@ class MaterialController extends Controller
             'name' => $request->name,
             'type' => $request->type,
             'unit' => ucfirst(strtolower($request->unit)),
+            'is_dimension' => $request->has('is_dimension'),
+            'length' => $request->length ?? 0,
+            'width' => $request->width ?? 0,
+            'thickness' => $request->thickness ?? 0,
         ]);
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil diperbarui.');

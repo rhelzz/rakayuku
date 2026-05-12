@@ -41,6 +41,14 @@
                         </div>
 
                         <div class="space-y-1.5">
+                            <label for="is_credit" class="block font-medium text-slate-700 text-sm">Metode Pembayaran</label>
+                            <select name="is_credit" id="is_credit" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                                <option value="0">Tunai (Langsung Lunas)</option>
+                                <option value="1">Tempo (Masuk Hutang)</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-1.5 md:col-span-2">
                             <label for="purchase_date" class="block font-medium text-slate-700 text-sm">Tanggal Belanja <span class="text-error">*</span></label>
                             <input type="date" name="purchase_date" id="purchase_date" value="{{ old('purchase_date', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary transition-all @error('purchase_date') border-error @enderror">
                             @error('purchase_date') <p class="text-[11px] text-error mt-1">{{ $message }}</p> @enderror
@@ -64,43 +72,71 @@
                     <div class="p-0 overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead class="bg-slate-50/50">
-                                <tr class="border-b border-surface-variant">
-                                    <th class="py-3 px-6 font-label-caps text-slate-500 uppercase text-[10px]">Bahan Baku</th>
-                                    <th class="py-3 px-4 font-label-caps text-slate-500 uppercase text-[10px] w-28">Jumlah</th>
-                                    <th class="py-3 px-4 font-label-caps text-slate-500 uppercase text-[10px] w-48 text-right">Harga Satuan</th>
+                                <tr class="border-b border-surface-variant text-[10px] font-label-caps text-slate-500 uppercase">
+                                    <th class="py-3 px-6">Bahan Baku</th>
+                                    <th class="py-3 px-4 w-64">Dimensi / Qty</th>
+                                    <th class="py-3 px-4 w-44 text-right">Harga Satuan</th>
                                     <th class="py-3 px-6 w-12"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-surface-variant/30">
                                 <template x-for="(item, index) in items" :key="index">
-                                    <tr class="group hover:bg-slate-50/30 transition-colors">
+                                    <tr class="group hover:bg-slate-50/30 transition-colors align-top">
                                         <td class="py-4 px-6">
-                                            <select :name="'items['+index+'][material_id]'" required class="w-full bg-white border-2 border-slate-200 text-on-surface rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 appearance-none transition-all cursor-pointer hover:border-slate-300 font-medium" style="background-image: url('data:image/svg+xml;utf8,<svg fill=\"%234B5563\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem;">
-                                                <option disabled selected value="">-- Pilih Material --</option>
-                                                @foreach($materials as $m)
-                                                    <option value="{{ $m->id }}">{{ $m->name }}{{ $m->type ? ' (' . $m->type . ')' : '' }} - {{ $m->unit }}</option>
-                                                @endforeach
+                                            <select :name="'items['+index+'][material_id]'" 
+                                                    required 
+                                                    x-model="item.material_id"
+                                                    @change="updateMaterialInfo(index)"
+                                                    class="w-full bg-white border-2 border-slate-200 text-on-surface rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 appearance-none transition-all cursor-pointer hover:border-slate-300 font-medium" 
+                                                    style="background-image: url('data:image/svg+xml;utf8,<svg fill=\"%234B5563\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem;">
+                                                <option disabled value="">-- Pilih Material --</option>
+                                                <template x-for="m in materialsData" :key="m.id">
+                                                    <option :value="m.id" x-text="m.name + (m.type ? ' (' + m.type + ')' : '') + ' - ' + m.unit"></option>
+                                                </template>
                                             </select>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <input type="number" :name="'items['+index+'][qty]'" required step="any" min="0.01" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="0">
+                                            <!-- Standard Qty Input -->
+                                            <div x-show="!item.isDimension" class="space-y-1">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="number" :name="'items['+index+'][qty]'" :required="!item.isDimension" step="any" min="0" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Qty">
+                                                    <span class="text-xs text-slate-400 w-12" x-text="item.unit"></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Dimension Inputs -->
+                                            <div x-show="item.isDimension" class="space-y-2">
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div class="relative">
+                                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold uppercase">Keping</span>
+                                                        <input type="number" :name="'items['+index+'][piece_count]'" step="any" min="0" x-model="item.piece_count" @input="calculateQty(index)" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-12 pr-2 py-1.5 text-xs text-right font-data-mono focus:border-primary transition-all" placeholder="0">
+                                                    </div>
+                                                    <div class="relative">
+                                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold uppercase">Panjang</span>
+                                                        <input type="number" :name="'items['+index+'][length]'" step="0.01" min="0" x-model="item.length" @input="calculateQty(index)" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-12 pr-2 py-1.5 text-xs text-right font-data-mono focus:border-primary transition-all" placeholder="0">
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center justify-between px-2 bg-slate-50 rounded-lg py-1 border border-slate-100">
+                                                    <span class="text-[10px] text-slate-400 font-bold uppercase">Total Qty</span>
+                                                    <span class="text-xs font-data-mono text-primary"><span x-text="item.qty"></span> <span x-text="item.unit"></span></span>
+                                                    <input type="hidden" :name="'items['+index+'][qty]'" x-model="item.qty">
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <div class="relative" x-data="{ 
-                                                updateMask(val) {
-                                                    item.displayPrice = formatRupiahJS(val);
-                                                    item.price = item.displayPrice.replace(/\./g, '');
-                                                }
-                                            }">
+                                            <div class="relative">
                                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs font-data-mono">Rp</div>
                                                 <input type="text" 
                                                        x-model="item.displayPrice"
-                                                       x-on:input="updateMask($event.target.value)"
+                                                       x-on:input="updatePrice(index, $event.target.value)"
                                                        required 
                                                        class="w-full bg-white border border-slate-200 text-on-surface rounded-xl pl-8 pr-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" 
                                                        placeholder="0">
                                                 <input type="hidden" :name="'items['+index+'][price]'" x-model="item.price">
                                             </div>
+                                            <p class="text-[10px] text-slate-400 mt-1 text-right italic" x-show="item.qty > 0">
+                                                Sub: Rp <span x-text="formatNumber(item.qty * item.price)"></span>
+                                            </p>
                                         </td>
                                         <td class="py-4 px-6 text-right">
                                             <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-error/10 hover:text-error transition-all">
@@ -112,8 +148,8 @@
                             </tbody>
                             <tfoot>
                                 <tr class="bg-slate-50/80 font-bold border-t border-surface-variant">
-                                    <td colspan="2" class="py-4 px-6 text-sm text-slate-600">Total Estimasi Belanja</td>
-                                    <td class="py-4 px-4 text-right text-primary font-data-mono">
+                                    <td colspan="2" class="py-4 px-6 text-sm text-slate-600 text-right">Total Estimasi Belanja</td>
+                                    <td class="py-4 px-4 text-right text-primary font-data-mono text-lg">
                                         Rp <span x-text="formatNumber(calculateTotal())"></span>
                                     </td>
                                     <td></td>
@@ -176,15 +212,60 @@
 <script>
     function purchaseForm() {
         return {
-            items: [{ material_id: '', qty: 0, price: 0 }],
+            items: [{ 
+                material_id: '', 
+                qty: 0, 
+                price: 0, 
+                displayPrice: '', 
+                unit: 'pcs', 
+                isDimension: false,
+                piece_count: 0,
+                length: 0
+            }],
+            materialsData: @json($materials),
             imageUrl: null,
 
             addItem() {
-                this.items.push({ material_id: '', qty: 0, price: 0 });
+                this.items.push({ 
+                    material_id: '', 
+                    qty: 0, 
+                    price: 0, 
+                    displayPrice: '', 
+                    unit: 'pcs', 
+                    isDimension: false,
+                    piece_count: 0,
+                    length: 0
+                });
             },
 
             removeItem(index) {
                 this.items.splice(index, 1);
+            },
+
+            updateMaterialInfo(index) {
+                const item = this.items[index];
+                const material = this.materialsData.find(m => m.id == item.material_id);
+                if (material) {
+                    item.unit = material.unit;
+                    item.isDimension = !!material.is_dimension;
+                    if (item.isDimension) {
+                        item.length = material.length || 0;
+                    }
+                    this.calculateQty(index);
+                }
+            },
+
+            calculateQty(index) {
+                const item = this.items[index];
+                if (item.isDimension) {
+                    item.qty = (item.piece_count || 0) * (item.length || 0);
+                }
+            },
+
+            updatePrice(index, val) {
+                const item = this.items[index];
+                item.displayPrice = formatRupiahJS(val);
+                item.price = item.displayPrice.replace(/\./g, '') || 0;
             },
 
             calculateTotal() {

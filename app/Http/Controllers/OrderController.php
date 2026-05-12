@@ -73,7 +73,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->load(['customer', 'materials.material', 'productionCosts', 'payments', 'residues.material']);
-        $materials = Material::where('current_qty', '>', 0)->get();
+        $materials = Material::query()->where('current_qty', '>', 0)->get();
         return view('orders.show', compact('order', 'materials'));
     }
 

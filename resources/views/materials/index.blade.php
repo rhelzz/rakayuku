@@ -95,7 +95,10 @@
                                     </div>
                                     <div>
                                         <div class="font-medium text-on-surface">{{ $material->name }}</div>
-                                        @if($material->type)<div class="text-slate-500 text-[11px]">Tipe: {{ $material->type }}</div>@endif
+                                        <div class="flex flex-wrap gap-x-3 gap-y-1 mt-0.5">
+                                            @if($material->type)<span class="text-slate-500 text-[10px] bg-slate-100 px-1.5 py-0.5 rounded">Tipe: {{ $material->type }}</span>@endif
+                                            @if($material->is_dimension)<span class="text-primary text-[10px] bg-primary/5 px-1.5 py-0.5 rounded border border-primary/10">Dimensi: {{ $material->dimension_string }}</span>@endif
+                                        </div>
                                     </div>
                                 </div>
                             </td>

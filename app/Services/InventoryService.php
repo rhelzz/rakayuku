@@ -12,9 +12,9 @@ class InventoryService
     /**
      * Add stock from purchase and calculate Moving Average HPP
      */
-    public function addStockFromPurchase(Material $material, float $qty, float $newPrice, ?object $reference = null)
+    public function addStockFromPurchase(Material $material, float $qty, float $newPrice, ?object $reference = null, array $dimensions = [])
     {
-        return DB::transaction(function () use ($material, $qty, $newPrice, $reference) {
+        return DB::transaction(function () use ($material, $qty, $newPrice, $reference, $dimensions) {
             // Lock the material for update to prevent race conditions
             $material = Material::lockForUpdate()->find($material->id);
             
@@ -40,6 +40,9 @@ class InventoryService
             StockMovement::create([
                 'material_id' => $material->id,
                 'type' => 'IN',
+                'piece_count' => $dimensions['piece_count'] ?? 0,
+                'length' => $dimensions['length'] ?? 0,
+                'width' => $dimensions['width'] ?? 0,
                 'qty' => $qty,
                 'price_snapshot' => $newPrice,
                 'reference_type' => $reference ? get_class($reference) : null,

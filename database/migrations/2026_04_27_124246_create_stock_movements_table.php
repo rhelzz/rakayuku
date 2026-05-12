@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('stock_movements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('material_id')->constrained()->cascadeOnDelete();
-            $table->enum('type', ['IN', 'OUT', 'ADJUSTMENT']);
+            $table->enum('type', ['IN', 'OUT', 'ADJUSTMENT', 'RESIDUE_RETURN']);
+            $table->decimal('piece_count', 15, 2)->default(0)->nullable();
+            $table->decimal('length', 15, 2)->default(0)->nullable();
+            $table->decimal('width', 15, 2)->default(0)->nullable();
             $table->decimal('qty', 15, 2);
             $table->decimal('price_snapshot', 15, 2)->nullable();
             $table->string('reference_type')->nullable();

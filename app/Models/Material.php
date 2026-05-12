@@ -31,39 +31,28 @@ class Material extends Model
 
     public function getDisplayNameAttribute(): string
     {
+        $name = $this->name;
         if ($this->type) {
-            return $this->name . ' (' . $this->type . ')';
+            $name .= ' (' . $this->type . ')';
         }
-        return $this->name;
+        if ($this->is_dimension) {
+            $name .= ' [' . $this->dimension_string . ']';
+        }
+        return $name;
     }
 
-
-    public function scopeSearch(Builder $query, $search = null, $columns = ['name']): Builder
+    public function getDimensionStringAttribute(): string
     {
-        if (!$search) {
-            return $query;
-        }
-
-        return $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-                ->orWhere('code', 'like', "%{$search}%")
-                ->orWhere('type', 'like', "%{$search}%");
-        });
-    }
-
-    public function scopeSort(Builder $query, $field = 'code', $direction = 'asc'): Builder
-    {
-        $allowed = ['code', 'name', 'type', 'current_qty', 'avg_price', 'created_at'];
+        if (!$this->is_dimension) return '';
         
-        if (in_array($field, $allowed)) {
-            return $query->orderBy($field, $direction);
-        }
-
-        return $query->orderBy('code', 'asc');
+        $parts = [];
+        if ($this->length > 0) $parts[] = $this->length . 'm';
+        if ($this->width > 0) $parts[] = $this->width . 'm';
+        if ($this->thickness > 0) $parts[] = $this->thickness . 'm';
+        
+        return implode(' x ', $parts);
     }
 
-    public function scopeDateRange(Builder $query, $range = null, $startDate = null, $endDate = null, $column = 'created_at'): Builder
-    {
-        return $query;
-    }
+
+    // Use Searchable trait for search, sort, and dateRange scopes
 }

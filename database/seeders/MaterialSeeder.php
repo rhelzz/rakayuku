@@ -2,63 +2,66 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Material;
+use Illuminate\Database\Seeder;
 
 class MaterialSeeder extends Seeder
 {
     public function run(): void
     {
         $materials = [
+            // Dimension based (Wood)
             [
-                'name' => 'Kayu Jati Grade A (m3)',
-                'current_qty' => 15,
-                'avg_price' => 4500000,
+                'name' => 'Papan Kayu Jati',
+                'code' => 'KAYU-001',
+                'type' => 'A Grade',
+                'unit' => 'meter',
+                'is_dimension' => true,
+                'length' => 4.00,
+                'width' => 0.20,
+                'thickness' => 0.02,
+                'current_qty' => 0,
+                'avg_price' => 0,
             ],
             [
-                'name' => 'Kayu Mahoni (m3)',
-                'current_qty' => 25,
-                'avg_price' => 2800000,
+                'name' => 'Balok Kayu Meranti',
+                'code' => 'KAYU-002',
+                'type' => 'Standard',
+                'unit' => 'meter',
+                'is_dimension' => true,
+                'length' => 3.00,
+                'width' => 0.10,
+                'thickness' => 0.05,
+                'current_qty' => 0,
+                'avg_price' => 0,
+            ],
+            // Standard unit (Non-dimension)
+            [
+                'name' => 'Tali Rapia',
+                'code' => 'ACC-001',
+                'type' => 'Besar',
+                'unit' => 'roll',
+                'is_dimension' => false,
+                'current_qty' => 0,
+                'avg_price' => 0,
             ],
             [
-                'name' => 'Papan MDF 18mm (lembar)',
-                'current_qty' => 50,
-                'avg_price' => 185000,
+                'name' => 'Lem Kayu Presto',
+                'code' => 'ACC-002',
+                'type' => 'DN',
+                'unit' => 'kg',
+                'is_dimension' => false,
+                'current_qty' => 0,
+                'avg_price' => 0,
             ],
             [
-                'name' => 'HPL Woodgrain Finish (lembar)',
-                'current_qty' => 40,
-                'avg_price' => 155000,
-            ],
-            [
-                'name' => 'Lem Kuning Super (kaleng)',
-                'current_qty' => 20,
-                'avg_price' => 65000,
-            ],
-            [
-                'name' => 'Engsel Sendok Soft Close (set)',
-                'current_qty' => 100,
-                'avg_price' => 25000,
-            ],
-            [
-                'name' => 'Handle Pintu Minimalis (pcs)',
-                'current_qty' => 60,
-                'avg_price' => 45000,
-            ],
-            [
-                'name' => 'Cat Duco Putih 5L (pail)',
-                'current_qty' => 8,
-                'avg_price' => 320000,
-            ],
-            [
-                'name' => 'Paku Tembak (F30) (box)',
-                'current_qty' => 12,
-                'avg_price' => 35000,
-            ],
-            [
-                'name' => 'Kaca Bening 5mm (m2)',
-                'current_qty' => 30,
-                'avg_price' => 120000,
+                'name' => 'Sekrup 2 inch',
+                'code' => 'ACC-003',
+                'type' => 'Black',
+                'unit' => 'box',
+                'is_dimension' => false,
+                'current_qty' => 0,
+                'avg_price' => 0,
             ],
         ];
 

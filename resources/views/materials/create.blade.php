@@ -53,6 +53,31 @@
                         <p class="text-[11px] text-error mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div x-data="{ isDimension: {{ old('is_dimension') ? 'true' : 'false' }} }" class="space-y-4 pt-2">
+                    <div class="flex items-center gap-3">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="is_dimension" value="1" class="sr-only peer" x-model="isDimension" {{ old('is_dimension') ? 'checked' : '' }}>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-container/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            <span class="ms-3 text-sm font-medium text-slate-700">Material Berdimensi? <span class="text-slate-400 font-normal text-xs">(P x L x T)</span></span>
+                        </label>
+                    </div>
+
+                    <div x-show="isDimension" x-transition class="grid grid-cols-3 gap-4 p-4 bg-surface-container-lowest rounded-xl border border-surface-variant shadow-sm">
+                        <div class="space-y-1.5">
+                            <label for="length" class="block font-medium text-slate-600 text-xs">Panjang (m)</label>
+                            <input type="number" step="0.01" name="length" id="length" value="{{ old('length', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="width" class="block font-medium text-slate-600 text-xs">Lebar (m)</label>
+                            <input type="number" step="0.01" name="width" id="width" value="{{ old('width', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="thickness" class="block font-medium text-slate-600 text-xs">Tebal (m)</label>
+                            <input type="number" step="0.01" name="thickness" id="thickness" value="{{ old('thickness', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="pt-6 border-t border-surface-variant flex justify-end gap-3">
