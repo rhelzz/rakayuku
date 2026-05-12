@@ -82,18 +82,34 @@
                     </div>
                 </div>
 
+                @php
+                    $remainingDebt = $purchase->total_price - $purchase->paid_amount;
+                @endphp
                 <form action="{{ route('purchases.pay', $purchase) }}" method="POST" class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
-                      x-data="{ displayAmount: '', rawAmount: '' }">
+                      x-data="{ displayAmount: '', rawAmount: '', maxAmount: {{ (int)$remainingDebt }}, overLimit: false }">
                     @csrf
-                    <div class="space-y-1.5 md:col-span-2">
+                    <div class="space-y-1.5 md:col-span-2 relative">
                         <label class="text-[11px] font-label-caps text-slate-500 uppercase">Jumlah Bayar (Rp)</label>
                         <input type="text" 
                                x-model="displayAmount"
-                               x-on:input="displayAmount = formatRupiahJS($event.target.value); rawAmount = displayAmount.replace(/\./g, '')"
+                               x-on:input="
+                                   displayAmount = formatRupiahJS($event.target.value);
+                                   rawAmount = displayAmount.replace(/\./g, '');
+                                   if (parseInt(rawAmount) > maxAmount) {
+                                       rawAmount = maxAmount.toString();
+                                       displayAmount = formatRupiahJS(rawAmount);
+                                       overLimit = true;
+                                       setTimeout(() => overLimit = false, 2000);
+                                   }
+                               "
                                required 
                                class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 text-sm" 
-                               placeholder="0">
+                               placeholder="Maks. {{ number_format($remainingDebt, 0, ',', '.') }}">
                         <input type="hidden" name="amount" x-model="rawAmount">
+                        <p x-show="overLimit" x-transition class="absolute left-0 top-full mt-1 text-[10px] text-error flex items-center gap-1 z-10">
+                            <span class="material-symbols-outlined text-[12px]">warning</span>
+                            Maksimal sisa hutang: Rp {{ number_format($remainingDebt, 0, ',', '.') }}
+                        </p>
                     </div>
                     <button type="submit" class="bg-primary text-white py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-colors">Bayar Hutang</button>
                 </form>
