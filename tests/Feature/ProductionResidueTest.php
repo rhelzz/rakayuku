@@ -159,7 +159,7 @@ class ProductionResidueTest extends TestCase
         $orderMaterial = $order->materials->first();
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Jumlah residu tidak boleh melebihi jumlah yang digunakan.");
+        $this->expectExceptionMessage("Jumlah residu tidak boleh melebihi sisa terpakai.");
 
         $this->productionService->addResidueToOrder($order, $orderMaterial, [
             'type' => 'REUSABLE',
