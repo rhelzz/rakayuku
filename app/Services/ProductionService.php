@@ -135,7 +135,6 @@ class ProductionService
             }
 
             if ($residue->type === 'REUSABLE') {
-                // Tarik kembali stok yang sudah ditambahkan
                 $this->inventoryService->reduceStockForProduction($residue->material, $residue->qty, $order);
             }
 
