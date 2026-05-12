@@ -14,6 +14,8 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 class OverallBalanceExport extends BaseExport implements FromArray, WithTitle
 {
     protected int $summaryTitleRow = 0;
+    protected int $periodRow = 0;
+    protected int $exportTimeRow = 0;
     protected int $summaryStartRow = 0;
     protected int $summaryEndRow = 0;
     protected int $piutangTitleRow = 0;
@@ -80,8 +82,10 @@ class OverallBalanceExport extends BaseExport implements FromArray, WithTitle
 
         $this->rows[] = ['RINGKASAN OVERALL KEUANGAN - RAKAYUKU ERP'];
         $row++;
+        $this->periodRow = $row;
         $this->rows[] = ['Periode', $periodeLabel];
         $row++;
+        $this->exportTimeRow = $row;
         $this->rows[] = ['Waktu Export', Carbon::now()->format('d F Y H:i')];
         $row++;
         $this->rows[] = [''];
@@ -254,6 +258,14 @@ class OverallBalanceExport extends BaseExport implements FromArray, WithTitle
             $styles['A' . $this->summaryTitleRow . ':' . $lastColumn . $this->summaryTitleRow] = $sectionStyle;
         }
 
+        if ($this->periodRow > 0) {
+            $styles['A' . $this->periodRow . ':' . $lastColumn . $this->periodRow] = $sectionStyle;
+        }
+
+        if ($this->exportTimeRow > 0) {
+            $styles['A' . $this->exportTimeRow . ':' . $lastColumn . $this->exportTimeRow] = $sectionStyle;
+        }
+
         if ($this->piutangTitleRow > 0) {
             $sheet->mergeCells('A' . $this->piutangTitleRow . ':' . $lastColumn . $this->piutangTitleRow);
             $styles['A' . $this->piutangTitleRow . ':' . $lastColumn . $this->piutangTitleRow] = $sectionStyle;
@@ -317,6 +329,18 @@ class OverallBalanceExport extends BaseExport implements FromArray, WithTitle
             $sheet->getStyle('E' . $this->hutangDataStartRow . ':G' . $this->hutangDataEndRow)
                 ->getNumberFormat()
                 ->setFormatCode('#,##0.00');
+        }
+
+        if ($this->piutangDataStartRow > 0 && $this->piutangDataEndRow >= $this->piutangDataStartRow) {
+            $sheet->getStyle('A' . $this->piutangDataStartRow . ':A' . $this->piutangDataEndRow)
+                ->getAlignment()
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        }
+
+        if ($this->hutangDataStartRow > 0 && $this->hutangDataEndRow >= $this->hutangDataStartRow) {
+            $sheet->getStyle('A' . $this->hutangDataStartRow . ':A' . $this->hutangDataEndRow)
+                ->getAlignment()
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         }
 
         if ($this->summaryStartRow > 0 && $this->summaryEndRow >= $this->summaryStartRow) {
