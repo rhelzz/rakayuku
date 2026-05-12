@@ -128,7 +128,7 @@ class ProductionService
                 $this->inventoryService->reduceStockForProduction($residue->material, $residue->qty, $order);
             }
 
-            $residue->delete();
+            OrderResidue::destroy($residue->id);
 
             $this->updateOrderTotalCost($order);
 
@@ -136,7 +136,7 @@ class ProductionService
         });
     }
 
-    public function addProductionCost(Order $order, string $type, float $amount, string $description = null)
+    public function addProductionCost(Order $order, string $type, float $amount, ?string $description = null)
     {
         return DB::transaction(function () use ($order, $type, $amount, $description) {
             if (!in_array($order->status, [Order::STATUS_IN_PRODUCTION, Order::STATUS_DELIVERING])) {
