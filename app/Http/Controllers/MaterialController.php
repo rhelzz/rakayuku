@@ -47,37 +47,53 @@ class MaterialController extends Controller
             'length' => 'nullable|numeric|min:0',
             'width' => 'nullable|numeric|min:0',
             'thickness' => 'nullable|numeric|min:0',
+            'dimension_unit' => 'nullable|string|max:10',
         ]);
 
-        if ($request->type) {
-            $exists = Material::query()->where('name', $request->name)
-                ->where('type', $request->type)
-                ->exists();
+        $name = trim($request->name);
+        $type = $request->type ? trim($request->type) : null;
 
-            if ($exists) {
-                return back()->withInput()->with('error', 'Barang dengan nama dan tipe yang sama sudah ada.');
-            }
+        $query = Material::query()->where('name', $name);
+
+        if ($type) {
+            $query->where('type', $type);
         } else {
-            $exists = Material::query()->where('name', $request->name)
-                ->whereNull('type')
-                ->exists();
-
-            if ($exists) {
-                return back()->withInput()->with('error', 'Barang dengan nama ini sudah ada.');
-            }
+            $query->whereNull('type');
         }
 
-        $code = $this->codeService->generateCode($request->name, $request->type);
+        if ($request->has('is_dimension')) {
+            $query->where('length', $request->length ?? 0)
+                ->where('width', $request->width ?? 0)
+                ->where('thickness', $request->thickness ?? 0)
+                ->where('dimension_unit', $request->dimension_unit ?? 'm');
+        }
+
+        if ($query->exists()) {
+            $msg = $type 
+                ? "Barang dengan nama '$name' dan tipe '$type' sudah ada" 
+                : "Barang dengan nama '$name' sudah ada";
+            
+            if ($request->has('is_dimension')) {
+                $msg .= " dengan dimensi yang sama.";
+            } else {
+                $msg .= ".";
+            }
+
+            return back()->withInput()->with('error', $msg);
+        }
+
+        $code = $this->codeService->generateCode($name, $type);
 
         Material::create([
-            'name' => $request->name,
-            'type' => $request->type,
+            'name' => $name,
+            'type' => $type,
             'unit' => ucfirst(strtolower($request->unit)),
             'code' => $code,
             'is_dimension' => $request->has('is_dimension'),
             'length' => $request->length ?? 0,
             'width' => $request->width ?? 0,
             'thickness' => $request->thickness ?? 0,
+            'dimension_unit' => $request->dimension_unit ?? 'm',
             'current_qty' => 0,
             'avg_price' => 0,
         ]);
@@ -100,36 +116,52 @@ class MaterialController extends Controller
             'length' => 'nullable|numeric|min:0',
             'width' => 'nullable|numeric|min:0',
             'thickness' => 'nullable|numeric|min:0',
+            'dimension_unit' => 'nullable|string|max:10',
         ]);
 
-        if ($request->type) {
-            $exists = Material::query()->where('name', $request->name)
-                ->where('type', $request->type)
-                ->where('id', '!=', $material->id)
-                ->exists();
+        $name = trim($request->name);
+        $type = $request->type ? trim($request->type) : null;
 
-            if ($exists) {
-                return back()->withInput()->with('error', 'Bahan baku dengan nama dan tipe yang sama sudah ada.');
-            }
+        $query = Material::query()
+            ->where('name', $name)
+            ->where('id', '!=', $material->id);
+
+        if ($type) {
+            $query->where('type', $type);
         } else {
-            $exists = Material::query()->where('name', $request->name)
-                ->whereNull('type')
-                ->where('id', '!=', $material->id)
-                ->exists();
+            $query->whereNull('type');
+        }
 
-            if ($exists) {
-                return back()->withInput()->with('error', 'Bahan baku dengan nama ini sudah ada.');
+        if ($request->has('is_dimension')) {
+            $query->where('length', $request->length ?? 0)
+                ->where('width', $request->width ?? 0)
+                ->where('thickness', $request->thickness ?? 0)
+                ->where('dimension_unit', $request->dimension_unit ?? 'm');
+        }
+
+        if ($query->exists()) {
+            $msg = $type 
+                ? "Bahan baku dengan nama '$name' dan tipe '$type' sudah ada" 
+                : "Bahan baku dengan nama '$name' sudah ada";
+            
+            if ($request->has('is_dimension')) {
+                $msg .= " dengan dimensi yang sama.";
+            } else {
+                $msg .= ".";
             }
+
+            return back()->withInput()->with('error', $msg);
         }
 
         $material->update([
-            'name' => $request->name,
-            'type' => $request->type,
+            'name' => $name,
+            'type' => $type,
             'unit' => ucfirst(strtolower($request->unit)),
             'is_dimension' => $request->has('is_dimension'),
             'length' => $request->length ?? 0,
             'width' => $request->width ?? 0,
             'thickness' => $request->thickness ?? 0,
+            'dimension_unit' => $request->dimension_unit ?? 'm',
         ]);
 
         return redirect()->route('materials.index')->with('success', 'Material berhasil diperbarui.');
