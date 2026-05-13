@@ -11,6 +11,7 @@ class Material extends Model
     use Searchable;
 
     protected $guarded = ['id'];
+    protected $appends = ['display_name', 'dimension_string'];
 
     public function stockMovements()
     {
@@ -46,9 +47,10 @@ class Material extends Model
         if (!$this->is_dimension) return '';
         
         $parts = [];
-        if ($this->length > 0) $parts[] = $this->length . 'm';
-        if ($this->width > 0) $parts[] = $this->width . 'm';
-        if ($this->thickness > 0) $parts[] = $this->thickness . 'm';
+        $unit = $this->dimension_unit ?? 'm';
+        if ($this->length > 0) $parts[] = (float)$this->length . $unit;
+        if ($this->width > 0) $parts[] = (float)$this->width . $unit;
+        if ($this->thickness > 0) $parts[] = (float)$this->thickness . $unit;
         
         return implode(' x ', $parts);
     }
