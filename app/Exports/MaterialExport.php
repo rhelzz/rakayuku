@@ -23,7 +23,7 @@ class MaterialExport extends BaseExport implements FromArray, WithTitle
 
         $this->rows = [
             ['DAFTAR BAHAN BAKU - RAKAYUKU ERP'],
-            ['No', 'Kode Bahan', 'Nama Bahan', 'Tipe', 'Satuan', 'Harga Rata-Rata (IDR)', 'Stok Tersedia', 'Status', 'Tanggal Terdaftar'],
+            ['No', 'Kode Bahan', 'Nama Bahan', 'Tipe', 'Dimensi', 'Satuan', 'Harga Rata-Rata (IDR)', 'Stok Tersedia', 'Status', 'Tanggal Terdaftar'],
         ];
 
         foreach ($materials as $index => $material) {
@@ -34,6 +34,7 @@ class MaterialExport extends BaseExport implements FromArray, WithTitle
                 $material->code,
                 $material->name,
                 $material->type ?? '-',
+                $material->is_dimension ? $material->dimension_string : '-',
                 $material->unit,
                 $material->avg_price,
                 $material->current_qty,
