@@ -23,7 +23,7 @@
             <p class="font-body-sm text-body-sm text-slate-500 relative z-10">Daftarkan item bahan baku baru ke sistem inventaris.</p>
         </div>
 
-        <form action="{{ route('materials.store') }}" method="POST" class="p-6 space-y-6">
+        <form action="{{ route('materials.store') }}" method="POST" class="p-6 space-y-6" x-data="{ submitting: false }" @submit="submitting = true">
             @csrf
             
             <div class="space-y-4">
@@ -63,30 +63,41 @@
                         </label>
                     </div>
 
-                    <div x-show="isDimension" x-transition class="grid grid-cols-3 gap-4 p-4 bg-surface-container-lowest rounded-xl border border-surface-variant shadow-sm">
-                        <div class="space-y-1.5">
-                            <label for="length" class="block font-medium text-slate-600 text-xs">Panjang (m)</label>
-                            <input type="number" step="0.01" name="length" id="length" value="{{ old('length', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
+                    <div x-show="isDimension" x-transition class="p-4 bg-surface-container-lowest rounded-xl border border-surface-variant shadow-sm space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="space-y-1.5">
+                                <label for="length" class="block font-medium text-slate-600 text-xs">Panjang</label>
+                                <input type="number" step="0.01" name="length" id="length" value="{{ old('length', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm" placeholder="0.00">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label for="width" class="block font-medium text-slate-600 text-xs">Lebar</label>
+                                <input type="number" step="0.01" name="width" id="width" value="{{ old('width', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm" placeholder="0.00">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label for="thickness" class="block font-medium text-slate-600 text-xs">Tebal</label>
+                                <input type="number" step="0.01" name="thickness" id="thickness" value="{{ old('thickness', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm" placeholder="0.00">
+                            </div>
                         </div>
                         <div class="space-y-1.5">
-                            <label for="width" class="block font-medium text-slate-600 text-xs">Lebar (m)</label>
-                            <input type="number" step="0.01" name="width" id="width" value="{{ old('width', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label for="thickness" class="block font-medium text-slate-600 text-xs">Tebal (m)</label>
-                            <input type="number" step="0.01" name="thickness" id="thickness" value="{{ old('thickness', 0) }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
+                            <label for="dimension_unit" class="block font-medium text-slate-600 text-xs">Satuan Dimensi <span class="text-slate-400 font-normal">(berlaku untuk P, L, T)</span></label>
+                            <select name="dimension_unit" id="dimension_unit" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors text-sm">
+                                <option value="m" {{ old('dimension_unit') == 'm' ? 'selected' : '' }}>Meter (m)</option>
+                                <option value="cm" {{ old('dimension_unit', 'cm') == 'cm' ? 'selected' : '' }}>Centimeter (cm)</option>
+                                <option value="mm" {{ old('dimension_unit') == 'mm' ? 'selected' : '' }}>Millimeter (mm)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="pt-6 border-t border-surface-variant flex justify-end gap-3">
-                <a href="{{ route('materials.index') }}" class="px-5 py-2 rounded-lg border border-surface-variant text-slate-600 hover:bg-surface-container-high transition-colors font-medium text-sm">
+                <a href="{{ route('materials.index') }}" class="px-5 py-2 rounded-lg border border-surface-variant text-slate-600 hover:bg-surface-container-high transition-colors font-medium text-sm" :class="{ 'opacity-50 pointer-events-none': submitting }">
                     Batal
                 </a>
-                <button type="submit" class="px-6 py-2 bg-primary-container text-on-primary-container rounded-lg font-semibold hover:bg-primary transition-colors shadow-lg flex items-center gap-2 text-sm">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Simpan Bahan
+                <button type="submit" class="px-6 py-2 bg-primary-container text-on-primary-container rounded-lg font-semibold hover:bg-primary transition-colors shadow-lg flex items-center gap-2 text-sm" :disabled="submitting">
+                    <span class="material-symbols-outlined text-[18px]" x-show="!submitting">save</span>
+                    <span class="animate-spin h-4 w-4 border-2 border-on-primary-container border-t-transparent rounded-full" x-show="submitting" x-cloak></span>
+                    <span x-text="submitting ? 'Menyimpan...' : 'Simpan Bahan'"></span>
                 </button>
             </div>
         </form>
