@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('length', 15, 2)->default(0)->nullable();
             $table->decimal('width', 15, 2)->default(0)->nullable();
             $table->decimal('thickness', 15, 2)->default(0)->nullable();
+            $table->string('dimension_unit')->default('cm')->nullable();
             $table->decimal('current_qty', 15, 2)->default(0);
             $table->decimal('avg_price', 15, 2)->default(0);
             $table->timestamps();
