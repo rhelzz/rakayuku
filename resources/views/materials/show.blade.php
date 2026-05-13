@@ -21,7 +21,14 @@
                 </div>
                 <div>
                     <h2 class="font-headline-md text-headline-md text-on-surface">{{ $material->name }}{{ $material->type ? ' (' . $material->type . ')' : '' }}</h2>
-                    <p class="font-body-sm text-body-sm text-slate-500">ID: {{ $material->id }}</p>
+                    <div class="flex items-center gap-2">
+                        <p class="font-body-sm text-body-sm text-slate-500">ID: {{ $material->id }}</p>
+                        @if($material->is_dimension)
+                            <span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase border border-primary/20">
+                                {{ $material->dimension_string }}
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
             
