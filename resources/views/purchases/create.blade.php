@@ -74,7 +74,7 @@
                             <thead class="bg-slate-50/50">
                                 <tr class="border-b border-surface-variant text-[10px] font-label-caps text-slate-500 uppercase">
                                     <th class="py-3 px-6">Bahan Baku</th>
-                                    <th class="py-3 px-4 w-64">Dimensi / Qty</th>
+                                    <th class="py-3 px-4 w-64">Qty</th>
                                     <th class="py-3 px-4 w-44 text-right">Harga Satuan</th>
                                     <th class="py-3 px-6 w-12"></th>
                                 </tr>
@@ -91,35 +91,15 @@
                                                     style="background-image: url('data:image/svg+xml;utf8,<svg fill=\"%234B5563\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem;">
                                                 <option disabled value="">-- Pilih Material --</option>
                                                 <template x-for="m in materialsData" :key="m.id">
-                                                    <option :value="m.id" x-text="m.name + (m.type ? ' (' + m.type + ')' : '') + ' - ' + m.unit"></option>
+                                                    <option :value="m.id" x-text="m.display_name + ' - ' + m.unit"></option>
                                                 </template>
                                             </select>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <!-- Standard Qty Input -->
-                                            <div x-show="!item.isDimension" class="space-y-1">
+                                            <div class="space-y-1">
                                                 <div class="flex items-center gap-2">
-                                                    <input type="number" :name="'items['+index+'][qty]'" :required="!item.isDimension" step="any" min="0" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Qty">
+                                                    <input type="number" :name="'items['+index+'][qty]'" required step="any" min="0.01" x-model="item.qty" class="w-full bg-white border border-slate-200 text-on-surface rounded-xl px-3 py-2 text-sm text-right font-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Qty">
                                                     <span class="text-xs text-slate-400 w-12" x-text="item.unit"></span>
-                                                </div>
-                                            </div>
-
-                                            <!-- Dimension Inputs -->
-                                            <div x-show="item.isDimension" class="space-y-2">
-                                                <div class="grid grid-cols-2 gap-2">
-                                                    <div class="relative">
-                                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold uppercase">Keping</span>
-                                                        <input type="number" :name="'items['+index+'][piece_count]'" step="any" min="0" x-model="item.piece_count" @input="calculateQty(index)" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-12 pr-2 py-1.5 text-xs text-right font-data-mono focus:border-primary transition-all" placeholder="0">
-                                                    </div>
-                                                    <div class="relative">
-                                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold uppercase">Panjang</span>
-                                                        <input type="number" :name="'items['+index+'][length]'" step="0.01" min="0" x-model="item.length" @input="calculateQty(index)" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg pl-12 pr-2 py-1.5 text-xs text-right font-data-mono focus:border-primary transition-all" placeholder="0">
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center justify-between px-2 bg-slate-50 rounded-lg py-1 border border-slate-100">
-                                                    <span class="text-[10px] text-slate-400 font-bold uppercase">Total Qty</span>
-                                                    <span class="text-xs font-data-mono text-primary"><span x-text="item.qty"></span> <span x-text="item.unit"></span></span>
-                                                    <input type="hidden" :name="'items['+index+'][qty]'" x-model="item.qty">
                                                 </div>
                                             </div>
                                         </td>
@@ -217,10 +197,7 @@
                 qty: 0, 
                 price: 0, 
                 displayPrice: '', 
-                unit: 'pcs', 
-                isDimension: false,
-                piece_count: 0,
-                length: 0
+                unit: 'pcs'
             }],
             materialsData: @json($materials),
             imageUrl: null,
@@ -231,10 +208,7 @@
                     qty: 0, 
                     price: 0, 
                     displayPrice: '', 
-                    unit: 'pcs', 
-                    isDimension: false,
-                    piece_count: 0,
-                    length: 0
+                    unit: 'pcs'
                 });
             },
 
@@ -247,18 +221,6 @@
                 const material = this.materialsData.find(m => m.id == item.material_id);
                 if (material) {
                     item.unit = material.unit;
-                    item.isDimension = !!material.is_dimension;
-                    if (item.isDimension) {
-                        item.length = material.length || 0;
-                    }
-                    this.calculateQty(index);
-                }
-            },
-
-            calculateQty(index) {
-                const item = this.items[index];
-                if (item.isDimension) {
-                    item.qty = (item.piece_count || 0) * (item.length || 0);
                 }
             },
 
