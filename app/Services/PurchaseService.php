@@ -30,10 +30,6 @@ class PurchaseService
             $totalPrice = 0;
             foreach ($items as $item) {
                 $qty = $item['qty'] ?? 0;
-                // If it's a dimension-based item and piece_count/length is provided, calculate total qty
-                if (isset($item['piece_count']) && isset($item['length']) && $item['piece_count'] > 0 && $item['length'] > 0) {
-                    $qty = $item['piece_count'] * $item['length'];
-                }
                 $totalPrice += $qty * $item['price'];
             }
 
@@ -58,36 +54,19 @@ class PurchaseService
             foreach ($items as $item) {
                 $material = Material::findOrFail($item['material_id']);
                 
-                $pieceCount = $item['piece_count'] ?? 0;
-                $length = $item['length'] ?? 0;
-                $width = $item['width'] ?? 0;
-                $thickness = $item['thickness'] ?? 0;
-                
                 $qty = $item['qty'];
-                if ($pieceCount > 0 && $length > 0) {
-                    $qty = $pieceCount * $length;
-                }
-
                 $price = $item['price'];
                 $subtotal = $qty * $price;
 
                 PurchaseItem::create([
                     'purchase_id' => $purchase->id,
                     'material_id' => $material->id,
-                    'piece_count' => $pieceCount,
-                    'length' => $length,
-                    'width' => $width,
-                    'thickness' => $thickness,
                     'qty' => $qty,
                     'price' => $price,
                     'subtotal' => $subtotal,
                 ]);
 
-                $this->inventoryService->addStockFromPurchase($material, $qty, $price, $purchase, [
-                    'piece_count' => $pieceCount,
-                    'length' => $length,
-                    'width' => $width,
-                ]);
+                $this->inventoryService->addStockFromPurchase($material, $qty, $price, $purchase);
             }
 
             if ($paidAmount > 0) {
