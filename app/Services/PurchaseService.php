@@ -70,7 +70,7 @@ class PurchaseService
             }
 
             if ($paidAmount > 0) {
-                $purchase->cashflow()->create([
+                $purchase->cashflows()->create([
                     'type' => 'OUT',
                     'amount' => $paidAmount,
                     'description' => 'Pembayaran pembelian bahan baku ke ' . ($purchase->supplier_name ?? 'Supplier') . ' (Inv: ' . ($purchase->invoice_number ?? '-') . ')',
@@ -103,7 +103,7 @@ class PurchaseService
                 $purchase->update(['payment_status' => Purchase::PAYMENT_PARTIAL]);
             }
 
-            $purchase->cashflow()->create([
+            $purchase->cashflows()->create([
                 'type' => 'OUT',
                 'amount' => $amount,
                 'description' => 'Pelunasan Hutang Pembelian ke ' . ($purchase->supplier_name ?? 'Supplier') . ' (Inv: ' . ($purchase->invoice_number ?? '-') . ')' . ($notes ? ' - ' . $notes : ''),
