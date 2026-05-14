@@ -22,7 +22,7 @@
                     <span class="material-symbols-outlined text-[18px]">download</span>
                     <span>Export Excel</span>
                 </button>
-                <a href="{{ route('cashflows.index') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                <a href="{{ route('finance.cashflow') }}" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-body-sm font-semibold hover:bg-surface-container-highest transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
                     <span>Buku Kas</span>
                 </a>
@@ -42,7 +42,7 @@
                     <h1 class="text-4xl md:text-5xl font-black font-data-mono">{{ formatRupiah($saldoNett) }}</h1>
                     <div class="flex items-center gap-2 mt-4 text-xs bg-white/20 w-fit px-3 py-1.5 rounded-full backdrop-blur-md">
                         <span class="material-symbols-outlined text-xs">info</span>
-                        <span>(Kas + Piutang + Inventaris) - Hutang</span>
+                        <span>(Kas + Piutang) - Hutang</span>
                     </div>
                 </div>
                 <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
@@ -150,7 +150,7 @@
     <div class="glass-panel border border-surface-variant rounded-2xl overflow-hidden shadow-sm bg-white">
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
             <h3 class="font-headline-sm text-on-surface">Arus Kas Terakhir</h3>
-            <a href="{{ route('cashflows.index') }}" class="text-sm text-primary font-bold hover:underline">Lihat Semua</a>
+            <a href="{{ route('finance.cashflow') }}" class="text-sm text-primary font-bold hover:underline">Lihat Semua</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left">
