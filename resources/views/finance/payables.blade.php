@@ -34,6 +34,7 @@
                     <th class="px-6 py-4 text-[10px] font-label-caps text-slate-500 uppercase text-right">Total Tagihan</th>
                     <th class="px-6 py-4 text-[10px] font-label-caps text-slate-500 uppercase text-right">Telah Dibayar</th>
                     <th class="px-6 py-4 text-[10px] font-label-caps text-slate-500 uppercase text-right">Sisa Hutang</th>
+                    <th class="px-6 py-4 text-[10px] font-label-caps text-slate-500 uppercase text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -55,10 +56,16 @@
                     <td class="px-6 py-4 text-right font-data-mono font-bold text-error">
                         {{ formatRupiah($purchase->total_price - $purchase->paid_amount) }}
                     </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ route('purchases.show', $purchase) }}"
+                           class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:opacity-90 transition-colors">
+                            Bayar
+                        </a>
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-10 text-center text-slate-400 italic">Tidak ada hutang aktif.</td>
+                    <td colspan="6" class="px-6 py-10 text-center text-slate-400 italic">Tidak ada hutang aktif.</td>
                 </tr>
                 @endforelse
             </tbody>
