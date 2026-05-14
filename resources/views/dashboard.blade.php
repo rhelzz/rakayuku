@@ -21,7 +21,7 @@
             <!-- Quick Exports Toolbar -->
             <div class="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0" style="scrollbar-width: none;">
                 <span class="text-xs font-label-caps uppercase tracking-wider text-slate-500 mr-2 flex-shrink-0">Quick Export:</span>
-                <button @click="exportUrl = '{{ route('cashflows.export') }}'; exportTitle = 'Arus Kas'; showExportModal = true" class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">Arus Kas</button>
+                <button @click="exportUrl = '{{ route('finance.cashflow.export') }}'; exportTitle = 'Arus Kas'; showExportModal = true" class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">Arus Kas</button>
                 <button @click="exportUrl = '{{ route('orders.export_receivables') }}'; exportTitle = 'Piutang'; showExportModal = true" class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold bg-rose-50 text-rose-700 rounded-lg hover:bg-rose-100 transition-colors border border-rose-200">Piutang</button>
                 <button @click="exportUrl = '{{ route('orders.export') }}'; exportTitle = 'Pesanan'; showExportModal = true" class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">Pesanan</button>
                 <button @click="exportUrl = '{{ route('customers.export') }}'; exportTitle = 'Pelanggan'; showExportModal = true" class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">Pelanggan</button>
@@ -39,7 +39,7 @@
                 <div class="flex flex-col mt-2 overflow-hidden">
                     <span class="text-xl xl:text-2xl font-bold tracking-tight text-on-background truncate" title="{{ formatRupiah($currentBalance) }}">{{ formatRupiah($currentBalance) }}</span>
                     <span class="font-body-sm text-body-sm text-primary mt-1">
-                        <a href="{{ route('cashflows.index') }}" class="hover:underline flex items-center gap-1">Detail Arus Kas <span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+                        <a href="{{ route('finance.cashflow') }}" class="hover:underline flex items-center gap-1">Detail Arus Kas <span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
                     </span>
                 </div>
             </div>
