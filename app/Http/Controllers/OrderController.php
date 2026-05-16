@@ -11,11 +11,13 @@ use App\Models\ProductionCost;
 use App\Services\OrderService;
 use App\Services\ProductionService;
 use App\Exports\OrderExport;
+use App\Traits\CheckClosingPeriod;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
+    use CheckClosingPeriod;
     protected OrderService $orderService;
     protected ProductionService $productionService;
 
@@ -63,6 +65,9 @@ class OrderController extends Controller
         ]);
 
         try {
+            $closingCheck = $this->checkClosingPeriod();
+            if ($closingCheck) return $closingCheck;
+
             $order = $this->orderService->createOrder($request->all());
             return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil dibuat.');
         } catch (\Exception $e) {
@@ -207,6 +212,9 @@ class OrderController extends Controller
         ]);
 
         try {
+            $closingCheck = $this->checkClosingPeriod();
+            if ($closingCheck) return $closingCheck;
+
             $this->orderService->payOrder(
                 $order, 
                 $request->input('amount'), 

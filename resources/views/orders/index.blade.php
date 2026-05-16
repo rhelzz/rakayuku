@@ -3,7 +3,6 @@
 @section('title', 'Pesanan & Proyek')
 @section('content')
 <div class="space-y-6" x-data="{ viewMode: '{{ request('view_mode', 'kanban') }}', showExportModal: false }">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -18,7 +17,6 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                <!-- View Mode Switcher -->
                 <div class="flex bg-surface-container-high p-1 rounded-xl border border-surface-variant">
                     <button @click="viewMode = 'kanban'; $dispatch('update-view-mode', 'kanban')" :class="viewMode === 'kanban' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'" class="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-sm font-bold transition-all">
                         <span class="material-symbols-outlined text-[18px]">view_kanban</span>
@@ -43,16 +41,13 @@
         </div>
     </div>
 
-    <!-- Table Filter -->
     <x-table.filter placeholder="Cari nomor pesanan, proyek, atau pelanggan...">
         <x-slot name="customFilters">
             <input type="hidden" name="view_mode" :value="viewMode">
         </x-slot>
     </x-table.filter>
 
-    <!-- Kanban View -->
     <div x-show="viewMode === 'kanban'" class="flex gap-4 sm:gap-6 overflow-x-auto pb-4 h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)] snap-x snap-mandatory" style="scrollbar-width: none;">
-        <!-- Pending Column -->
         <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
@@ -95,7 +90,6 @@
             </div>
         </div>
 
-        <!-- In Production Column -->
         <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
@@ -147,7 +141,6 @@
             </div>
         </div>
 
-        <!-- Delivery & Debt Column -->
         <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
@@ -194,7 +187,6 @@
             </div>
         </div>
 
-        <!-- Finished Column -->
         <div class="snap-center flex-shrink-0 w-[85vw] sm:w-80 flex flex-col bg-surface-container-low rounded-xl border border-slate-200 shadow-sm max-h-full">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center">
                 <div class="flex items-center gap-2">
@@ -238,7 +230,6 @@
         </div>
     </div>
 
-    <!-- Table View -->
     <div x-show="viewMode === 'table'" class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -291,7 +282,6 @@
             </table>
         </div>
     </div>
-    <!-- Export Modal -->
     <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
         <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
         <div x-show="showExportModal"

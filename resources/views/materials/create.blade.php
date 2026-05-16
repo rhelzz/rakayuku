@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto">
-    <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
         <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -26,6 +25,11 @@
         <form action="{{ route('materials.store') }}" method="POST" class="p-6 space-y-6" x-data="{ submitting: false }" @submit="submitting = true">
             @csrf
             
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
+                <span class="material-symbols-outlined text-blue-500 text-[18px] mt-0.5">info</span>
+                <p class="text-xs text-blue-700 inline-flex items-center flex-wrap gap-1"><strong>Kode Barang</strong> akan di-generate otomatis oleh sistem setelah data disimpan. Format: <code class="bg-blue-100 px-1.5 py-0.5 rounded text-[10px] font-mono leading-none">MAT-NAMA-001</code></p>
+            </div>
+
             <div class="space-y-4">
                 <div class="space-y-1.5">
                     <label for="name" class="block font-medium text-slate-700 text-sm">Nama Bahan <span class="text-error">*</span></label>

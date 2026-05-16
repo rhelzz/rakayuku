@@ -39,7 +39,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
         $financials = $this->reportService->getFinancialData($this->range, $this->start, $this->end);
         $rows = [];
 
-        // 1. HEADER SECTION
         $rows[] = ['RAKAYUKU ERP - SISTEM MANAJEMEN PRODUKSI'];
         $rows[] = ['LAPORAN ANALISA KEUANGAN PROYEK'];
         $rows[] = [];
@@ -55,18 +54,15 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
         $rows[] = [];
         $rows[] = []; // Spacer
 
-        // 2. DATA SECTION (Iterate Projects)
         foreach ($financials as $data) {
             $order = $data['order'];
             
-            // Section Header: Project ID & Name
             $rows[] = ["SEKSI PROYEK: {$order->order_number}"];
             $rows[] = ['Nama Proyek', $order->project_name, '', 'Tanggal Pesanan', $order->created_at->format('d/m/Y')];
             $rows[] = ['Nama Pelanggan', $order->customer->name, '', 'Status Terakhir', strtoupper($order->status)];
             $rows[] = ['Nilai Kontrak', $order->selling_price];
             $rows[] = []; // Spacer
 
-            // Materials Table
             if ($order->materials->count() > 0) {
                 $rows[] = ['RINCIAN PEMAKAIAN BAHAN BAKU'];
                 $rows[] = ['NO', 'ITEM BAHAN BAKU', 'KUANTITAS', 'HARGA SATUAN', 'SUBTOTAL (IDR)'];
@@ -77,7 +73,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
                 $rows[] = []; // Spacer
             }
 
-            // Production Costs Table
             if ($order->productionCosts->count() > 0) {
                 $rows[] = ['BIAYA OPERASIONAL & PRODUKSI'];
                 $rows[] = ['NO', 'TIPE BIAYA', 'KETERANGAN / NOTES', '', 'JUMLAH (IDR)'];
@@ -88,7 +83,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
                 $rows[] = []; // Spacer
             }
 
-            // Project Profitability Summary
             $rows[] = ['ANALISA PROFITABILITAS PROYEK'];
             $rows[] = ['', '', '', 'TOTAL HPP (MODAL KESELURUHAN)', $data['total_hpp']];
             $rows[] = ['', '', '', 'LABA KOTOR (GROSS PROFIT)', $data['profit']];
@@ -97,7 +91,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
             $rows[] = [];
         }
 
-        // 3. EXECUTIVE SUMMARY SECTION
         $rows[] = ['RINGKASAN EKSEKUTIF AKHIR PERIODE'];
         $rows[] = ['METRIK UTAMA', 'NILAI TOTAL (IDR)', '', 'PERSENTASE / KETERANGAN'];
         
@@ -118,23 +111,19 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
         $lastRow = $sheet->getHighestRow();
         $lastColumn = 'E';
         
-        // 1. COLUMN DIMENSIONS
         $sheet->getColumnDimension('A')->setWidth(18);
         $sheet->getColumnDimension('B')->setWidth(35);
         $sheet->getColumnDimension('C')->setWidth(15);
         $sheet->getColumnDimension('D')->setWidth(25);
         $sheet->getColumnDimension('E')->setWidth(25);
 
-        // 2. GLOBAL DEFAULT STYLES
         $sheet->getStyle("A1:{$lastColumn}{$lastRow}")->getFont()->setName('Arial')->setSize(10);
         $sheet->getStyle("A1:{$lastColumn}{$lastRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        // 3. NUMBER FORMATTING
         $sheet->getStyle('B:E')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('E1:E' . $lastRow)->getNumberFormat()->setFormatCode('"Rp "#,##0');
         $sheet->getStyle('D1:D' . $lastRow)->getNumberFormat()->setFormatCode('"Rp "#,##0');
 
-        // 4. HEADER BRANDING
         $sheet->mergeCells('A1:E1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(11)->getColor()->setRGB('64748b');
         
@@ -144,11 +133,9 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
         $sheet->getStyle('A4')->getFont()->setBold(true)->getColor()->setRGB('1e293b');
         $sheet->getStyle('A5:A7')->getFont()->setBold(true);
 
-        // 5. ITERATIVE STYLING FOR SECTIONS
         for ($i = 1; $i <= $lastRow; $i++) {
             $firstCell = (string)$sheet->getCell('A' . $i)->getValue();
             
-            // PROJECT SECTION DIVIDER
             if (str_starts_with($firstCell, 'SEKSI PROYEK:')) {
                 $sheet->mergeCells("A$i:E$i");
                 $sheet->getRowDimension($i)->setRowHeight(25);
@@ -159,7 +146,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
                 ]);
             }
 
-            // SUB-SECTION HEADERS
             $subHeaders = ['RINCIAN PEMAKAIAN BAHAN BAKU', 'BIAYA OPERASIONAL & PRODUKSI', 'ANALISA PROFITABILITAS PROYEK', 'RINGKASAN EKSEKUTIF AKHIR PERIODE'];
             if (in_array($firstCell, $subHeaders)) {
                 $sheet->mergeCells("A$i:E$i");
@@ -170,7 +156,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
                 ]);
             }
 
-            // TABLE HEADERS
             if ($firstCell === 'NO' || $firstCell === 'METRIK UTAMA') {
                 $sheet->getStyle("A$i:E$i")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 9],
@@ -180,7 +165,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
                 $sheet->getStyle("A$i:E$i")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             }
 
-            // LABELS
             if (in_array($firstCell, ['Nama Proyek', 'Nama Pelanggan', 'Nilai Kontrak', 'Total Pendapatan (Omzet)', 'Total Beban Pokok (HPP)', 'Total Keuntungan Bersih'])) {
                 $sheet->getStyle('A' . $i)->getFont()->setBold(true);
                 if ($firstCell === 'Nilai Kontrak') {
@@ -189,7 +173,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
                 }
             }
 
-            // TOTAL ROWS
             $valD = (string)$sheet->getCell('D' . $i)->getValue();
             if (str_starts_with($valD, 'TOTAL') || str_starts_with($valD, 'LABA KOTOR') || str_starts_with($valD, 'MARGIN')) {
                 $sheet->getStyle("D$i:E$i")->getFont()->setBold(true);
@@ -202,7 +185,6 @@ class FinancialReportExport implements FromArray, WithStyles, ShouldAutoSize, Wi
             }
         }
 
-        // EXECUTIVE SUMMARY BOX
         $summaryStart = 1;
         for ($i = $lastRow; $i > 1; $i--) {
             if ($sheet->getCell('A' . $i)->getValue() === 'RINGKASAN EKSEKUTIF AKHIR PERIODE') {

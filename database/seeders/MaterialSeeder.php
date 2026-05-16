@@ -10,7 +10,6 @@ class MaterialSeeder extends Seeder
     public function run(): void
     {
         $materials = [
-            // Dimension based (Wood)
             [
                 'name' => 'Papan Kayu Jati',
                 'code' => 'KAYU-001',
@@ -35,7 +34,6 @@ class MaterialSeeder extends Seeder
                 'current_qty' => 0,
                 'avg_price' => 0,
             ],
-            // Standard unit (Non-dimension)
             [
                 'name' => 'Tali Rapia',
                 'code' => 'ACC-001',

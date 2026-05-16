@@ -31,6 +31,8 @@ class Order extends Model
     const PAYMENT_PARTIAL = 'PARTIAL';
     const PAYMENT_PAID = 'PAID';
 
+    const SORTABLE_FIELDS = ['order_number', 'project_name', 'status', 'selling_price', 'payment_status', 'deadline', 'created_at'];
+
     public static function activeStatuses(): array
     {
         return [

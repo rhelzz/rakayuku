@@ -9,6 +9,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\ClosingController;
+use App\Http\Controllers\StockOpnameController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -23,6 +25,14 @@ Route::prefix('finance')->name('finance.')->group(function () {
     Route::get('/export-overall', [FinanceController::class, 'exportOverall'])->name('export.overall');
 });
 
+Route::prefix('closing')->name('closing.')->group(function () {
+    Route::get('/', [ClosingController::class, 'index'])->name('index');
+    Route::get('/{closing}', [ClosingController::class, 'show'])->name('show');
+    Route::post('/close', [ClosingController::class, 'close'])->name('close');
+    Route::post('/{closing}/reopen', [ClosingController::class, 'reopen'])->name('reopen');
+    Route::get('/{closing}/export', [ClosingController::class, 'exportClosing'])->name('export');
+});
+
 Route::get('materials/export', [MaterialController::class, 'export'])->name('materials.export');
 Route::resource('materials', MaterialController::class);
 
@@ -31,6 +41,15 @@ Route::resource('customers', CustomerController::class);
 
 Route::get('inventory/movements/export', [StockMovementController::class, 'export'])->name('inventory.movements.export');
 Route::get('inventory/movements', [StockMovementController::class, 'index'])->name('inventory.movements');
+
+Route::prefix('stock-opname')->name('stock-opname.')->group(function () {
+    Route::get('/', [StockOpnameController::class, 'index'])->name('index');
+    Route::get('/create', [StockOpnameController::class, 'create'])->name('create');
+    Route::post('/', [StockOpnameController::class, 'store'])->name('store');
+    Route::get('/{stockOpname}', [StockOpnameController::class, 'show'])->name('show');
+    Route::post('/{stockOpname}/complete', [StockOpnameController::class, 'complete'])->name('complete');
+    Route::get('/{stockOpname}/export', [StockOpnameController::class, 'export'])->name('export');
+});
 
 Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/analytics', [ReportController::class, 'analytics'])->name('analytics');
@@ -60,3 +79,4 @@ Route::delete('/production-costs/{productionCost}', [OrderController::class, 're
 
 Route::post('/orders/{order}/add-residue', [OrderController::class, 'addResidue'])->name('orders.add-residue');
 Route::delete('/order-residues/{orderResidue}', [OrderController::class, 'removeResidue'])->name('orders.remove-residue');
+

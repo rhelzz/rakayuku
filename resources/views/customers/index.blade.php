@@ -3,8 +3,7 @@
 @section('title', 'Manajemen Pelanggan')
 
 @section('content')
-<div class="space-y-6" x-data="{ showExportModal: false }">
-    <!-- Page Header -->
+<div class="space-y-6" x-data="{ showExportModal: false, showDeleteModal: false, deleteAction: '', deleteName: '' }">
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -30,10 +29,8 @@
         </div>
     </div>
 
-    <!-- Table Filter -->
     <x-table.filter placeholder="Cari nama, email, atau telepon pelanggan..." />
 
-    <!-- Table Card -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -72,12 +69,9 @@
                                 <a href="{{ route('customers.edit', $c) }}" class="text-slate-400 hover:text-primary transition-colors">
                                     <span class="material-symbols-outlined text-[20px]">edit</span>
                                 </a>
-                                <form action="{{ route('customers.destroy', $c) }}" method="POST" onsubmit="return confirm('Hapus pelanggan ini?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="text-slate-400 hover:text-error transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                    </button>
-                                </form>
+                                <button type="button" @click="deleteAction = '{{ route('customers.destroy', $c) }}'; deleteName = '{{ $c->name }}'; showDeleteModal = true" class="text-slate-400 hover:text-error transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -100,7 +94,6 @@
             </div>
         @endif
     </div>
-    <!-- Export Modal -->
     <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
         <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
         <div x-show="showExportModal"
@@ -137,6 +130,40 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div x-show="showDeleteModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
+        <div x-show="showDeleteModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showDeleteModal = false"></div>
+        <div x-show="showDeleteModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+             class="absolute top-1/2 left-1/2 bg-white rounded-2xl shadow-xl overflow-hidden"
+             style="width: 100%; max-width: 28rem; transform: translate(-50%, -50%);">
+            <div class="p-6 text-center">
+                <div class="mx-auto w-16 h-16 rounded-full bg-red-50 border-2 border-red-200 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-red-500 text-4xl">person_remove</span>
+                </div>
+                <h3 class="text-lg font-bold text-on-surface mb-2">Hapus Pelanggan?</h3>
+                <p class="text-sm text-slate-500 mb-2">Anda akan menghapus pelanggan <strong class="text-on-surface" x-text="deleteName"></strong>.</p>
+                <p class="text-xs text-red-500 mb-5">Semua data terkait pelanggan ini akan ikut terhapus.</p>
+                <form :action="deleteAction" method="POST" x-data="{ submitting: false }" @submit="submitting = true">
+                    @csrf
+                    @method('DELETE')
+                    <div class="flex gap-3">
+                        <button type="button" @click="showDeleteModal = false" class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-200 transition-colors">Batal</button>
+                        <button type="submit" :disabled="submitting" class="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-xl font-semibold text-sm hover:bg-red-600 transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50">
+                            <span x-show="!submitting" class="material-symbols-outlined text-[18px]">delete</span>
+                            <span x-show="submitting" class="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
+                            <span x-text="submitting ? 'Menghapus...' : 'Ya, Hapus'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

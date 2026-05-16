@@ -124,10 +124,7 @@
     </div>
 
     <script>
-        // Auto trigger print dialog
         window.onload = function() {
-            // Uncomment below if you want auto-print
-            // window.print();
         }
     </script>
 </body>

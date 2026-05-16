@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6" x-data="{ showExportModal: false }">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -30,7 +29,6 @@
         </div>
     </div>
 
-    <!-- Main Scorecard -->
     <div class="relative overflow-hidden bg-gradient-to-br from-primary to-primary-hover rounded-3xl p-8 shadow-xl shadow-primary/20 text-white">
         <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -mr-20 -mt-20"></div>
         <div class="absolute bottom-0 left-0 w-48 h-48 bg-black/10 blur-2xl rounded-full -ml-10 -mb-10"></div>
@@ -53,9 +51,7 @@
         </div>
     </div>
 
-    <!-- The 4 Modules Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Saldo Omset -->
         <div class="glass-panel border border-surface-variant rounded-2xl p-6 hover:shadow-lg transition-all group relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-primary">trending_up</span>
@@ -75,7 +71,6 @@
             </div>
         </div>
 
-        <!-- Saldo Inventaris -->
         <div class="glass-panel border border-surface-variant rounded-2xl p-6 hover:shadow-lg transition-all group relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-amber-600">inventory_2</span>
@@ -105,7 +100,6 @@
             </div>
         </div>
 
-        <!-- Piutang -->
         <div class="glass-panel border border-surface-variant rounded-2xl p-6 hover:shadow-lg transition-all group relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-emerald-600">call_received</span>
@@ -125,7 +119,6 @@
             </div>
         </div>
 
-        <!-- Hutang -->
         <div class="glass-panel border border-surface-variant rounded-2xl p-6 hover:shadow-lg transition-all group relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <span class="material-symbols-outlined text-6xl text-error">call_made</span>
@@ -146,7 +139,6 @@
         </div>
     </div>
 
-    <!-- Recent Cashflow Summary -->
     <div class="glass-panel border border-surface-variant rounded-2xl overflow-hidden shadow-sm bg-white">
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
             <h3 class="font-headline-sm text-on-surface">Arus Kas Terakhir</h3>
@@ -185,7 +177,6 @@
         </div>
     </div>
 
-    <!-- Export Modal -->
     <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
         <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
         <div x-show="showExportModal"

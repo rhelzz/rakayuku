@@ -3,8 +3,7 @@
 @section('title', 'Edit Bahan - ' . $material->name . ($material->type ? ' (' . $material->type . ')' : ''))
 
 @section('content')
-<div class="max-w-2xl mx-auto">
-    <!-- Breadcrumbs -->
+<div class="max-w-2xl mx-auto" x-data="{ showDeleteModal: false }">
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
         <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -96,7 +95,7 @@
             </div>
 
             <div class="pt-6 border-t border-surface-variant flex justify-between gap-3">
-                <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menghapus bahan ini?')) document.getElementById('delete-form').submit();" class="px-5 py-2 rounded-lg border border-error/30 text-error hover:bg-error/10 transition-colors font-medium text-sm" :class="{ 'opacity-50 pointer-events-none': submitting }">
+                <button type="button" @click="showDeleteModal = true" class="px-5 py-2 rounded-lg border border-error/30 text-error hover:bg-error/10 transition-colors font-medium text-sm" :class="{ 'opacity-50 pointer-events-none': submitting }">
                     Hapus Bahan
                 </button>
                 <div class="flex gap-3">
@@ -115,6 +114,35 @@
             @csrf
             @method('DELETE')
         </form>
+    </div>
+
+    <div x-show="showDeleteModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
+        <div x-show="showDeleteModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showDeleteModal = false"></div>
+        <div x-show="showDeleteModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+             class="absolute top-1/2 left-1/2 bg-white rounded-2xl shadow-xl overflow-hidden"
+             style="width: 100%; max-width: 28rem; transform: translate(-50%, -50%);">
+            <div class="p-6 text-center">
+                <div class="mx-auto w-16 h-16 rounded-full bg-red-50 border-2 border-red-200 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-red-500 text-4xl">delete_forever</span>
+                </div>
+                <h3 class="text-lg font-bold text-on-surface mb-2">Hapus Bahan Baku?</h3>
+                <p class="text-sm text-slate-500 mb-2">Anda akan menghapus bahan <strong class="text-on-surface">{{ $material->display_name }}</strong>.</p>
+                <p class="text-xs text-red-500 mb-5">Data yang sudah dihapus tidak bisa dikembalikan.</p>
+                <div class="flex gap-3">
+                    <button type="button" @click="showDeleteModal = false" class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-200 transition-colors">Batal</button>
+                    <button type="button" @click="document.getElementById('delete-form').submit()" class="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-xl font-semibold text-sm hover:bg-red-600 transition-all shadow-md flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

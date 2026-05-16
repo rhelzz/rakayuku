@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6" x-data="{ showExportModal: false }">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -34,12 +33,9 @@
         </div>
     </div>
 
-    <!-- Table Filter -->
     <x-table.filter placeholder="Cari nama bahan..." />
 
-    <!-- Content Area -->
     <div class="flex flex-col gap-6">
-        <!-- Stats Overview -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="glass-panel border border-surface-variant rounded-xl p-4 flex items-center space-x-4">
                 <div class="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
@@ -70,7 +66,6 @@
             </div>
         </div>
 
-        <!-- Main Table Card -->
         <div class="glass-panel border border-surface-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -156,7 +151,6 @@
             @endif
         </div>
     </div>
-    <!-- Export Modal -->
     <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
         <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
         <div x-show="showExportModal"

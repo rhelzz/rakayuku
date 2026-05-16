@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto">
-    <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
         <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -27,7 +26,6 @@
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Customer Selection -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="customer_id" class="block font-medium text-slate-700 text-sm">Pelanggan <span class="text-error">*</span></label>
                     <select name="customer_id" id="customer_id" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors appearance-none @error('customer_id') border-error @enderror">
@@ -42,7 +40,6 @@
                     <p class="text-[11px] text-slate-500">Pelanggan tidak ditemukan? <a href="{{ route('customers.create') }}" class="text-primary hover:underline">Tambah pelanggan baru</a></p>
                 </div>
 
-                <!-- Project Name -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="project_name" class="block font-medium text-slate-700 text-sm">Nama Proyek / Item <span class="text-error">*</span></label>
                     <input type="text" name="project_name" id="project_name" value="{{ old('project_name') }}" required class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('project_name') border-error @enderror" placeholder="Misal: Meja Makan Jati (6 Kursi)">
@@ -51,7 +48,6 @@
                     @enderror
                 </div>
 
-                <!-- Project Description -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="project_description" class="block font-medium text-slate-700 text-sm">Deskripsi Detail (Opsional)</label>
                     <textarea name="project_description" id="project_description" rows="2" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('project_description') border-error @enderror" placeholder="Catatan tambahan spesifikasi...">{{ old('project_description') }}</textarea>
@@ -60,7 +56,6 @@
                     @enderror
                 </div>
 
-                <!-- Pricing -->
                 <div class="space-y-1.5" x-data="{ 
                     displayPrice: '{{ old('selling_price') ? number_format(old('selling_price'), 0, ',', '.') : '' }}',
                     rawPrice: '{{ old('selling_price', 0) }}'
@@ -103,7 +98,6 @@
                     @enderror
                 </div>
 
-                <!-- Deadline -->
                 <div class="space-y-1.5 md:col-span-2">
                     <label for="deadline" class="block font-medium text-slate-700 text-sm">Target Batas Waktu</label>
                     <input type="date" name="deadline" id="deadline" value="{{ old('deadline') }}" min="{{ date('Y-m-d') }}" class="w-full bg-white border border-slate-200 text-on-surface rounded-lg px-3 py-2 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors @error('deadline') border-error @enderror">

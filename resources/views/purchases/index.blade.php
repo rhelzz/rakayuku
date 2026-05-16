@@ -3,7 +3,6 @@
 @section('title', 'Riwayat Pembelian & Invoice')
 @section('content')
 <div class="space-y-6" x-data="{ showExportModal: false }">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -29,10 +28,8 @@
         </div>
     </div>
 
-    <!-- Table Filter -->
     <x-table.filter placeholder="Cari nomor invoice atau pemasok..." />
 
-    <!-- Purchases Table -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -95,7 +92,6 @@
             </div>
         @endif
     </div>
-    <!-- Export Modal -->
     <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
         <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
         <div x-show="showExportModal"

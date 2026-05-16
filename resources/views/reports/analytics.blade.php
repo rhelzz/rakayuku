@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -26,12 +25,9 @@
         </div>
     </div>
 
-    <!-- Filters -->
     <x-table.filter placeholder="Cari data trend..." />
 
-    <!-- Chart Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Order Volume Trend -->
         <div class="glass-panel border border-surface-variant rounded-xl p-6 shadow-sm">
             <h3 class="font-title-sm text-title-sm mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary">trending_up</span>
@@ -42,7 +38,6 @@
             </div>
         </div>
 
-        <!-- Revenue Trend -->
         <div class="glass-panel border border-surface-variant rounded-xl p-6 shadow-sm">
             <h3 class="font-title-sm text-title-sm mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-emerald-600">payments</span>
@@ -53,7 +48,6 @@
             </div>
         </div>
 
-        <!-- Inventory Status -->
         <div class="glass-panel border border-surface-variant rounded-xl p-6 shadow-sm">
             <h3 class="font-title-sm text-title-sm mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-amber-600">inventory_2</span>
@@ -64,7 +58,6 @@
             </div>
         </div>
 
-        <!-- Cashflow Overview -->
         <div class="glass-panel border border-surface-variant rounded-xl p-6 shadow-sm">
             <h3 class="font-title-sm text-title-sm mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-blue-600">account_balance</span>
@@ -75,7 +68,6 @@
             </div>
         </div>
 
-        <!-- Top Materials Used -->
         <div class="glass-panel border border-surface-variant rounded-xl p-6 shadow-sm lg:col-span-2">
             <h3 class="font-title-sm text-title-sm mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-rose-500">category</span>
@@ -97,7 +89,6 @@
 
     const labels = orderData.map(d => d.month);
 
-    // Order Volume Chart
     new Chart(document.getElementById('orderVolumeChart'), {
         type: 'line',
         data: {
@@ -114,7 +105,6 @@
         options: { responsive: true, maintainAspectRatio: false }
     });
 
-    // Revenue Chart
     new Chart(document.getElementById('revenueChart'), {
         type: 'bar',
         data: {
@@ -129,7 +119,6 @@
         options: { responsive: true, maintainAspectRatio: false }
     });
 
-    // Inventory Chart
     new Chart(document.getElementById('inventoryChart'), {
         type: 'bar',
         data: {
@@ -148,7 +137,6 @@
         }
     });
 
-    // Cashflow Chart
     new Chart(document.getElementById('cashflowChart'), {
         type: 'doughnut',
         data: {
@@ -168,7 +156,6 @@
         }
     });
 
-    // Top Materials Chart
     new Chart(document.getElementById('topMaterialsChart'), {
         type: 'pie',
         data: {

@@ -3,7 +3,6 @@
 @section('title', 'Arus Kas & Saldo Perusahaan')
 @section('content')
 <div class="space-y-6" x-data="{ showAddModal: false }">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -29,7 +28,6 @@
         </div>
     </div>
 
-    <!-- Saldo Card -->
     <div class="grid grid-cols-1 mb-6">
         <div class="relative overflow-hidden bg-gradient-to-br from-primary to-primary-hover rounded-3xl p-8 shadow-xl shadow-primary/20 text-white">
             <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -mr-20 -mt-20"></div>
@@ -45,7 +43,6 @@
         </div>
     </div>
 
-    <!-- Filter Form -->
     <div class="bg-surface-container-low rounded-xl p-4 border border-surface-variant mb-6">
         <form action="{{ route('finance.cashflow') }}" method="GET" class="flex flex-wrap gap-4 items-end">
             <div class="flex-1 min-w-[200px]">
@@ -76,7 +73,6 @@
         </form>
     </div>
 
-    <!-- Cashflows Table -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -132,7 +128,6 @@
         @endif
     </div>
 
-    <!-- Add Modal -->
     <div x-show="showAddModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
         <div x-show="showAddModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showAddModal = false"></div>
         <div x-show="showAddModal"

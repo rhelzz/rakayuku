@@ -19,7 +19,6 @@
     </div>
     @endif
 
-    <!-- Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -119,9 +118,7 @@
         </div>
     </div>
 
-    <!-- Stats & Tabs -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <!-- Main Stats Card -->
         <div class="lg:col-span-3 space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="glass-panel p-4 rounded-xl border border-slate-200">
@@ -146,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- Interactive Tabs -->
             <div class="glass-panel rounded-xl border border-slate-200 overflow-hidden">
                 <div class="flex overflow-x-auto border-b border-slate-200 bg-surface-container-low/50" style="scrollbar-width: none;">
                     <button @click="activeTab = 'overview'" :class="activeTab === 'overview' ? 'text-primary border-b-2 border-primary bg-primary/5' : 'text-slate-500 hover:text-slate-700'" class="whitespace-nowrap px-4 sm:px-6 py-4 text-sm font-semibold transition-all">Ringkasan</button>
@@ -156,7 +152,6 @@
                 </div>
 
                 <div class="p-6 min-h-[400px]">
-                    <!-- Overview Tab -->
                     <div x-show="activeTab === 'overview'" class="space-y-6">
                         <div class="grid grid-cols-2 gap-8">
                             <div>
@@ -202,7 +197,6 @@
                         </div>
                     </div>
 
-                    <!-- Materials Tab -->
                     <div x-show="activeTab === 'materials'" class="space-y-6">
                         @if($order->status == 'IN_PRODUCTION')
                         <form action="{{ route('orders.add-material', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -260,7 +254,6 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                        <!-- Inline Residue Form -->
                                         @if($order->status == 'IN_PRODUCTION')
                                         @php
                                             $existingResidueQty = $order->residues
@@ -347,7 +340,6 @@
                             </div>
                         </div>
 
-                        <!-- Residue List Section -->
                         @if($order->residues->count() > 0)
                         <div class="space-y-3">
                             <h4 class="text-xs font-label-caps text-slate-500 uppercase tracking-widest flex items-center gap-2">
@@ -404,7 +396,6 @@
                         @endif
                     </div>
 
-                    <!-- Costs Tab -->
                     <div x-show="activeTab === 'costs'" class="space-y-6">
                         @if(in_array($order->status, ['IN_PRODUCTION', 'DELIVERING']))
                         <form action="{{ route('orders.add-cost', $order) }}" method="POST" class="bg-surface-container-high/30 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
@@ -481,7 +472,6 @@
                         </div>
                     </div>
 
-                    <!-- Payments Tab -->
                     <div x-show="activeTab === 'payments'" class="space-y-6">
                         @if($order->isPayable())
                         @php
@@ -490,7 +480,6 @@
                             $remainingPayment = $order->selling_price - $totalPaid;
                         @endphp
 
-                        <!-- Info Sisa Tagihan -->
                         <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border {{ $remainingPayment > 0 ? 'bg-amber-50/50 border-amber-200' : 'bg-emerald-50/50 border-emerald-200' }}">
                             <div class="flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[20px] {{ $remainingPayment > 0 ? 'text-amber-600' : 'text-emerald-600' }}">{{ $remainingPayment > 0 ? 'account_balance_wallet' : 'check_circle' }}</span>
@@ -591,7 +580,6 @@
             </div>
         </div>
 
-        <!-- Sidebar / Lifecycle -->
         <div class="space-y-6">
             <div class="glass-panel p-6 rounded-xl border border-slate-200">
                 <h4 class="text-on-surface font-semibold mb-6 flex items-center gap-2">
@@ -599,10 +587,8 @@
                     Siklus Proyek
                 </h4>
                 <div class="space-y-6 relative">
-                    <!-- Vertical Line -->
                     <div class="absolute left-[13.5px] top-2 bottom-2 w-0.5 bg-slate-100"></div>
                     
-                    <!-- Step 1: Pending -->
                     <div class="relative flex items-start gap-4">
                         <div class="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center z-10 shrink-0 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600"><path d="M20 6L9 17l-5-5"/></svg>
@@ -613,7 +599,6 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Production -->
                     <div class="relative flex items-start gap-4">
                         <div class="w-7 h-7 rounded-full {{ in_array($order->status, ['IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']) ? 'bg-primary-fixed border border-primary/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
                             @if(in_array($order->status, ['IN_PRODUCTION', 'DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']))
@@ -634,7 +619,6 @@
                         </div>
                     </div>
 
-                    <!-- Step 3: Delivering -->
                     <div class="relative flex items-start gap-4">
                         <div class="w-7 h-7 rounded-full {{ in_array($order->status, ['DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']) ? 'bg-amber-50 border border-amber-200' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
                             @if(in_array($order->status, ['DELIVERING', 'UNPAID_DELIVERED', 'FINISHED']))
@@ -655,7 +639,6 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Payment/Debt (Only shows if relevant or finished) -->
                     <div class="relative flex items-start gap-4">
                         <div class="w-7 h-7 rounded-full {{ $order->status == 'UNPAID_DELIVERED' ? 'bg-error-container border border-error/30' : ($order->status == 'FINISHED' ? 'bg-emerald-50 border border-emerald-200' : 'bg-slate-50 border border-slate-200') }} flex items-center justify-center z-10 shrink-0 shadow-sm">
                             @if($order->status == 'UNPAID_DELIVERED')
@@ -678,7 +661,6 @@
                         </div>
                     </div>
 
-                    <!-- Step 5: Finished -->
                     <div class="relative flex items-start gap-4">
                         <div class="w-7 h-7 rounded-full {{ $order->status == 'FINISHED' ? 'bg-primary border border-primary/30' : 'bg-slate-50 border border-slate-200' }} flex items-center justify-center z-10 shrink-0 shadow-sm">
                             @if($order->status == 'FINISHED')
@@ -695,7 +677,6 @@
                 </div>
             </div>
 
-            <!-- Warning: Low Stock for Production -->
             @php $lowStockInProduction = $materials->where('current_qty', '<', 2); @endphp
             @if(count($lowStockInProduction) > 0 && $order->status == 'IN_PRODUCTION')
                 <div class="p-4 bg-error-container/10 border border-error/30 rounded-xl">
@@ -722,7 +703,6 @@
 
 <script>
     function confirmAction(formId, title, text, icon, confirmButtonText) {
-        // Determine colors based on icon/action type
         let confirmButtonColor = '#3085d6'; // Default Blue
         if (icon === 'warning') confirmButtonColor = '#f59e0b'; // Amber/Orange for Start/Warning
         if (confirmButtonText.toLowerCase().includes('hapus')) confirmButtonColor = '#ef4444'; // Red for Delete

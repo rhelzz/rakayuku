@@ -15,6 +15,8 @@ class Purchase extends Model
     const PAYMENT_PARTIAL = 'PARTIAL';
     const PAYMENT_PAID = 'PAID';
 
+    const SORTABLE_FIELDS = ['supplier_name', 'invoice_number', 'purchase_date', 'total_price', 'payment_status', 'created_at'];
+
     public function items()
     {
         return $this->hasMany(PurchaseItem::class);

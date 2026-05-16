@@ -6,11 +6,14 @@ use App\Models\Purchase;
 use App\Models\Material;
 use App\Services\PurchaseService;
 use App\Exports\PurchaseExport;
+use App\Traits\CheckClosingPeriod;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class PurchaseController extends Controller
 {
+    use CheckClosingPeriod;
     protected PurchaseService $purchaseService;
 
     public function __construct(PurchaseService $purchaseService)
@@ -50,6 +53,9 @@ class PurchaseController extends Controller
         ]);
 
         try {
+            $closingCheck = $this->checkClosingPeriod(Carbon::parse($request->purchase_date));
+            if ($closingCheck) return $closingCheck;
+
             $this->purchaseService->createPurchase($request->all(), $request->items);
             return redirect()->route('purchases.index')->with('success', 'Pembelian berhasil dicatat dan stok telah diperbarui.');
         } catch (\Exception $e) {
@@ -76,6 +82,9 @@ class PurchaseController extends Controller
         ]);
 
         try {
+            $closingCheck = $this->checkClosingPeriod();
+            if ($closingCheck) return $closingCheck;
+
             $this->purchaseService->payPurchase($purchase, $request->amount, $request->notes);
             return back()->with('success', 'Pembayaran hutang berhasil dicatat.');
         } catch (\Exception $e) {

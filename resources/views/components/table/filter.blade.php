@@ -6,11 +6,9 @@
 
 <div class="glass-panel border border-surface-variant rounded-xl p-4 mb-6" x-data="{ showCustomDate: '{{ request('date_range') === 'custom' }}', searchTimeout: null }" @keydown.debounce.500ms="document.getElementById('filter-form').submit()">
     <form id="filter-form" action="{{ url()->current() }}" method="GET" class="flex flex-wrap gap-4 items-end">
-        <!-- Preserve Sorting -->
         <input type="hidden" name="sort_field" value="{{ request('sort_field') }}">
         <input type="hidden" name="sort_dir" value="{{ request('sort_dir') }}">
 
-        <!-- Search -->
         <div class="flex-1 min-w-[300px] space-y-1.5">
             <label class="block font-medium text-slate-700 text-xs uppercase tracking-wider">Pencarian</label>
             <div class="relative">
@@ -23,7 +21,6 @@
         </div>
 
         @if($showDate)
-        <!-- Date Range -->
         <div class="w-48 space-y-1.5">
             <label class="block font-medium text-slate-700 text-xs uppercase tracking-wider">Rentang Waktu</label>
             <select name="date_range" @change="showCustomDate = ($el.value === 'custom'); setTimeout(() => document.getElementById('filter-form').submit(), 100)" 
@@ -40,7 +37,6 @@
             </select>
         </div>
 
-        <!-- Custom Date Inputs -->
         <div x-show="showCustomDate" x-transition class="flex gap-2 items-end">
             <div class="space-y-1.5">
                 <label class="block font-medium text-slate-700 text-[10px] uppercase tracking-wider">Mulai</label>
@@ -59,7 +55,6 @@
 
         {{ $customFilters }}
 
-        <!-- Actions -->
         <div class="flex items-center gap-2">
             <button type="submit" class="px-5 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-all shadow-sm flex items-center space-x-2">
                 <span class="material-symbols-outlined text-[18px]">filter_list</span>

@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Page Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -26,7 +25,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="glass-panel border border-surface-variant rounded-xl p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Income (Masuk)</p>
@@ -44,10 +42,8 @@
         </div>
     </div>
 
-    <!-- Filter -->
     <x-table.filter placeholder="Cari laporan proyek..." />
 
-    <!-- Main Table -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">

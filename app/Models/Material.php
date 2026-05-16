@@ -13,6 +13,8 @@ class Material extends Model
     protected $guarded = ['id'];
     protected $appends = ['display_name', 'dimension_string'];
 
+    const SORTABLE_FIELDS = ['name', 'code', 'type', 'unit', 'current_qty', 'avg_price', 'created_at'];
+
     public function stockMovements()
     {
         return $this->hasMany(StockMovement::class);
@@ -55,6 +57,22 @@ class Material extends Model
         return implode(' x ', $parts);
     }
 
+    /**
+     * Auto-capitalize unit field on save.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Material $material) {
+            if ($material->unit) {
+                $material->unit = ucfirst(strtolower($material->unit));
+            }
+        });
 
-    // Use Searchable trait for search, sort, and dateRange scopes
+        static::updating(function (Material $material) {
+            if ($material->isDirty('unit') && $material->unit) {
+                $material->unit = ucfirst(strtolower($material->unit));
+            }
+        });
+    }
+
 }

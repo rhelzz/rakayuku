@@ -80,17 +80,14 @@ class ReportService
      */
     public function getCashflowData($range, $start = null, $end = null)
     {
-        // Income from Payments
         $income = Payment::query()
             ->dateRange($range, $start, $end)
             ->sum('amount');
 
-        // Outcome from Purchases
         $purchaseCost = Purchase::query()
             ->dateRange($range, $start, $end, 'purchase_date')
             ->sum('total_price');
             
-        // Outcome from Production Costs (Operational)
         $operationalCost = ProductionCost::query()
             ->dateRange($range, $start, $end)
             ->sum('amount');

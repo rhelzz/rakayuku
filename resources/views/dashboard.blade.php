@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="space-y-6" x-data="{ showExportModal: false, exportUrl: '', exportTitle: '' }">
-        <!-- Page Header -->
         <div class="flex flex-col gap-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -18,7 +17,6 @@
                 </div>
             </div>
 
-            <!-- Quick Exports Toolbar -->
             <div class="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0" style="scrollbar-width: none;">
                 <span class="text-xs font-label-caps uppercase tracking-wider text-slate-500 mr-2 flex-shrink-0">Quick Export:</span>
                 <button @click="exportUrl = '{{ route('finance.cashflow.export') }}'; exportTitle = 'Arus Kas'; showExportModal = true" class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">Arus Kas</button>
@@ -44,7 +42,6 @@
                 </div>
             </div>
 
-            <!-- Metric 1: Active Projects -->
             <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <span class="material-symbols-outlined text-6xl text-primary-container">handyman</span>
@@ -56,7 +53,6 @@
                 </div>
             </div>
 
-            <!-- Metric 2: Low Stock Alerts -->
             <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group {{ count($lowStockMaterials) > 0 ? 'border-l-4 border-l-error' : '' }}">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <span class="material-symbols-outlined text-6xl text-error">warning</span>
@@ -75,7 +71,6 @@
                 </div>
             </div>
 
-            <!-- Metric 3: Total Profit -->
             <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <span class="material-symbols-outlined text-6xl text-primary-container">payments</span>
@@ -87,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- Metric 4: Total Receivable -->
             <div class="glass-panel rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden group border-l-4 border-l-amber-500">
                 <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <span class="material-symbols-outlined text-6xl text-amber-500">account_balance_wallet</span>
@@ -100,9 +94,7 @@
             </div>
         </div>
 
-        <!-- Secondary Layout -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <!-- Recent Orders Queue -->
             <div class="lg:col-span-2 glass-panel rounded-xl flex flex-col overflow-hidden">
                 <div class="p-4 border-b border-surface-container-high flex justify-between items-center">
                     <h3 class="font-title-sm text-title-sm text-on-background">Antrean Pesanan Terbaru</h3>
@@ -154,7 +146,6 @@
                 </div>
             </div>
 
-            <!-- Stock Summary / Status Sidebar -->
             <div class="glass-panel rounded-xl p-4 flex flex-col">
                 <div class="flex justify-between items-start mb-4">
                     <div>
@@ -191,7 +182,6 @@
                 </div>
             </div>
         </div>
-        <!-- Export Modal -->
         <div x-show="showExportModal" class="fixed z-[100]" style="display: none; top: 0; right: 0; bottom: 0; left: 0;" x-cloak>
             <div x-show="showExportModal" x-transition.opacity class="absolute bg-slate-900/50 backdrop-blur-sm" style="top: 0; right: 0; bottom: 0; left: 0;" @click="showExportModal = false"></div>
             <div x-show="showExportModal"

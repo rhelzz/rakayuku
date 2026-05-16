@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Breadcrumbs & Header -->
     <div class="flex flex-col gap-4">
         <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm">
             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
@@ -21,7 +20,9 @@
                 </div>
                 <div>
                     <h2 class="font-headline-md text-headline-md text-on-surface">{{ $material->name }}{{ $material->type ? ' (' . $material->type . ')' : '' }}</h2>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2.5 py-1 bg-primary text-white text-[11px] font-bold rounded-lg font-data-mono shadow-sm">{{ $material->code }}</span>
+                        <span class="text-slate-300">•</span>
                         <p class="font-body-sm text-body-sm text-slate-500">ID: {{ $material->id }}</p>
                         @if($material->is_dimension)
                             <span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase border border-primary/20">
@@ -46,7 +47,6 @@
         </div>
     </div>
 
-    <!-- History Table -->
     <div class="bg-surface-container-low border border-surface-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">

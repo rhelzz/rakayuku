@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto">
-    <!-- Breadcrumbs -->
     <nav class="flex text-sm text-slate-500 gap-2 items-center font-body-sm mb-4">
         <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
@@ -14,7 +13,6 @@
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
             <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50 flex justify-between items-center">
@@ -65,7 +63,6 @@
                 </div>
             </div>
 
-            <!-- Payment Status & Form (for Credit Purchases) -->
             @if($purchase->payment_status !== 'PAID')
             <div class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden p-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -117,7 +114,6 @@
             @endif
         </div>
 
-        <!-- Sidebar: Invoice Proof -->
         <div class="space-y-6">
             <div class="bg-surface-container-low border border-surface-variant rounded-2xl shadow-sm overflow-hidden h-fit sticky top-6">
                 <div class="p-6 border-b border-surface-variant bg-surface-container-lowest/50">

@@ -59,7 +59,8 @@ trait Searchable
     }
 
     /**
-     * Scope for dynamic sorting
+     * Scope for dynamic sorting.
+     * Validates field against model's SORTABLE_FIELDS constant if defined.
      */
     public function scopeSort(Builder $query, $field, $direction = 'desc'): Builder
     {
@@ -67,6 +68,12 @@ trait Searchable
 
         if (!$field) {
             return $query->latest();
+        }
+
+        if (defined(static::class . '::SORTABLE_FIELDS')) {
+            if (!in_array($field, static::SORTABLE_FIELDS, true)) {
+                return $query->latest();
+            }
         }
 
         return $query->orderBy($field, $direction);
