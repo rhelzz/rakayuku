@@ -28,30 +28,42 @@ class ClosingController extends Controller
             $selectedYear = $currentYear;
         }
 
+        $currentMonth = now()->startOfMonth();
+
         $periodDates = collect();
         for ($m = 1; $m <= 12; $m++) {
-            $date = Carbon::createFromDate($selectedYear, $m, 1)->startOfMonth();
-
-            if ($date->gt(now()->endOfMonth())) {
-                break;
-            }
-
-            $periodDates->push($date->format('Y-m-d'));
+            $periodDates->push(Carbon::createFromDate($selectedYear, $m, 1)->startOfMonth()->format('Y-m-d'));
         }
 
         $closings = MonthlyClosing::whereIn('period', $periodDates->toArray())
             ->get()
             ->keyBy(fn($c) => $c->period->format('Y-m-d'));
 
-        $months = $periodDates->map(function ($dateStr) use ($closings) {
+        $months = $periodDates->map(function ($dateStr) use ($closings, $currentMonth) {
             $date = Carbon::parse($dateStr);
             $closing = $closings->get($dateStr);
+            $isClosed = $closing?->status === MonthlyClosing::STATUS_CLOSED;
+            $isFuture = $date->gt($currentMonth);
+            $isCurrent = $date->equalTo($currentMonth);
+            $isPast = $date->lt($currentMonth);
+
+            if ($isClosed) {
+                $status = 'CLOSED';
+            } elseif ($isFuture) {
+                $status = 'UPCOMING';
+            } elseif ($isCurrent) {
+                $status = 'OPEN';
+            } else {
+                $status = 'MISSED';
+            }
+
             return [
                 'period' => $date,
                 'period_end' => $date->copy()->endOfMonth(),
                 'label' => $date->translatedFormat('F Y'),
                 'closing' => $closing,
-                'status' => $closing?->status ?? 'OPEN',
+                'status' => $status,
+                'can_close' => $isCurrent && !$isClosed,
             ];
         })->sortByDesc('period')->values();
 
@@ -79,12 +91,20 @@ class ClosingController extends Controller
     public function close(Request $request)
     {
         $request->validate([
-            'period' => 'required|date|before_or_equal:today|after_or_equal:' . now()->subYears(2)->startOfMonth()->format('Y-m-d'),
+            'period' => 'required|date',
             'notes' => 'nullable|string|max:1000',
         ]);
 
         $periodDate = Carbon::parse($request->period)->startOfMonth();
         $periodLabel = $periodDate->translatedFormat('F Y');
+        $currentMonth = now()->startOfMonth();
+
+        if (!$periodDate->equalTo($currentMonth)) {
+            if ($periodDate->gt($currentMonth)) {
+                return back()->with('error', "Tidak bisa menutup periode {$periodLabel} karena bulan tersebut belum tiba.");
+            }
+            return back()->with('error', "Tidak bisa menutup periode {$periodLabel} karena bulan tersebut sudah terlewat.");
+        }
 
         return DB::transaction(function () use ($request, $periodDate, $periodLabel) {
             $existing = MonthlyClosing::where('period', $periodDate->format('Y-m-d'))

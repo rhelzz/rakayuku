@@ -65,14 +65,28 @@
                 </thead>
                 <tbody class="divide-y divide-surface-variant/30 font-body-sm text-body-sm text-on-surface bg-white/50">
                     @forelse($months as $month)
-                    <tr class="hover:bg-surface-container-low transition-colors group">
+                    <tr class="{{ in_array($month['status'], ['UPCOMING', 'MISSED']) ? 'opacity-50' : '' }} hover:bg-surface-container-low transition-colors group">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg {{ $month['status'] === 'CLOSED' ? 'bg-green-50 border-green-200 text-green-600' : 'bg-slate-50 border-slate-200 text-slate-400' }} border flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[20px]">{{ $month['status'] === 'CLOSED' ? 'lock' : 'lock_open' }}</span>
+                                @php
+                                    $iconBg = match($month['status']) {
+                                        'CLOSED' => 'bg-green-50 border-green-200 text-green-600',
+                                        'OPEN' => 'bg-amber-50 border-amber-200 text-amber-600',
+                                        'MISSED' => 'bg-red-50 border-red-200 text-red-400',
+                                        default => 'bg-slate-100 border-slate-200 text-slate-300',
+                                    };
+                                    $icon = match($month['status']) {
+                                        'CLOSED' => 'lock',
+                                        'OPEN' => 'lock_open',
+                                        'MISSED' => 'event_busy',
+                                        default => 'schedule',
+                                    };
+                                @endphp
+                                <div class="w-10 h-10 rounded-lg {{ $iconBg }} border flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">{{ $icon }}</span>
                                 </div>
                                 <div>
-                                    <div class="font-semibold text-on-surface">{{ $month['label'] }}</div>
+                                    <div class="font-semibold {{ in_array($month['status'], ['UPCOMING', 'MISSED']) ? 'text-slate-400' : 'text-on-surface' }}">{{ $month['label'] }}</div>
                                     <div class="text-[10px] text-slate-400">{{ $month['period']->format('01/m/Y') }} - {{ $month['period_end']->format('d/m/Y') }}</div>
                                 </div>
                             </div>
@@ -82,6 +96,16 @@
                                 <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-200">
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                                     <span class="text-[11px] font-bold uppercase">Ditutup</span>
+                                </div>
+                            @elseif($month['status'] === 'UPCOMING')
+                                <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-400 border border-slate-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                    <span class="text-[11px] font-bold uppercase">Belum Tersedia</span>
+                                </div>
+                            @elseif($month['status'] === 'MISSED')
+                                <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-500 border border-red-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                                    <span class="text-[11px] font-bold uppercase">Terlewat</span>
                                 </div>
                             @else
                                 <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
@@ -108,12 +132,16 @@
                                         <span class="material-symbols-outlined text-[14px]">lock_open</span>
                                         Buka
                                     </button>
-                                @else
+                                @elseif($month['can_close'])
                                     <button @click="selectedPeriod = '{{ $month['period']->format('Y-m-d') }}'; selectedLabel = '{{ $month['label'] }}'; showCloseModal = true"
                                             class="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary-hover transition-colors shadow-sm flex items-center gap-1">
                                         <span class="material-symbols-outlined text-[14px]">lock</span>
                                         Tutup Buku
                                     </button>
+                                @elseif($month['status'] === 'MISSED')
+                                    <span class="text-xs text-red-400 italic">Periode terlewat</span>
+                                @else
+                                    <span class="text-xs text-slate-300 italic">Belum tersedia</span>
                                 @endif
                             </div>
                         </td>
